@@ -7,11 +7,12 @@ export default async function AdminLayout({
   params,
 }: {
   children: ReactNode
-  params: { restaurantId: string }
+  params: Promise<{ restaurantId: string }>
 }) {
-  const path = `/admin/${params.restaurantId}`
+  const { restaurantId } = await params
+  const path = `/admin/${restaurantId}`
   try {
-    await requireAdmin(params.restaurantId)
+    await requireAdmin(restaurantId)
   } catch {
     redirect(`/auth/admin?redirect=${encodeURIComponent(path)}`)
   }

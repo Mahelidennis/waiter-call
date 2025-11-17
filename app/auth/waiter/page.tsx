@@ -1,10 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { signInWithEmailPassword } from '@/lib/auth/client'
 
-export default function WaiterLoginPage() {
+function WaiterLoginInner() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [email, setEmail] = useState('')
@@ -96,6 +96,14 @@ export default function WaiterLoginPage() {
         </p>
       </div>
     </div>
+  )
+}
+
+export default function WaiterLoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <WaiterLoginInner />
+    </Suspense>
   )
 }
 

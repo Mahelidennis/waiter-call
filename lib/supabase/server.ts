@@ -1,9 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
-import { cookies } from 'next/headers'
 
 export async function createServerClient() {
-  const cookieStore = await cookies()
-  
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
@@ -11,18 +8,10 @@ export async function createServerClient() {
     throw new Error('Missing Supabase environment variables')
   }
 
-  return createClient(supabaseUrl, supabaseAnonKey, {
-    cookies: {
-      getAll() {
-        return cookieStore.getAll()
-      },
-      setAll(cookiesToSet) {
-        cookiesToSet.forEach(({ name, value, options }) =>
-          cookieStore.set(name, value, options)
-        )
-      },
-    },
-  })
+  // Basic server-side Supabase client without cookie integration.
+  // Auth checks (requireAdmin/requireWaiter) will rely on tokens/session
+  // available in the request environment.
+  return createClient(supabaseUrl, supabaseAnonKey)
 }
 
 // Service role client for admin operations (use with caution)

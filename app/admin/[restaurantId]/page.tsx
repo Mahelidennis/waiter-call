@@ -47,7 +47,7 @@ interface Call {
   }
 }
 
-export default function AdminDashboard() {
+export default function AdminPage() {
   const params = useParams()
   const restaurantId = params.restaurantId as string
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null)
@@ -834,17 +834,18 @@ export default function AdminDashboard() {
         restaurantId={restaurantId}
       />
 
-      <WaiterAssignmentModal
-        isOpen={assignmentModalOpen}
-        onClose={() => {
-          setAssignmentModalOpen(false)
-          setSelectedWaiterForAssignment(null)
-        }}
-        waiter={selectedWaiterForAssignment}
-        tables={tables}
-        restaurantId={restaurantId}
-        onSave={handleAssignTables}
-      />
+        <WaiterAssignmentModal
+          isOpen={assignmentModalOpen}
+          onClose={() => {
+            setAssignmentModalOpen(false)
+            setSelectedWaiterForAssignment(null)
+          }}
+          waiter={selectedWaiterForAssignment}
+          tables={tables}
+          restaurantId={restaurantId}
+          onSave={handleAssignTables}
+        />
+      </main>
     </div>
   )
 }

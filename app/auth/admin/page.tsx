@@ -1,10 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { signInWithEmailPassword } from '@/lib/auth/client'
 
-export default function AdminLoginPage() {
+function AdminLoginInner() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [email, setEmail] = useState('')
@@ -33,9 +33,7 @@ export default function AdminLoginPage() {
         )
       }
 
-      const target =
-        redirectTo ||
-        `/admin/${restaurantId}`
+      const target = redirectTo || `/admin/${restaurantId}`
 
       router.push(target)
     } catch (err) {
@@ -100,6 +98,14 @@ export default function AdminLoginPage() {
         </p>
       </div>
     </div>
+  )
+}
+
+export default function AdminLoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <AdminLoginInner />
+    </Suspense>
   )
 }
 

@@ -52,6 +52,7 @@ export default function WaiterAssignmentModal({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (!waiter) return
     setLoading(true)
     try {
       await onSave(waiter.id, selectedTableIds)

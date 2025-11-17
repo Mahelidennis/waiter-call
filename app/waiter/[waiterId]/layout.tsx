@@ -7,11 +7,12 @@ export default async function WaiterLayout({
   params,
 }: {
   children: ReactNode
-  params: { waiterId: string }
+  params: Promise<{ waiterId: string }>
 }) {
-  const path = `/waiter/${params.waiterId}`
+  const { waiterId } = await params
+  const path = `/waiter/${waiterId}`
   try {
-    await requireWaiter(params.waiterId)
+    await requireWaiter(waiterId)
   } catch {
     redirect(`/auth/waiter?redirect=${encodeURIComponent(path)}`)
   }
