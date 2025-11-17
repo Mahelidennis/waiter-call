@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Billing &amp; Subscription - WaiterCall</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4A90E2",
+                        "background-light": "#F2F2F7",
+                        "background-dark": "#101012",
+                        "text-light": "#333333",
+                        "text-dark": "#E5E5E7",
+                        "card-light": "#FFFFFF",
+                        "card-dark": "#1C1C1E",
+                        "border-light": "#E5E5E7",
+                        "border-dark": "#3A3A3C",
+                        "success": "#34C759",
+                        "danger": "#FF3B30",
+                        "warning": "#FFCC00"
+                    },
+                    fontFamily: {
+                        "display": ["Work Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings:
+                'FILL' 0,
+                'wght' 400,
+                'GRAD' 0,
+                'opsz' 24
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="flex h-full grow">
+<!-- SideNavBar -->
+<aside class="flex h-full min-h-screen w-64 flex-col justify-between border-r border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark p-4">
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-3 px-3 py-2">
+<div class="size-8 text-primary">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M36.7273 44C33.9891 44 31.6043 39.8386 30.3636 33.69C29.123 39.8386 26.7382 44 24 44C21.2618 44 18.877 39.8386 17.6364 33.69C16.3957 39.8386 14.0109 44 11.2727 44C7.25611 44 4 35.0457 4 24C4 12.9543 7.25611 4 11.2727 4C14.0109 4 16.3957 8.16144 17.6364 14.31C18.877 8.16144 21.2618 4 24 4C26.7382 4 29.123 8.16144 30.3636 14.31C31.6043 8.16144 33.9891 4 36.7273 4C40.7439 4 44 12.9543 44 24C44 35.0457 40.7439 44 36.7273 44Z" fill="currentColor"></path>
+</svg>
+</div>
+<h2 class="text-xl font-bold leading-tight tracking-[-0.015em]">WaiterCall</h2>
+</div>
+<div class="flex flex-col gap-2 mt-4">
+<a class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-background-light dark:hover:bg-background-dark" href="#">
+<span class="material-symbols-outlined text-2xl">dashboard</span>
+<p class="text-sm font-medium leading-normal">Dashboard</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-background-light dark:hover:bg-background-dark" href="#">
+<span class="material-symbols-outlined text-2xl">table_restaurant</span>
+<p class="text-sm font-medium leading-normal">Tables</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-background-light dark:hover:bg-background-dark" href="#">
+<span class="material-symbols-outlined text-2xl">group</span>
+<p class="text-sm font-medium leading-normal">Staff</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-background-light dark:hover:bg-background-dark" href="#">
+<span class="material-symbols-outlined text-2xl">settings</span>
+<p class="text-sm font-medium leading-normal">Settings</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md bg-primary/20 text-primary dark:bg-primary/30" href="#">
+<span class="material-symbols-outlined text-2xl">receipt_long</span>
+<p class="text-sm font-bold leading-normal">Billing</p>
+</a>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-3 px-3 py-2">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="User avatar image" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDjFjpjti-PA0Zjoo688h545SqUwnw-IBMX_sLMS6Tk-3bzPZUdFy3GDfNQuaKlhtLYJYb3V6vwWsBBfzBacb7HbCZIxWS4jRrMqsYZsP9jvuimB2PWcVSO2Q4nE6udqc3zRzlMa29XmfmiS50-wSmwuroKqUvhhN1gym05WbUyJ2GPexIHn1fDYFHI5BfsrhLX5BkZ9pPR6bLbpNJaa86bAUnKGLCBLfq38-aNTcMg7xCg79DJvovtAQ_wTIRuIupdgs9zk-yj1g");'></div>
+<div class="flex flex-col">
+<h1 class="text-base font-medium leading-normal">The Grand Eatery</h1>
+<p class="text-sm font-normal leading-normal text-text-light/70 dark:text-text-dark/70">Admin</p>
+</div>
+</div>
+</div>
+</aside>
+<main class="flex-1 p-6 md:p-8 lg:p-12">
+<div class="mx-auto max-w-4xl">
+<!-- PageHeading -->
+<div class="flex flex-wrap justify-between gap-3 p-4">
+<h1 class="text-4xl font-black leading-tight tracking-[-0.033em] min-w-72">Billing &amp; Subscription</h1>
+</div>
+<!-- SegmentedButtons (Tabs) -->
+<div class="flex px-4 py-3 mt-4">
+<div class="flex h-11 w-full flex-1 items-center justify-center rounded-lg bg-card-light dark:bg-card-dark p-1 border border-border-light dark:border-border-dark shadow-sm">
+<label class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-md px-2 has-[:checked]:bg-primary has-[:checked]:text-white text-text-light/80 dark:text-text-dark/80 has-[:checked]:dark:text-white text-sm font-semibold leading-normal">
+<span class="truncate">Subscription Plan</span>
+<input checked="" class="invisible w-0" name="billing-tabs" type="radio" value="Subscription Plan"/>
+</label>
+<label class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-md px-2 has-[:checked]:bg-primary has-[:checked]:text-white text-text-light/80 dark:text-text-dark/80 has-[:checked]:dark:text-white text-sm font-semibold leading-normal">
+<span class="truncate">Payment Method</span>
+<input class="invisible w-0" name="billing-tabs" type="radio" value="Payment Method"/>
+</label>
+<label class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-md px-2 has-[:checked]:bg-primary has-[:checked]:text-white text-text-light/80 dark:text-text-dark/80 has-[:checked]:dark:text-white text-sm font-semibold leading-normal">
+<span class="truncate">Billing History</span>
+<input class="invisible w-0" name="billing-tabs" type="radio" value="Billing History"/>
+</label>
+<label class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-md px-2 has-[:checked]:bg-primary has-[:checked]:text-white text-text-light/80 dark:text-text-dark/80 has-[:checked]:dark:text-white text-sm font-semibold leading-normal">
+<span class="truncate">Billing Address</span>
+<input class="invisible w-0" name="billing-tabs" type="radio" value="Billing Address"/>
+</label>
+</div>
+</div>
+<!-- Content Sections -->
+<div class="mt-8 space-y-12">
+<!-- Current Subscription Plan Section -->
+<section>
+<h2 class="text-2xl font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Your Subscription Plan</h2>
+<div class="bg-card-light dark:bg-card-dark rounded-xl border border-border-light dark:border-border-dark p-6 shadow-sm">
+<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+<div>
+<p class="text-sm text-text-light/70 dark:text-text-dark/70">Current Plan</p>
+<p class="text-xl font-bold mt-1">Pro Plan</p>
+<p class="mt-2 text-text-light/90 dark:text-text-dark/90"><span class="text-3xl font-bold">$49.99</span> / month</p>
+<p class="text-sm text-success mt-1">Your next bill is on July 24, 2024</p>
+</div>
+<div class="flex items-center gap-3 mt-4 md:mt-0">
+<button class="flex items-center justify-center rounded-md h-10 bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark text-sm font-bold px-5 hover:bg-border-light dark:hover:bg-border-dark transition-colors">Change Plan</button>
+<button class="flex items-center justify-center rounded-md h-10 text-sm font-bold text-danger px-5 hover:bg-danger/10 transition-colors">Cancel Subscription</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Payment Method Section -->
+<section>
+<h2 class="text-2xl font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Payment Method</h2>
+<div class="bg-card-light dark:bg-card-dark rounded-xl border border-border-light dark:border-border-dark p-6 shadow-sm">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-4">
+<img alt="Visa card logo" class="h-8 w-auto" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBL4gLvS-eKmexT2DAZrj_Rn6Ath9h0fsuIuOgpDC2hGt_LTrPgufNWUcMQp0SFztDa_DfbkNSMkpahi7-AMMrZvMwgIXgUFhzW-lZtkdfCZK27kPYOQYR059A2KPIFambkBsbqEyXsqTP1mPcjudlepS0PNSnAQ5hNOnmgILPmmctUcIrdvWgKtjGchjCvZzuP0PY-GF0R0vlNOZFe14kOzhcYijQ8-QTviunIQzbpKHmSoJiOnoXW41uwd8VUHtNyPkHucPiZJQ"/>
+<div>
+<p class="font-semibold">Visa ending in 1234</p>
+<p class="text-sm text-text-light/70 dark:text-text-dark/70">Expires 12/2026</p>
+</div>
+</div>
+<button class="flex items-center justify-center rounded-md h-10 bg-primary text-white text-sm font-bold px-5 hover:bg-primary/90 transition-colors">Update Card</button>
+</div>
+<div class="mt-6 border-t border-border-light dark:border-border-dark pt-6">
+<form class="space-y-4">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div>
+<label class="block text-sm font-medium mb-1" for="cardholder-name">Cardholder Name</label>
+<input class="w-full rounded-md border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark focus:ring-primary focus:border-primary" id="cardholder-name" placeholder="John Doe" type="text"/>
+</div>
+<div class="relative">
+<label class="block text-sm font-medium mb-1" for="card-number">Card Number</label>
+<input class="w-full rounded-md border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark focus:ring-primary focus:border-primary pr-10" id="card-number" placeholder="•••• •••• •••• 1234" type="text"/>
+<span class="material-symbols-outlined absolute right-3 top-9 text-text-light/50 dark:text-text-dark/50">lock</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div>
+<label class="block text-sm font-medium mb-1" for="expiry-date">Expiration Date</label>
+<input class="w-full rounded-md border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark focus:ring-primary focus:border-primary" id="expiry-date" placeholder="MM / YY" type="text"/>
+</div>
+<div class="relative">
+<label class="block text-sm font-medium mb-1" for="cvc">CVC</label>
+<input class="w-full rounded-md border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark focus:ring-primary focus:border-primary pr-10" id="cvc" placeholder="•••" type="text"/>
+<span class="material-symbols-outlined absolute right-3 top-9 text-text-light/50 dark:text-text-dark/50">help</span>
+</div>
+</div>
+</form>
+</div>
+<div class="flex items-center justify-between mt-6">
+<p class="text-xs text-text-light/60 dark:text-text-dark/60 flex items-center gap-2">
+<span class="material-symbols-outlined text-base">verified_user</span>
+                                        Secure payments powered by Stripe
+                                    </p>
+<button class="flex items-center justify-center rounded-md h-10 bg-primary text-white text-sm font-bold px-5 hover:bg-primary/90 transition-colors">Save Changes</button>
+</div>
+</div>
+</section>
+<!-- Billing History Section -->
+<section>
+<h2 class="text-2xl font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Billing History</h2>
+<div class="bg-card-light dark:bg-card-dark rounded-xl border border-border-light dark:border-border-dark shadow-sm overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-sm text-left">
+<thead class="bg-background-light dark:bg-background-dark border-b border-border-light dark:border-border-dark text-xs uppercase">
+<tr>
+<th class="px-6 py-3 font-semibold" scope="col">Invoice ID</th>
+<th class="px-6 py-3 font-semibold" scope="col">Date</th>
+<th class="px-6 py-3 font-semibold" scope="col">Amount</th>
+<th class="px-6 py-3 font-semibold text-right" scope="col">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr class="border-b border-border-light dark:border-border-dark">
+<td class="px-6 py-4 font-medium">#INV-2024-003</td>
+<td class="px-6 py-4">June 24, 2024</td>
+<td class="px-6 py-4">$49.99</td>
+<td class="px-6 py-4 text-right">
+<button class="flex items-center justify-center gap-1.5 ml-auto text-primary font-bold text-sm">
+<span class="material-symbols-outlined text-lg">download</span>
+                                                        Download
+                                                    </button>
+</td>
+</tr>
+<tr class="border-b border-border-light dark:border-border-dark">
+<td class="px-6 py-4 font-medium">#INV-2024-002</td>
+<td class="px-6 py-4">May 24, 2024</td>
+<td class="px-6 py-4">$49.99</td>
+<td class="px-6 py-4 text-right">
+<button class="flex items-center justify-center gap-1.5 ml-auto text-primary font-bold text-sm">
+<span class="material-symbols-outlined text-lg">download</span>
+                                                        Download
+                                                    </button>
+</td>
+</tr>
+<tr>
+<td class="px-6 py-4 font-medium">#INV-2024-001</td>
+<td class="px-6 py-4">April 24, 2024</td>
+<td class="px-6 py-4">$49.99</td>
+<td class="px-6 py-4 text-right">
+<button class="flex items-center justify-center gap-1.5 ml-auto text-primary font-bold text-sm">
+<span class="material-symbols-outlined text-lg">download</span>
+                                                        Download
+                                                    </button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<!-- Billing Address Section -->
+<section>
+<h2 class="text-2xl font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Billing Address</h2>
+<div class="bg-card-light dark:bg-card-dark rounded-xl border border-border-light dark:border-border-dark p-6 shadow-sm">
+<div class="flex justify-between items-start">
+<div>
+<p class="font-semibold">The Grand Eatery</p>
+<p class="text-sm text-text-light/80 dark:text-text-dark/80 mt-1">123 Culinary Lane<br/>Gourmet City, ST 12345<br/>United States</p>
+</div>
+<button class="flex items-center justify-center rounded-md h-10 bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark text-sm font-bold px-5 hover:bg-border-light dark:hover:bg-border-dark transition-colors">Edit Address</button>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>

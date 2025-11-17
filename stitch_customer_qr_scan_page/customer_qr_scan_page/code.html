@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Call Waiter - Restaurant Name</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#0df259",
+              "background-light": "#f5f8f6",
+              "background-dark": "#102216",
+            },
+            fontFamily: {
+              "display": ["Work Sans", "Noto Sans", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24
+      }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-[#111813] dark:text-white">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<div class="flex flex-1 justify-center py-5 sm:px-6 lg:px-8">
+<div class="layout-content-container flex flex-col w-full max-w-md flex-1">
+<!-- TopNavBar -->
+<header class="flex items-center justify-center whitespace-nowrap border-b border-solid border-gray-200 dark:border-gray-700 px-10 py-4">
+<div class="flex items-center gap-4 text-[#111813] dark:text-white">
+<div class="size-6 text-primary">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M24 4H42V17.3333V30.6667H24V44H6V30.6667V17.3333H24V4Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h2 class="text-[#111813] dark:text-white text-xl font-bold leading-tight tracking-[-0.015em]">Restaurant Name</h2>
+</div>
+</header>
+<main class="flex-grow p-4 md:p-6 space-y-8">
+<!-- Main content card -->
+<div class="bg-white dark:bg-gray-800/50 rounded-xl shadow-sm p-6 md:p-8 text-center space-y-6">
+<!-- PageHeading -->
+<div class="flex flex-col gap-2">
+<p class="text-[#111813] dark:text-white text-4xl font-black leading-tight tracking-[-0.033em]">Your Table: 12</p>
+<p class="text-gray-500 dark:text-gray-400 text-base font-normal leading-normal">Press the button below to call for assistance</p>
+</div>
+<!-- SingleButton -->
+<div class="flex flex-col items-center gap-4">
+<button class="flex w-full min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-14 px-5 bg-primary text-[#111813] gap-3 text-lg font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 active:bg-primary/80 transition-colors duration-200 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed dark:disabled:bg-gray-600 dark:disabled:text-gray-400">
+<span class="material-symbols-outlined text-[#111813]">notifications</span>
+<span class="truncate">Call Waiter</span>
+</button>
+<!-- BodyText for status -->
+<p class="text-green-600 dark:text-green-400 text-base font-medium leading-normal h-6"><!-- Status message like "A waiter is on their way." will appear here --></p>
+</div>
+</div>
+<!-- Promotional Section -->
+<div class="space-y-4">
+<!-- SectionHeader -->
+<h2 class="text-[#111813] dark:text-white text-2xl font-bold leading-tight tracking-[-0.015em] px-4">Exclusive Offers</h2>
+<!-- Promotional Carousel -->
+<div class="relative w-full">
+<div class="flex space-x-4 overflow-x-auto pb-4 px-4 -mx-4 scrollbar-hide">
+<!-- Carousel Item 1 -->
+<div class="flex-shrink-0 w-64 bg-white dark:bg-gray-800/50 rounded-xl shadow-sm overflow-hidden">
+<img alt="A colorful salad in a white bowl" class="w-full h-36 object-cover" data-alt="A colorful salad in a white bowl" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-GV6wZ6oylTIpkUwRbiB8tF_zD4TqUyy8zeUZ3KKMq7QPycS1750hnlLFfpHAVIlUIqxoTE1aMaRjsGgkeqjUJaS5EKpcRl7r2e89c5EpwANYVjR8QPgCpJyQbul8HFa0R01gOPO2Txl173Ae6HHRzIxakHUEkGgzeZxwNPdnyvXuhhhfmikzgHUH3j82ZkFadWVDuPG_AbVck_qbXO7j2R7NtY-euYa0qbhj1rq2VWIMWMbsFXU4hujhYJI0a1JeaPvixL-mHA"/>
+<div class="p-4">
+<h3 class="font-bold text-[#111813] dark:text-white">Summer Salad Special</h3>
+<p class="text-sm text-gray-500 dark:text-gray-400">20% off on all salads</p>
+</div>
+</div>
+<!-- Carousel Item 2 -->
+<div class="flex-shrink-0 w-64 bg-white dark:bg-gray-800/50 rounded-xl shadow-sm overflow-hidden">
+<img alt="A freshly baked pizza with basil" class="w-full h-36 object-cover" data-alt="A freshly baked pizza with basil" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSmgWkLfrmLo-gmSeoOyFZCCVBmkcRD5qVV3x-DYe2xEorDA4AJp5jVR4lKb6ea6qqY8YL1SlrR4VKbaji34svdXokghhH_5QuLfVht-r_7VNbypMiMsgPyBRUFywBKwl_bYt8cM3-BOTp3nIWScQd0oYbqZAkMGZGR5sKrlG0MSRuumB_gpgOLZSsq8FEx8xsADTd15owGhHe6qReD3SUAT5fX6eBh02g8x-3e7dU6vu6X2GV9ycyIUhNiVOEcoGyc4TBUeV2EA"/>
+<div class="p-4">
+<h3 class="font-bold text-[#111813] dark:text-white">Pizza Happy Hour</h3>
+<p class="text-sm text-gray-500 dark:text-gray-400">Buy one get one free from 4-6 PM</p>
+</div>
+</div>
+<!-- Carousel Item 3 -->
+<div class="flex-shrink-0 w-64 bg-white dark:bg-gray-800/50 rounded-xl shadow-sm overflow-hidden">
+<img alt="A slice of berry cheesecake on a plate" class="w-full h-36 object-cover" data-alt="A slice of berry cheesecake on a plate" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-ds6RebNRo8bmgaU0-8FWYEXH1FUF4BOlf5Rd6rOk6hGU1LgilE9ou2taFaItn25JBQeCQ-91No7nY4cW8E1smCvb4Qbdpm129UdOaFXxawvBQhEoqkjIBCuVIimXnXxRJFN2DEhvth6k_DlRtWCp4GEHGGbbSaE97BJfUPSPbavbgBbF39Ygow2bfv8ueXVFqz7pcCShJlhxQ6-kMj-Nd3-EHXfQPfkQiCxs2Bu_QQzLt5QoQghGG9wuUwq8NeFWkKVtW5D8PA"/>
+<div class="p-4">
+<h3 class="font-bold text-[#111813] dark:text-white">Sweet Endings</h3>
+<p class="text-sm text-gray-500 dark:text-gray-400">Free dessert with any main course</p>
+</div>
+</div>
+<!-- Carousel Item 4 -->
+<div class="flex-shrink-0 w-64 bg-white dark:bg-gray-800/50 rounded-xl shadow-sm overflow-hidden">
+<img alt="Three colorful cocktails on a bar" class="w-full h-36 object-cover" data-alt="Three colorful cocktails on a bar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2WlJVKN6hZeuM75OxCqvmUVKdupRnZzkp6w56gA31LhcohszKvg_WWJDpJwti3qyDijWd42SVssNkNjp91J0DXeObOagIQR2FfDbOBXZKdIs2QxMjeoXwmwSo0EvsK8xuB47B0BlEsVwCzuE2oXivQSiimYGLQl5wA97-88tHNGe1LLzPJfMblz_93tipv1_n-7_M1O9hxUX4g6Zg2q2YtiiYW9S4qxx3zRNz4M8wnvvGkDrzpczmrv7TaTwjOqf1GVihlzluUg"/>
+<div class="p-4">
+<h3 class="font-bold text-[#111813] dark:text-white">Cocktail Night</h3>
+<p class="text-sm text-gray-500 dark:text-gray-400">All cocktails half-price on Fridays</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</div>
+</div>
+<style>
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+      .scrollbar-hide {
+        -ms-overflow-style: none;  
+        scrollbar-width: none; 
+      }
+    </style>
+</body></html>

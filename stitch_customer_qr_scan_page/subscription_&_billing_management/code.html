@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Subscriptions &amp; Billing - Admin Panel</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24
+      }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4A90E2",
+                        "secondary": "#50E3C2",
+                        "background-light": "#F8F9FA",
+                        "background-dark": "#102216",
+                        "text-light": "#333333",
+                        "text-dark": "#F8F9FA",
+                        "border-light": "#E0E0E0",
+                        "border-dark": "#333333",
+                        "status-green": "#28A745",
+                        "status-blue": "#007BFF",
+                        "status-orange": "#FFC107",
+                        "status-red": "#DC3545",
+                    },
+                    fontFamily: {
+                        "display": ["Work Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-text-light dark:text-text-dark">
+<div class="flex min-h-screen">
+<!-- SideNavBar -->
+<aside class="w-64 flex-shrink-0 bg-white dark:bg-gray-900 border-r border-border-light dark:border-border-dark hidden lg:flex flex-col">
+<div class="flex flex-col justify-between h-full p-4">
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-3 p-2">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Admin user avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBWUIBJ0sFZl3CCo3Upm1_5c4Gz39uHNB76gBq_G6_fDmQOWuqvt9GC6zvn3CDuGdKHauShGwxdBpunFQ5h-CpeSUI_6NYfCznfM8cQqhP7NHHGp1-owcwvuVFB1faEuwiAqVHdR8jZKDqWCEo_GFHOzMk2sfMNZ8fMm_c3hVRITN0x5gaTYq072GW0DnEXGZPFhoechlAD2Vs7onoEF1LVJm7Nh4WMD2Y0cNcZRXt7Al3JHL3mI_m-syeSyMY-XD88dYBXvHOfwA");'></div>
+<div class="flex flex-col">
+<h1 class="text-text-light dark:text-text-dark text-base font-semibold leading-normal">Admin Panel</h1>
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">admin@waitercall.com</p>
+</div>
+</div>
+<nav class="flex flex-col gap-2 mt-4">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
+<span class="material-symbols-outlined text-gray-700 dark:text-gray-200">dashboard</span>
+<p class="text-sm font-medium leading-normal">Dashboard</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
+<span class="material-symbols-outlined text-gray-700 dark:text-gray-200">restaurant</span>
+<p class="text-sm font-medium leading-normal">Restaurants</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary dark:bg-primary/20" href="#">
+<span class="material-symbols-outlined text-primary">credit_card</span>
+<p class="text-sm font-semibold leading-normal">Subscriptions</p>
+</a>
+</nav>
+</div>
+<div class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
+<span class="material-symbols-outlined text-gray-700 dark:text-gray-200">support_agent</span>
+<p class="text-sm font-medium leading-normal">Support</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
+<span class="material-symbols-outlined text-gray-700 dark:text-gray-200">logout</span>
+<p class="text-sm font-medium leading-normal">Logout</p>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 p-6 lg:p-10 overflow-y-auto">
+<div class="max-w-7xl mx-auto">
+<!-- PageHeading -->
+<div class="flex flex-wrap justify-between items-center gap-3 mb-8">
+<h1 class="text-text-light dark:text-text-dark text-4xl font-black leading-tight tracking-[-0.033em]">Subscriptions &amp; Billing</h1>
+<button class="bg-primary text-white font-semibold py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-primary/90 transition-colors">
+<span class="material-symbols-outlined">add</span>
+                        New Subscription
+                    </button>
+</div>
+<!-- Stats -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-gray-900 border border-border-light dark:border-border-dark">
+<p class="text-text-light dark:text-gray-300 text-base font-medium leading-normal">Total MRR</p>
+<p class="text-text-light dark:text-text-dark tracking-tight text-3xl font-bold leading-tight">$12,450</p>
+<p class="text-status-green text-base font-medium leading-normal flex items-center gap-1"><span class="material-symbols-outlined text-lg">arrow_upward</span>+2.5%</p>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-gray-900 border border-border-light dark:border-border-dark">
+<p class="text-text-light dark:text-gray-300 text-base font-medium leading-normal">Active Subscriptions</p>
+<p class="text-text-light dark:text-text-dark tracking-tight text-3xl font-bold leading-tight">256</p>
+<p class="text-status-green text-base font-medium leading-normal flex items-center gap-1"><span class="material-symbols-outlined text-lg">arrow_upward</span>+1.2%</p>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-gray-900 border border-border-light dark:border-border-dark">
+<p class="text-text-light dark:text-gray-300 text-base font-medium leading-normal">Active Trials</p>
+<p class="text-text-light dark:text-text-dark tracking-tight text-3xl font-bold leading-tight">32</p>
+<p class="text-status-red text-base font-medium leading-normal flex items-center gap-1"><span class="material-symbols-outlined text-lg">arrow_downward</span>-0.5%</p>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-gray-900 border border-border-light dark:border-border-dark">
+<p class="text-text-light dark:text-gray-300 text-base font-medium leading-normal">Overdue Payments</p>
+<p class="text-text-light dark:text-text-dark tracking-tight text-3xl font-bold leading-tight">14</p>
+<p class="text-status-orange text-base font-medium leading-normal flex items-center gap-1"><span class="material-symbols-outlined text-lg">arrow_upward</span>+3%</p>
+</div>
+</div>
+<!-- Toolbar & Table Container -->
+<div class="bg-white dark:bg-gray-900 rounded-xl border border-border-light dark:border-border-dark overflow-hidden">
+<!-- SearchBar & Filters -->
+<div class="p-4 border-b border-border-light dark:border-border-dark flex flex-wrap items-center gap-4">
+<div class="flex-grow min-w-[250px]">
+<label class="flex flex-col w-full">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-11">
+<div class="text-gray-500 flex bg-background-light dark:bg-gray-800 items-center justify-center pl-3 rounded-l-lg">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-r-lg text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary/50 border-none bg-background-light dark:bg-gray-800 h-full placeholder:text-gray-500 text-sm" placeholder="Search by restaurant name..." value=""/>
+</div>
+</label>
+</div>
+<div class="flex flex-wrap gap-2">
+<select class="form-select h-11 rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-gray-800 text-text-light dark:text-text-dark focus:ring-primary/50 focus:border-primary">
+<option>Status: All</option>
+<option>Active</option>
+<option>Trial</option>
+<option>Canceled</option>
+<option>Overdue</option>
+</select>
+<select class="form-select h-11 rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-gray-800 text-text-light dark:text-text-dark focus:ring-primary/50 focus:border-primary">
+<option>Billing: All</option>
+<option>Monthly</option>
+<option>Annually</option>
+</select>
+<button class="h-11 px-4 text-gray-600 dark:text-gray-300 bg-background-light dark:bg-gray-800 rounded-lg border border-border-light dark:border-border-dark hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined">calendar_today</span>
+                                Date Range
+                            </button>
+<button class="h-11 px-4 text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors flex items-center gap-2">
+                                Clear Filters
+                            </button>
+</div>
+</div>
+<!-- Data Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+<thead class="text-xs text-gray-700 dark:text-gray-300 uppercase bg-gray-50 dark:bg-gray-800">
+<tr>
+<th class="p-4" scope="col">
+<input class="form-checkbox rounded border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-primary focus:ring-primary/50" type="checkbox"/>
+</th>
+<th class="px-6 py-3" scope="col">Restaurant Name</th>
+<th class="px-6 py-3" scope="col">Subscription Plan</th>
+<th class="px-6 py-3" scope="col">Status</th>
+<th class="px-6 py-3" scope="col">Next Billing Date</th>
+<th class="px-6 py-3" scope="col">Last Payment</th>
+<th class="px-6 py-3" scope="col">Actions</th>
+</tr>
+</thead>
+<tbody>
+<tr class="bg-white dark:bg-gray-900 border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+<td class="w-4 p-4"><input class="form-checkbox rounded border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-primary focus:ring-primary/50" type="checkbox"/></td>
+<td class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">The Gourmet Place</td>
+<td class="px-6 py-4">Pro Plan</td>
+<td class="px-6 py-4"><span class="px-2 py-1 text-xs font-semibold rounded-full bg-status-green/10 text-status-green">Active</span></td>
+<td class="px-6 py-4">Oct 15, 2024</td>
+<td class="px-6 py-4">$99.00</td>
+<td class="px-6 py-4"><button class="text-primary hover:underline font-medium">View Details</button></td>
+</tr>
+<tr class="bg-white dark:bg-gray-900 border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+<td class="w-4 p-4"><input class="form-checkbox rounded border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-primary focus:ring-primary/50" type="checkbox"/></td>
+<td class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">Bistro Central</td>
+<td class="px-6 py-4">Basic Plan</td>
+<td class="px-6 py-4"><span class="px-2 py-1 text-xs font-semibold rounded-full bg-status-blue/10 text-status-blue">Trial</span></td>
+<td class="px-6 py-4">Sep 30, 2024</td>
+<td class="px-6 py-4">-</td>
+<td class="px-6 py-4"><button class="text-primary hover:underline font-medium">View Details</button></td>
+</tr>
+<tr class="bg-white dark:bg-gray-900 border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+<td class="w-4 p-4"><input class="form-checkbox rounded border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-primary focus:ring-primary/50" type="checkbox"/></td>
+<td class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">Seafood Shack</td>
+<td class="px-6 py-4">Pro Plan</td>
+<td class="px-6 py-4"><span class="px-2 py-1 text-xs font-semibold rounded-full bg-status-red/10 text-status-red">Overdue</span></td>
+<td class="px-6 py-4">Sep 01, 2024</td>
+<td class="px-6 py-4">$99.00</td>
+<td class="px-6 py-4"><button class="text-primary hover:underline font-medium">View Details</button></td>
+</tr>
+<tr class="bg-white dark:bg-gray-900 border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+<td class="w-4 p-4"><input class="form-checkbox rounded border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-primary focus:ring-primary/50" type="checkbox"/></td>
+<td class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">Pasta Paradise</td>
+<td class="px-6 py-4">Enterprise</td>
+<td class="px-6 py-4"><span class="px-2 py-1 text-xs font-semibold rounded-full bg-status-green/10 text-status-green">Active</span></td>
+<td class="px-6 py-4">Oct 12, 2024</td>
+<td class="px-6 py-4">$249.00</td>
+<td class="px-6 py-4"><button class="text-primary hover:underline font-medium">View Details</button></td>
+</tr>
+<tr class="bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800">
+<td class="w-4 p-4"><input class="form-checkbox rounded border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-primary focus:ring-primary/50" type="checkbox"/></td>
+<td class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">The Corner Cafe</td>
+<td class="px-6 py-4">Basic Plan</td>
+<td class="px-6 py-4"><span class="px-2 py-1 text-xs font-semibold rounded-full bg-gray-400/10 text-gray-500">Canceled</span></td>
+<td class="px-6 py-4">-</td>
+<td class="px-6 py-4">$29.00</td>
+<td class="px-6 py-4"><button class="text-primary hover:underline font-medium">View Details</button></td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<nav aria-label="Table navigation" class="flex items-center justify-between p-4">
+<span class="text-sm font-normal text-gray-500 dark:text-gray-400">Showing <span class="font-semibold text-gray-900 dark:text-white">1-5</span> of <span class="font-semibold text-gray-900 dark:text-white">100</span></span>
+<ul class="inline-flex items-center -space-x-px">
+<li><a class="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white" href="#">Previous</a></li>
+<li><a class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white" href="#">1</a></li>
+<li><a aria-current="page" class="z-10 px-3 py-2 leading-tight text-primary bg-primary/10 border border-primary hover:bg-primary/20 hover:text-primary dark:border-gray-700 dark:bg-gray-700 dark:text-white" href="#">2</a></li>
+<li><a class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white" href="#">3</a></li>
+<li><a class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white" href="#">Next</a></li>
+</ul>
+</nav>
+</div>
+</div>
+</main>
+</div>
+</body></html>

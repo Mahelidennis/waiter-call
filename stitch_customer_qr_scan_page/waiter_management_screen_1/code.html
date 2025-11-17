@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Forgot Password</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24
+      }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#0df259",
+              "background-light": "#f5f8f6",
+              "background-dark": "#102216",
+            },
+            fontFamily: {
+              "display": ["Work Sans", "Noto Sans", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-gray-800 dark:text-gray-200">
+<div class="flex min-h-screen items-center justify-center p-4">
+<div class="flex w-full max-w-sm flex-col items-center">
+<div class="flex flex-col items-center gap-4 mb-8">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-16" data-alt="Restaurant logo" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCDX0ygArdjf1PpGGIHQ7-gnt1eqEE0KE0JxPaQEbw777nUuRGrsF2wnfnd89OhmZWeieHLIBxe58ebcglNVdZAVL9MFNWG73V-QX1omvoBBEzYOD7FgrCHYQlMaqiJqJwCqgNk5-wik4nGIHKyMZkaIYrvpzqkq5bXslmqCsUipgK0wT5IfbCI3z7ckNjO6mJxso0Nl8bw3vodse7LKUEN5iOkqmU10HzxHCt51p3jfpBGqVQo_lREbQpuCNn_hGC7ooAiORpkpw");'></div>
+<div class="flex flex-col text-center">
+<h1 class="text-gray-900 dark:text-white text-2xl font-bold leading-tight">The Grand Eatery</h1>
+<p class="text-gray-500 dark:text-gray-400 text-base font-normal leading-normal">Staff Portal</p>
+</div>
+</div>
+<div class="w-full bg-white dark:bg-background-dark/50 rounded-xl border border-gray-200 dark:border-gray-800 p-6 lg:p-8">
+<div class="text-center mb-6">
+<h2 class="text-gray-900 dark:text-white text-xl font-bold">Forgot Password?</h2>
+<p class="text-gray-500 dark:text-gray-400 text-sm mt-1">No worries, we'll send you reset instructions.</p>
+</div>
+<form class="flex flex-col gap-4">
+<div class="flex flex-col gap-1.5">
+<label class="text-sm font-medium text-gray-700 dark:text-gray-300" for="email">Email or Username</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">person</span>
+<input class="form-input w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-transparent h-11 px-10 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary focus:ring-primary" id="email" placeholder="Enter your email or username" type="text"/>
+</div>
+</div>
+<button class="flex items-center justify-center gap-2 overflow-hidden rounded-lg h-11 px-5 bg-primary text-background-dark text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 w-full mt-2" type="submit">
+                    Send Reset Link
+                </button>
+</form>
+<div class="text-center mt-6">
+<a class="flex items-center justify-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary" href="#">
+<span class="material-symbols-outlined">arrow_back</span>
+                    Back to Log in
+                </a>
+</div>
+</div>
+</div>
+</div>
+
+</body></html>

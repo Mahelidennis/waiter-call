@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Waiter Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#0df259",
+              "background-light": "#f5f8f6",
+              "background-dark": "#102216",
+            },
+            fontFamily: {
+              "display": ["Work Sans", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+    </style>
+</head>
+<body class="font-display">
+<div class="relative flex min-h-screen w-full flex-col bg-background-light dark:bg-background-dark group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<div class="flex flex-1 justify-center py-5 sm:px-4 md:px-8 lg:px-10">
+<div class="layout-content-container flex flex-col w-full max-w-2xl flex-1">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 dark:border-gray-700 px-4 py-3">
+<div class="flex items-center gap-3 text-gray-800 dark:text-gray-100">
+<span class="material-symbols-outlined text-primary text-3xl">
+                                table_restaurant
+                            </span>
+<h1 class="text-xl font-bold leading-tight tracking-tight">Live Dashboard</h1>
+<div class="flex items-center gap-2 rounded-full bg-primary/20 px-3 py-1">
+<div class="h-2 w-2 rounded-full bg-primary"></div>
+<span class="text-xs font-medium text-primary">LIVE</span>
+</div>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="User profile picture of a waiter" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC-zRfWh45u5hksCIScEZ1ICsGzboIx41MvQhBX07alwMuty3LN_uz-vKm58lTOH_VhAETBM9zap-f-oHQBKDjF0mKkb9GKtF-3jNNg35_BEzg4xic7Co6gCQIN0LaQthZYjnHDtIOubG8p2i8eTE84JAxw5-Re4-V2t376n5Oso1g2voO-8SLoX5Wj9BWybMDVnz3pvfMzRsr6wHeXZAUF5u2VPi6k2uET2U9VF3X_1eYAt9qLIRE-ryc6pJ9i441ww3RzO9aMWQ");'></div>
+</div>
+</header>
+<div class="p-4">
+<h2 class="text-gray-800 dark:text-gray-100 text-2xl font-bold leading-tight tracking-tight px-4 pb-3 pt-5">Incoming Requests</h2>
+<div class="flex gap-3 p-3 overflow-x-auto">
+<div class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary px-4">
+<p class="text-background-dark text-sm font-semibold leading-normal">All Requests</p>
+</div>
+<div class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-gray-200 dark:bg-gray-800 px-4">
+<p class="text-gray-800 dark:text-gray-200 text-sm font-medium leading-normal">My Tables</p>
+</div>
+<div class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-gray-200 dark:bg-gray-800 px-4">
+<p class="text-gray-800 dark:text-gray-200 text-sm font-medium leading-normal">Handled</p>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-4 px-4 pb-4">
+<!-- Long Wait Card -->
+<div class="flex flex-col sm:flex-row items-stretch justify-between gap-4 rounded-xl bg-white dark:bg-background-dark dark:border dark:border-red-500/50 p-4 shadow-lg border-2 border-red-500">
+<div class="flex flex-1 flex-col justify-between gap-4">
+<div class="flex flex-col gap-1">
+<p class="text-red-500 text-sm font-semibold leading-normal">5m 22s ago</p>
+<p class="text-gray-900 dark:text-gray-50 text-2xl font-bold leading-tight">Table 12</p>
+<p class="text-gray-500 dark:text-gray-400 text-base font-normal leading-normal">Call Waiter</p>
+</div>
+<button class="flex w-full sm:w-fit min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-5 gap-2 bg-primary text-background-dark text-sm font-bold leading-normal">
+<span class="truncate">Mark as Handled</span>
+<span class="material-symbols-outlined text-lg">done</span>
+</button>
+</div>
+<div class="w-full sm:w-32 h-32 bg-center bg-no-repeat aspect-square bg-cover rounded-lg flex-shrink-0" data-alt="Icon representing a waiter call" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCA5jfZ_wJGw9gC2Xe_u-3FHFFUrxJnibLMn9lazLq3qdZVWmXyjpiRqf_gfgOVsBZUOLJ4Cg_xBKwi63Oyry-m7k9g1Ad-z6WYVcJDFGTL5qLUMfzDwPc79EKIZmegJ-to63LgfaVnZK1E_rrBHIyKEhtKA6I01Ip700FrBIAt_s3iHoVzJvU0kELWf8_wxNI5hGcUKAIHmajS32QyowPMjrdltMvXNOjZcJOtGS4CYIDRdIiv8uSF_-WZ2bEneMLyhZbO0FAb_A");'></div>
+</div>
+<!-- Medium Wait Card -->
+<div class="flex flex-col sm:flex-row items-stretch justify-between gap-4 rounded-xl bg-white dark:bg-background-dark dark:border dark:border-yellow-500/50 p-4 shadow-lg border-2 border-yellow-500">
+<div class="flex flex-1 flex-col justify-between gap-4">
+<div class="flex flex-col gap-1">
+<p class="text-yellow-600 dark:text-yellow-500 text-sm font-semibold leading-normal">2m 45s ago</p>
+<p class="text-gray-900 dark:text-gray-50 text-2xl font-bold leading-tight">Table 8</p>
+<p class="text-gray-500 dark:text-gray-400 text-base font-normal leading-normal">Request Bill</p>
+</div>
+<button class="flex w-full sm:w-fit min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-5 gap-2 bg-primary text-background-dark text-sm font-bold leading-normal">
+<span class="truncate">Mark as Handled</span>
+<span class="material-symbols-outlined text-lg">done</span>
+</button>
+</div>
+<div class="w-full sm:w-32 h-32 bg-center bg-no-repeat aspect-square bg-cover rounded-lg flex-shrink-0" data-alt="Icon representing a bill request" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBv2CAWschYNfN6SxuXPmpDjXvzrXgwjwYpiwf8zaIw9sNEq6if2YdQkPBzMoZaczUVXNC5ya13OO9TwMDwAf0R4jQYyN6slgLQt_ESlgs1LmeB-G3eNFWRuAcuxWCA-RA9K0-XzV65Xr3lVY4h52OKk3PvHkdLCvn3l5JojP6UnNVZLI5qZH2IcfS1M7FplcZpXSnR5aXzWrRbdi8Yjg_IR25-Nvw6jUMNJmKoO0u8DPKQpHRKuioBReXu_pY6dyu0QTTqWy9m9A");'></div>
+</div>
+<!-- New Request Card -->
+<div class="flex flex-col sm:flex-row items-stretch justify-between gap-4 rounded-xl bg-white dark:bg-gray-800 p-4 shadow-lg">
+<div class="flex flex-1 flex-col justify-between gap-4">
+<div class="flex flex-col gap-1">
+<p class="text-gray-600 dark:text-gray-300 text-sm font-medium leading-normal">0m 38s ago</p>
+<p class="text-gray-900 dark:text-gray-50 text-2xl font-bold leading-tight">Table 5</p>
+<p class="text-gray-500 dark:text-gray-400 text-base font-normal leading-normal">Request Water</p>
+</div>
+<button class="flex w-full sm:w-fit min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-5 gap-2 bg-primary text-background-dark text-sm font-bold leading-normal">
+<span class="truncate">Mark as Handled</span>
+<span class="material-symbols-outlined text-lg">done</span>
+</button>
+</div>
+<div class="w-full sm:w-32 h-32 bg-center bg-no-repeat aspect-square bg-cover rounded-lg flex-shrink-0" data-alt="Icon representing a water request" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA3iEf4fgEBgALgtlUZ3cygkCvA41g-Nm3lQic1LGk20a87OX_hM6_DfIq-So0LjK9H-0KHeMWmAclCSKqtuMgWwIU9Ok_gt-uKq5rkw0a54CGNHp2YvTfe3QVn1F3lgHH-tnmDZC_3tMzv6KkTkUPe0i_xp4T6wmJeN5xfv07sw4eeV4KZiQY6OVwq30XHoTbnjNsIarXoH6UX1-gyKZkw9au0hIHKIU4ZrEe-kBhd7c95OtNtKY4f6vY-M1Eid55UU-oLJj20AA");'></div>
+</div>
+<!-- Empty State -->
+<div class="mt-8 flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-gray-300 dark:border-gray-700 p-12 text-center">
+<div class="flex h-16 w-16 items-center justify-center rounded-full bg-primary/20">
+<span class="material-symbols-outlined text-primary text-4xl">
+                                    notifications_off
+                                </span>
+</div>
+<div class="flex flex-col gap-1">
+<h3 class="text-gray-800 dark:text-gray-100 text-lg font-semibold">All tables are happy!</h3>
+<p class="text-gray-500 dark:text-gray-400 text-sm">No active requests at the moment. New calls will appear here.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body></html>

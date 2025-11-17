@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Grand Eatery - Admin Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0df259",
+                        "background-light": "#f5f8f6",
+                        "background-dark": "#102216",
+                    },
+                    fontFamily: {
+                        "display": ["Work Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark">
+<div class="relative flex min-h-screen w-full flex-row">
+<!-- SideNavBar -->
+<aside class="flex w-64 flex-col bg-white dark:bg-background-dark dark:border-r dark:border-primary/20">
+<div class="flex flex-col gap-4 p-4 h-full justify-between">
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-3 px-2">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Restaurant logo" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDOty1Xxlh3wAkiUsUpMUqB2MjD_It56YqANzrGfSrujTjWFHdXKpr_gM3vpMrFdbQqNeM9H3OQz5CyepGI8I5vImxNiEy5Tib04OO8meqzGRkmNzNGMHI8Ej_vLYh-PtXJOFT4KZWTeI7_JTslAk8BUjet49i0UTNoT70Qe8U4LuY9fY9VXfitDlT9VTTRgAKoKPK7MVF2Acg7Fi14IX7Zy-XPbBI4_8Y2JTKJqLhTFNXvBrjGiy82VJWR5vqx73J1n0ng6eMf8Q");'></div>
+<div class="flex flex-col">
+<h1 class="text-gray-900 dark:text-white text-base font-medium leading-normal">The Grand Eatery</h1>
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">Admin Panel</p>
+</div>
+</div>
+<nav class="flex flex-col gap-2 mt-4">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/20 text-gray-900 dark:text-white" href="#">
+<span class="material-symbols-outlined text-gray-900 dark:text-white">dashboard</span>
+<p class="text-sm font-medium leading-normal">Dashboard</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/10 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-gray-900 dark:text-gray-300">table_restaurant</span>
+<p class="text-gray-900 dark:text-gray-300 text-sm font-medium leading-normal">Tables</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/10 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-gray-900 dark:text-gray-300">badge</span>
+<p class="text-gray-900 dark:text-gray-300 text-sm font-medium leading-normal">Waiters</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/10 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-gray-900 dark:text-gray-300">campaign</span>
+<p class="text-gray-900 dark:text-gray-300 text-sm font-medium leading-normal">Promotions</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/10 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-gray-900 dark:text-gray-300">bar_chart</span>
+<p class="text-gray-900 dark:text-gray-300 text-sm font-medium leading-normal">Analytics</p>
+</a>
+</nav>
+</div>
+<div class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/10 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-gray-900 dark:text-gray-300">settings</span>
+<p class="text-gray-900 dark:text-gray-300 text-sm font-medium leading-normal">Settings</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/10 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-gray-900 dark:text-gray-300">logout</span>
+<p class="text-gray-900 dark:text-gray-300 text-sm font-medium leading-normal">Log Out</p>
+</a>
+</div>
+</div>
+</aside>
+<main class="flex-1 flex flex-col">
+<!-- TopNavBar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-gray-200 dark:border-primary/20 bg-white dark:bg-background-dark px-6 py-3 sticky top-0 z-10">
+<div class="flex items-center gap-8">
+<h2 class="text-gray-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">Dashboard</h2>
+<label class="flex flex-col min-w-40 !h-10 max-w-64">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full">
+<div class="text-gray-500 dark:text-gray-400 flex border-none bg-background-light dark:bg-black/20 items-center justify-center pl-4 rounded-l-lg border-r-0">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-900 dark:text-white focus:outline-0 focus:ring-0 border-none bg-background-light dark:bg-black/20 focus:border-none h-full placeholder:text-gray-500 dark:placeholder:text-gray-400 px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal" placeholder="Search" value=""/>
+</div>
+</label>
+</div>
+<div class="flex gap-3">
+<button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 w-10 bg-background-light dark:bg-black/20 text-gray-900 dark:text-white gap-2 text-sm font-bold leading-normal tracking-[0.015em] relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+</button>
+<button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 w-10 bg-background-light dark:bg-black/20 text-gray-900 dark:text-white gap-2 text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Main Content -->
+<div class="flex-1 p-6 space-y-6">
+<!-- Stats -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<div class="flex flex-1 flex-col gap-2 rounded-xl p-6 border border-gray-200 dark:border-primary/20 bg-white dark:bg-background-dark">
+<p class="text-gray-900 dark:text-gray-300 text-base font-medium leading-normal">Total Calls Today</p>
+<p class="text-gray-900 dark:text-white tracking-light text-3xl font-bold leading-tight">128</p>
+<p class="text-green-600 dark:text-primary text-base font-medium leading-normal flex items-center gap-1"><span class="material-symbols-outlined text-lg">arrow_upward</span>+15%</p>
+</div>
+<div class="flex flex-1 flex-col gap-2 rounded-xl p-6 border border-gray-200 dark:border-primary/20 bg-white dark:bg-background-dark">
+<p class="text-gray-900 dark:text-gray-300 text-base font-medium leading-normal">Avg. Response Time</p>
+<p class="text-gray-900 dark:text-white tracking-light text-3xl font-bold leading-tight">2m 15s</p>
+<p class="text-red-600 dark:text-red-400 text-base font-medium leading-normal flex items-center gap-1"><span class="material-symbols-outlined text-lg">arrow_downward</span>-5%</p>
+</div>
+<div class="flex flex-1 flex-col gap-2 rounded-xl p-6 border border-gray-200 dark:border-primary/20 bg-white dark:bg-background-dark">
+<p class="text-gray-900 dark:text-gray-300 text-base font-medium leading-normal">Busiest Table</p>
+<p class="text-gray-900 dark:text-white tracking-light text-3xl font-bold leading-tight">#12</p>
+<p class="text-green-600 dark:text-primary text-base font-medium leading-normal flex items-center gap-1"><span class="material-symbols-outlined text-lg">arrow_upward</span>+8%</p>
+</div>
+</div>
+<!-- Live Requests Table -->
+<div>
+<!-- SectionHeader -->
+<h2 class="text-gray-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-2 pb-3 pt-5">Live Requests</h2>
+<!-- Table -->
+<div class="px-2 py-3 @container">
+<div class="overflow-hidden rounded-xl border border-gray-200 dark:border-primary/20 bg-white dark:bg-background-dark">
+<table class="w-full">
+<thead class="bg-background-light dark:bg-black/20">
+<tr>
+<th class="px-4 py-3 text-left text-gray-900 dark:text-gray-300 text-sm font-medium leading-normal">Table No.</th>
+<th class="px-4 py-3 text-left text-gray-900 dark:text-gray-300 text-sm font-medium leading-normal">Request Time</th>
+<th class="px-4 py-3 text-left text-gray-900 dark:text-gray-300 text-sm font-medium leading-normal">Assigned Waiter</th>
+<th class="px-4 py-3 text-left text-gray-900 dark:text-gray-300 text-sm font-medium leading-normal">Status</th>
+<th class="px-4 py-3 text-left text-gray-900 dark:text-gray-300 text-sm font-medium leading-normal">Actions</th>
+</tr>
+</thead>
+<tbody>
+<tr class="border-t border-t-gray-200 dark:border-t-primary/20">
+<td class="h-[72px] px-4 py-2 text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">15</td>
+<td class="h-[72px] px-4 py-2 text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">2:34 PM</td>
+<td class="h-[72px] px-4 py-2 text-gray-900 dark:text-white text-sm font-normal leading-normal">Alex Green</td>
+<td class="h-[72px] px-4 py-2 text-sm font-normal leading-normal">
+<span class="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-300">Pending</span>
+</td>
+<td class="h-[72px] px-4 py-2">
+<button class="cursor-pointer text-gray-700 dark:text-primary hover:text-gray-900 dark:hover:text-white text-sm font-bold leading-normal tracking-[0.015em]">Acknowledge</button>
+</td>
+</tr>
+<tr class="border-t border-t-gray-200 dark:border-t-primary/20">
+<td class="h-[72px] px-4 py-2 text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">8</td>
+<td class="h-[72px] px-4 py-2 text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">2:32 PM</td>
+<td class="h-[72px] px-4 py-2 text-gray-900 dark:text-white text-sm font-normal leading-normal">Maria Garcia</td>
+<td class="h-[72px] px-4 py-2 text-sm font-normal leading-normal">
+<span class="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300">Acknowledged</span>
+</td>
+<td class="h-[72px] px-4 py-2">
+<button class="cursor-pointer text-gray-700 dark:text-primary hover:text-gray-900 dark:hover:text-white text-sm font-bold leading-normal tracking-[0.015em]">Resolve</button>
+</td>
+</tr>
+<tr class="border-t border-t-gray-200 dark:border-t-primary/20">
+<td class="h-[72px] px-4 py-2 text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">21</td>
+<td class="h-[72px] px-4 py-2 text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">2:30 PM</td>
+<td class="h-[72px] px-4 py-2 text-gray-900 dark:text-white text-sm font-normal leading-normal">John Smith</td>
+<td class="h-[72px] px-4 py-2 text-sm font-normal leading-normal">
+<span class="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-primary/90">Resolved</span>
+</td>
+<td class="h-[72px] px-4 py-2">
+<button class="cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm font-bold leading-normal tracking-[0.015em]">View</button>
+</td>
+</tr>
+<tr class="border-t border-t-gray-200 dark:border-t-primary/20">
+<td class="h-[72px] px-4 py-2 text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">5</td>
+<td class="h-[72px] px-4 py-2 text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">2:28 PM</td>
+<td class="h-[72px] px-4 py-2 text-gray-900 dark:text-white text-sm font-normal leading-normal">Chloe White</td>
+<td class="h-[72px] px-4 py-2 text-sm font-normal leading-normal">
+<span class="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-primary/90">Resolved</span>
+</td>
+<td class="h-[72px] px-4 py-2">
+<button class="cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm font-bold leading-normal tracking-[0.015em]">View</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Restaurant Onboarding</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#14B8A6", // Vibrant Teal
+                        "background-light": "#F3F4F6", // Light Gray
+                        "background-dark": "#1F2937", // Darker Gray for dark mode background
+                        "card-light": "#FFFFFF",
+                        "card-dark": "#374151",
+                        "text-light-heading": "#111827", // Dark Gray
+                        "text-dark-heading": "#F9FAFB",
+                        "text-light-body": "#6B7280", // Medium Gray
+                        "text-dark-body": "#D1D5DB",
+                        "border-light": "#E5E7EB",
+                        "border-dark": "#4B5563",
+                        "success": "#10B981",
+                        "error": "#EF4444"
+                    },
+                    fontFamily: {
+                        "display": ["Work Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem", // Default rounded-md
+                        "lg": "0.75rem", // rounded-lg
+                        "xl": "1rem", // rounded-xl
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark">
+<div class="relative flex min-h-screen w-full flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
+<main class="w-full max-w-2xl">
+<div class="mb-8 text-center">
+<span class="material-symbols-outlined text-5xl text-primary">
+                    restaurant_menu
+                </span>
+<h1 class="text-3xl font-bold tracking-tight text-text-light-heading dark:text-text-dark-heading sm:text-4xl">Join WaiterCall</h1>
+<p class="mt-2 text-text-light-body dark:text-text-dark-body">Set up your restaurant account in just a few minutes.</p>
+</div>
+<div class="rounded-xl bg-card-light dark:bg-card-dark shadow-lg">
+<div class="p-6 sm:p-8">
+<!-- Step 1: Restaurant Information -->
+<div id="step-1">
+<!-- Progress Bar -->
+<div class="mb-8">
+<div class="flex justify-between">
+<p class="text-sm font-medium text-text-light-heading dark:text-text-dark-heading">Step 1 of 2: Business Info</p>
+</div>
+<div class="mt-2 h-2 w-full rounded-full bg-background-light dark:bg-background-dark">
+<div class="h-2 rounded-full bg-primary" style="width: 50%;"></div>
+</div>
+</div>
+<!-- Page Heading -->
+<div class="mb-6">
+<h2 class="text-2xl font-bold tracking-tight text-text-light-heading dark:text-text-dark-heading">Tell us about your restaurant</h2>
+<p class="mt-1 text-text-light-body dark:text-text-dark-body">Let's start with some basic information about your business.</p>
+</div>
+<!-- Form Fields -->
+<form class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+<div class="sm:col-span-2">
+<label class="flex flex-col">
+<p class="pb-2 text-sm font-medium text-text-light-heading dark:text-text-dark-heading">Restaurant Name</p>
+<input class="form-input flex w-full resize-none overflow-hidden rounded-lg border border-border-light bg-card-light p-3 text-sm text-text-light-heading placeholder:text-text-light-body/70 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 dark:border-border-dark dark:bg-card-dark dark:text-text-dark-heading dark:placeholder:text-text-dark-body/70" placeholder="e.g., The Grand Bistro" value=""/>
+</label>
+</div>
+<div class="sm:col-span-2">
+<label class="flex flex-col">
+<p class="pb-2 text-sm font-medium text-text-light-heading dark:text-text-dark-heading">Restaurant Address</p>
+<input class="form-input flex w-full resize-none overflow-hidden rounded-lg border border-border-light bg-card-light p-3 text-sm text-text-light-heading placeholder:text-text-light-body/70 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 dark:border-border-dark dark:bg-card-dark dark:text-text-dark-heading dark:placeholder:text-text-dark-body/70" placeholder="123 Culinary Lane, Foodville" value=""/>
+</label>
+</div>
+<div>
+<label class="flex flex-col">
+<p class="pb-2 text-sm font-medium text-text-light-heading dark:text-text-dark-heading">City</p>
+<input class="form-input flex w-full resize-none overflow-hidden rounded-lg border border-border-light bg-card-light p-3 text-sm text-text-light-heading placeholder:text-text-light-body/70 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 dark:border-border-dark dark:bg-card-dark dark:text-text-dark-heading dark:placeholder:text-text-dark-body/70" placeholder="e.g., New York" value=""/>
+</label>
+</div>
+<div>
+<label class="flex flex-col">
+<p class="pb-2 text-sm font-medium text-text-light-heading dark:text-text-dark-heading">Zip Code</p>
+<input class="form-input flex w-full resize-none overflow-hidden rounded-lg border border-border-light bg-card-light p-3 text-sm text-text-light-heading placeholder:text-text-light-body/70 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 dark:border-border-dark dark:bg-card-dark dark:text-text-dark-heading dark:placeholder:text-text-dark-body/70" placeholder="e.g., 10001" value=""/>
+</label>
+</div>
+<div class="sm:col-span-2">
+<label class="flex flex-col">
+<p class="pb-2 text-sm font-medium text-text-light-heading dark:text-text-dark-heading">Main Business Phone</p>
+<input class="form-input flex w-full resize-none overflow-hidden rounded-lg border border-border-light bg-card-light p-3 text-sm text-text-light-heading placeholder:text-text-light-body/70 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 dark:border-border-dark dark:bg-card-dark dark:text-text-dark-heading dark:placeholder:text-text-dark-body/70" placeholder="(555) 123-4567" type="tel" value=""/>
+</label>
+</div>
+</form>
+</div>
+<!-- Step 2: Admin Account (Initially hidden, shown for context) -->
+<!-- In a real app, this would replace Step 1's content. -->
+<div class="hidden" id="step-2">
+<!-- Progress Bar -->
+<div class="mb-8">
+<div class="flex justify-between">
+<p class="text-sm font-medium text-text-light-heading dark:text-text-dark-heading">Step 2 of 2: Admin Account</p>
+</div>
+<div class="mt-2 h-2 w-full rounded-full bg-background-light dark:bg-background-dark">
+<div class="h-2 rounded-full bg-primary" style="width: 100%;"></div>
+</div>
+</div>
+<!-- Page Heading -->
+<div class="mb-6">
+<h2 class="text-2xl font-bold tracking-tight text-text-light-heading dark:text-text-dark-heading">Set up your primary contact</h2>
+<p class="mt-1 text-text-light-body dark:text-text-dark-body">This will be the main administrator for your account.</p>
+</div>
+<!-- Form Fields -->
+<form class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+<div class="sm:col-span-2">
+<label class="flex flex-col">
+<p class="pb-2 text-sm font-medium text-text-light-heading dark:text-text-dark-heading">Contact Person's Full Name</p>
+<input class="form-input flex w-full resize-none overflow-hidden rounded-lg border border-border-light bg-card-light p-3 text-sm text-text-light-heading placeholder:text-text-light-body/70 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 dark:border-border-dark dark:bg-card-dark dark:text-text-dark-heading dark:placeholder:text-text-dark-body/70" placeholder="e.g., Alex Doe" value=""/>
+</label>
+</div>
+<div class="sm:col-span-2">
+<label class="flex flex-col">
+<p class="pb-2 text-sm font-medium text-text-light-heading dark:text-text-dark-heading">Email Address</p>
+<input class="form-input flex w-full resize-none overflow-hidden rounded-lg border border-border-light bg-card-light p-3 text-sm text-text-light-heading placeholder:text-text-light-body/70 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 dark:border-border-dark dark:bg-card-dark dark:text-text-dark-heading dark:placeholder:text-text-dark-body/70" placeholder="you@example.com" type="email" value=""/>
+</label>
+</div>
+<div class="sm:col-span-2">
+<label class="flex flex-col">
+<p class="pb-2 text-sm font-medium text-text-light-heading dark:text-text-dark-heading">Password</p>
+<div class="relative">
+<input class="form-input flex w-full resize-none overflow-hidden rounded-lg border border-border-light bg-card-light p-3 pr-10 text-sm text-text-light-heading placeholder:text-text-light-body/70 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 dark:border-border-dark dark:bg-card-dark dark:text-text-dark-heading dark:placeholder:text-text-dark-body/70" placeholder="Enter a secure password" type="password" value=""/>
+<button class="absolute inset-y-0 right-0 flex items-center pr-3 text-text-light-body dark:text-text-dark-body" type="button">
+<span class="material-symbols-outlined text-xl">visibility_off</span>
+</button>
+</div>
+</label>
+</div>
+<div class="sm:col-span-2">
+<div class="flex items-start">
+<input class="h-4 w-4 rounded border-border-light text-primary focus:ring-primary dark:border-border-dark dark:bg-card-dark dark:ring-offset-card-dark mt-0.5" id="terms" type="checkbox"/>
+<label class="ml-3 text-sm text-text-light-body dark:text-text-dark-body" for="terms">I agree to the <a class="font-medium text-primary hover:underline" href="#">Terms of Service</a> and <a class="font-medium text-primary hover:underline" href="#">Privacy Policy</a>.</label>
+</div>
+</div>
+</form>
+</div>
+<!-- CTA Button -->
+<div class="mt-8">
+<button class="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary/90">
+<span>Next Step</span>
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+<div class="border-t border-border-light bg-background-light px-6 py-4 text-center text-sm dark:border-border-dark dark:bg-background-dark/50 rounded-b-xl">
+<p class="text-text-light-body dark:text-text-dark-body">Already have an account? <a class="font-semibold text-primary hover:underline" href="#">Sign In</a></p>
+</div>
+</div>
+</main>
+</div>
+</body></html>

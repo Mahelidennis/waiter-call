@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Table &amp; QR Code Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4A90E2", // Professional Blue
+                        "background-light": "#F5F7FA", // Neutral Gray
+                        "background-dark": "#1e293b", // Dark Slate
+                        "card-light": "#ffffff",
+                        "card-dark": "#0f172a", // Darker Slate for Cards
+                        "text-light-primary": "#1e293b",
+                        "text-dark-primary": "#f8fafc",
+                        "text-light-secondary": "#64748b",
+                        "text-dark-secondary": "#94a3b8",
+                        "success": "#7ED321",
+                        "danger": "#D0021B",
+                        "neutral": "#D0D0D0",
+                    },
+                    fontFamily: {
+                        "display": ["Work Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem", // Slightly more rounded
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-text-light-primary dark:text-text-dark-primary">
+<div class="flex h-screen w-full">
+<aside class="flex w-64 flex-col border-r border-slate-200 dark:border-slate-800 bg-card-light dark:bg-card-dark">
+<div class="flex h-full flex-col justify-between p-4">
+<div class="flex flex-col gap-6">
+<div class="flex items-center gap-3 px-2">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="The Grand Eatery logo" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD9mtjcNvwnDD-rcqe6nUkHaTTHLc91wPJCOvicfiMWsdu_sBQS2hLalXIdZA2QjVF3_hIg7bD5P9wcahEj_HyiHGdftWiQ1gu4raoAFxLUGey762z5nuCchNt_KLgrbeifdkU-SI0wLKWwTU6nF2q18IA7KyIZCAreYWrNx4ek3-DxauHgcC4Bv8fML3dsOFLg5rHFijQbOS8wifAGKz68W-iHqKG0BjKapJMDHxZwqVjMOVUN1jWKqP3VLt80ZIt-_kdMBKoR4w");'></div>
+<div class="flex flex-col">
+<h1 class="text-base font-bold">The Grand Eatery</h1>
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-sm font-normal">Admin Panel</p>
+</div>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<p class="text-sm font-medium">Dashboard</p>
+</a>
+<a class="flex items-center gap-3 rounded-lg bg-primary/10 px-3 py-2 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">table_restaurant</span>
+<p class="text-sm font-medium">Tables</p>
+</a>
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary" href="#">
+<span class="material-symbols-outlined">restaurant_menu</span>
+<p class="text-sm font-medium">Menu</p>
+</a>
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary" href="#">
+<span class="material-symbols-outlined">group</span>
+<p class="text-sm font-medium">Waiter Management</p>
+</a>
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary" href="#">
+<span class="material-symbols-outlined">bar_chart</span>
+<p class="text-sm font-medium">Promotion Analytics</p>
+</a>
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 text-text-light-secondary dark:text-text-dark-secondary hover:bg-primary/10 hover:text-primary" href="#">
+<span class="material-symbols-outlined">settings</span>
+<p class="text-sm font-medium">Settings</p>
+</a>
+</nav>
+</div>
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary/10 text-primary text-sm font-bold hover:bg-primary/20">
+<span class="truncate">Help &amp; Support</span>
+</button>
+</div>
+</aside>
+<main class="flex-1 overflow-y-auto">
+<div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+<div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+<div class="flex min-w-72 flex-col gap-1">
+<h1 class="text-3xl font-bold tracking-tight">Table &amp; QR Code Management</h1>
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-base font-normal">Assign, manage, and print QR codes for your tables.</p>
+</div>
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-5 bg-primary text-white text-sm font-bold shadow-sm hover:bg-primary/90">
+<span class="material-symbols-outlined mr-2 text-base">add_circle</span>
+<span class="truncate">Generate New QR Codes</span>
+</button>
+</div>
+<div class="flex flex-wrap items-center gap-4 mb-4">
+<div class="flex-grow">
+<label class="flex flex-col min-w-40 h-11 w-full">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full bg-card-light dark:bg-card-dark border border-slate-200 dark:border-slate-800">
+<div class="text-text-light-secondary dark:text-text-dark-secondary flex items-center justify-center pl-4">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light-primary dark:text-text-dark-primary focus:outline-0 focus:ring-0 border-none bg-transparent h-full placeholder:text-text-light-secondary dark:placeholder:text-text-dark-secondary pl-2 text-sm font-normal" placeholder="Find a table number or QR ID..." value=""/>
+</div>
+</label>
+</div>
+<div class="flex gap-2">
+<div class="flex h-9 shrink-0 cursor-pointer items-center justify-center gap-x-2 rounded-full bg-primary/10 px-4 text-primary ring-1 ring-primary">
+<p class="text-sm font-medium">All Tables</p>
+</div>
+<div class="flex h-9 shrink-0 cursor-pointer items-center justify-center gap-x-2 rounded-full bg-card-light dark:bg-card-dark px-4 text-text-light-secondary dark:text-text-dark-secondary ring-1 ring-slate-200 dark:ring-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50">
+<p class="text-sm font-medium">Assigned</p>
+</div>
+<div class="flex h-9 shrink-0 cursor-pointer items-center justify-center gap-x-2 rounded-full bg-card-light dark:bg-card-dark px-4 text-text-light-secondary dark:text-text-dark-secondary ring-1 ring-slate-200 dark:ring-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50">
+<p class="text-sm font-medium">Unassigned</p>
+</div>
+</div>
+</div>
+<div class="overflow-hidden rounded-lg border border-slate-200 dark:border-slate-800 bg-card-light dark:bg-card-dark">
+<div class="flex min-h-[64px] items-center justify-between gap-2 px-4 py-3 border-b border-slate-200 dark:border-slate-800">
+<div class="flex items-center gap-2">
+<input class="h-4 w-4 rounded border-slate-300 dark:border-slate-600 text-primary focus:ring-primary bg-card-light dark:bg-card-dark" type="checkbox"/>
+<p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">3 selected</p>
+</div>
+<div class="flex gap-2">
+<button class="p-2 text-text-light-secondary dark:text-text-dark-secondary rounded-md hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-text-light-primary dark:hover:text-text-dark-primary">
+<span class="material-symbols-outlined">link</span>
+</button>
+<button class="p-2 text-danger rounded-md hover:bg-danger/10">
+<span class="material-symbols-outlined">delete</span>
+</button>
+<button class="flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 bg-primary text-white gap-2 text-sm font-bold min-w-0 px-4 shadow-sm hover:bg-primary/90">
+<span class="material-symbols-outlined text-base">print</span>
+<span class="truncate">Print Selected</span>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="min-w-full divide-y divide-slate-200 dark:divide-slate-800">
+<thead class="bg-slate-50 dark:bg-slate-800/50">
+<tr>
+<th class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6" scope="col"><input class="h-4 w-4 rounded border-slate-300 dark:border-slate-600 text-primary focus:ring-primary bg-card-light dark:bg-card-dark" type="checkbox"/></th>
+<th class="px-3 py-3.5 text-left text-sm font-semibold" scope="col">Table</th>
+<th class="px-3 py-3.5 text-left text-sm font-semibold" scope="col">Status</th>
+<th class="px-3 py-3.5 text-left text-sm font-semibold" scope="col">QR Code ID</th>
+<th class="px-3 py-3.5 text-left text-sm font-semibold" scope="col">Last Updated</th>
+<th class="relative py-3.5 pl-3 pr-4 sm:pr-6" scope="col"><span class="sr-only">Actions</span></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+<tr>
+<td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6"><input checked="" class="h-4 w-4 rounded border-slate-300 dark:border-slate-600 text-primary focus:ring-primary bg-card-light dark:bg-card-dark" type="checkbox"/></td>
+<td class="whitespace-nowrap px-3 py-4 text-sm font-medium">Table 12</td>
+<td class="whitespace-nowrap px-3 py-4 text-sm">
+<span class="inline-flex items-center rounded-full bg-success/10 px-2 py-1 text-xs font-medium text-success ring-1 ring-inset ring-success/20">
+<svg aria-hidden="true" class="mr-1.5 h-1.5 w-1.5 fill-success" viewBox="0 0 6 6"><circle cx="3" cy="3" r="3"></circle></svg>
+                                            Assigned
+                                        </span>
+</td>
+<td class="whitespace-nowrap px-3 py-4 text-sm font-mono text-text-light-secondary dark:text-text-dark-secondary">QR-A8B3F1</td>
+<td class="whitespace-nowrap px-3 py-4 text-sm text-text-light-secondary dark:text-text-dark-secondary">2023-10-27</td>
+<td class="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+<div class="flex items-center justify-end gap-2">
+<button class="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800/50"><span class="material-symbols-outlined text-lg">print</span></button>
+<button class="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800/50"><span class="material-symbols-outlined text-lg">edit</span></button>
+</div>
+</td>
+</tr>
+<tr>
+<td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6"><input class="h-4 w-4 rounded border-slate-300 dark:border-slate-600 text-primary focus:ring-primary bg-card-light dark:bg-card-dark" type="checkbox"/></td>
+<td class="whitespace-nowrap px-3 py-4 text-sm font-medium">Patio Booth 3</td>
+<td class="whitespace-nowrap px-3 py-4 text-sm">
+<span class="inline-flex items-center rounded-full bg-neutral/10 px-2 py-1 text-xs font-medium text-text-light-secondary dark:text-text-dark-secondary ring-1 ring-inset ring-neutral/20">
+<svg aria-hidden="true" class="mr-1.5 h-1.5 w-1.5 fill-neutral" viewBox="0 0 6 6"><circle cx="3" cy="3" r="3"></circle></svg>
+                                            Unassigned
+                                        </span>
+</td>
+<td class="whitespace-nowrap px-3 py-4 text-sm font-mono text-text-light-secondary dark:text-text-dark-secondary">-</td>
+<td class="whitespace-nowrap px-3 py-4 text-sm text-text-light-secondary dark:text-text-dark-secondary">2023-10-26</td>
+<td class="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+<button class="text-primary hover:text-primary/80 font-bold text-sm">Assign QR</button>
+</td>
+</tr>
+<tr>
+<td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6"><input checked="" class="h-4 w-4 rounded border-slate-300 dark:border-slate-600 text-primary focus:ring-primary bg-card-light dark:bg-card-dark" type="checkbox"/></td>
+<td class="whitespace-nowrap px-3 py-4 text-sm font-medium">Table 4</td>
+<td class="whitespace-nowrap px-3 py-4 text-sm">
+<span class="inline-flex items-center rounded-full bg-success/10 px-2 py-1 text-xs font-medium text-success ring-1 ring-inset ring-success/20">
+<svg aria-hidden="true" class="mr-1.5 h-1.5 w-1.5 fill-success" viewBox="0 0 6 6"><circle cx="3" cy="3" r="3"></circle></svg>
+                                            Assigned
+                                        </span>
+</td>
+<td class="whitespace-nowrap px-3 py-4 text-sm font-mono text-text-light-secondary dark:text-text-dark-secondary">QR-C9D4G2</td>
+<td class="whitespace-nowrap px-3 py-4 text-sm text-text-light-secondary dark:text-text-dark-secondary">2023-10-25</td>
+<td class="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+<div class="flex items-center justify-end gap-2">
+<button class="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800/50"><span class="material-symbols-outlined text-lg">print</span></button>
+<button class="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800/50"><span class="material-symbols-outlined text-lg">edit</span></button>
+</div>
+</td>
+</tr>
+<tr>
+<td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6"><input checked="" class="h-4 w-4 rounded border-slate-300 dark:border-slate-600 text-primary focus:ring-primary bg-card-light dark:bg-card-dark" type="checkbox"/></td>
+<td class="whitespace-nowrap px-3 py-4 text-sm font-medium">Table 21 (Window)</td>
+<td class="whitespace-nowrap px-3 py-4 text-sm">
+<span class="inline-flex items-center rounded-full bg-success/10 px-2 py-1 text-xs font-medium text-success ring-1 ring-inset ring-success/20">
+<svg aria-hidden="true" class="mr-1.5 h-1.5 w-1.5 fill-success" viewBox="0 0 6 6"><circle cx="3" cy="3" r="3"></circle></svg>
+                                            Assigned
+                                        </span>
+</td>
+<td class="whitespace-nowrap px-3 py-4 text-sm font-mono text-text-light-secondary dark:text-text-dark-secondary">QR-E1F5H3</td>
+<td class="whitespace-nowrap px-3 py-4 text-sm text-text-light-secondary dark:text-text-dark-secondary">2023-10-25</td>
+<td class="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+<div class="flex items-center justify-end gap-2">
+<button class="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800/50"><span class="material-symbols-outlined text-lg">print</span></button>
+<button class="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800/50"><span class="material-symbols-outlined text-lg">edit</span></button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="flex items-center justify-between border-t border-slate-200 dark:border-slate-800 px-4 py-3 sm:px-6">
+<div class="flex flex-1 justify-between sm:hidden">
+<a class="relative inline-flex items-center rounded-md border border-slate-300 dark:border-slate-700 bg-card-light dark:bg-card-dark px-4 py-2 text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800/50" href="#">Previous</a>
+<a class="relative ml-3 inline-flex items-center rounded-md border border-slate-300 dark:border-slate-700 bg-card-light dark:bg-card-dark px-4 py-2 text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800/50" href="#">Next</a>
+</div>
+<div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+<div>
+<p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">Showing <span class="font-medium">1</span> to <span class="font-medium">10</span> of <span class="font-medium">97</span> results</p>
+</div>
+<div>
+<nav aria-label="Pagination" class="isolate inline-flex -space-x-px rounded-md shadow-sm">
+<a class="relative inline-flex items-center rounded-l-md px-2 py-2 ring-1 ring-inset ring-slate-300 dark:ring-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/50 focus:z-20 focus:outline-offset-0" href="#">
+<span class="sr-only">Previous</span>
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</a>
+<a aria-current="page" class="relative z-10 inline-flex items-center bg-primary/10 px-4 py-2 text-sm font-semibold text-primary focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" href="#">1</a>
+<a class="relative inline-flex items-center px-4 py-2 text-sm font-semibold ring-1 ring-inset ring-slate-300 dark:ring-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/50 focus:z-20 focus:outline-offset-0" href="#">2</a>
+<span class="relative inline-flex items-center px-4 py-2 text-sm font-semibold ring-1 ring-inset ring-slate-300 dark:ring-slate-700">...</span>
+<a class="relative inline-flex items-center rounded-r-md px-2 py-2 ring-1 ring-inset ring-slate-300 dark:ring-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/50 focus:z-20 focus:outline-offset-0" href="#">
+<span class="sr-only">Next</span>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</a>
+</nav>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

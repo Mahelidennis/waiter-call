@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DineCall Staff Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#00522E", // Elegant Dark Green
+              "accent": "#F2D492", // Warm Gold
+              "background-light": "#f5f8f6",
+              "background-dark": "#102216",
+              "text-light": "#111813",
+              "text-dark": "#E1E8E3",
+              "border-light": "#dbe6df",
+              "border-dark": "#344F3E",
+            },
+            fontFamily: {
+              "display": ["Work Sans", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+</head>
+<body class="font-display">
+<div class="relative flex min-h-screen w-full flex-col bg-background-light dark:bg-background-dark group/design-root overflow-x-hidden">
+<div class="absolute inset-0 z-0 h-full w-full bg-cover bg-center bg-no-repeat opacity-20 dark:opacity-10" data-alt="Slightly blurred and desaturated photograph of a modern restaurant interior" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD4Eu8Vn1t4RirlYSNEZ4nFIB7j6wHjQlzPJtoTCrVIoqUfwSVoRroUfvATnu19_XeEZp2gNjhDGZVBSUEeGPtPko2hmewqzm7FkcZW5-ShrgFH2VoeLTurQUeHHOPEiVlg-rtd5TcYlbfxTLz_Qj7KHxIzWExl4WbTuIXs5glxW_VOiyaIwUquJsc8EbnV0MoL6FBcq7VpDH6mLuOPdUV0NvdGL9RstmbALy9d4wnLCpO4hjUyqqXzj8SgSPDTElogWx1Qhxunzg");'></div>
+<div class="relative z-10 flex h-full grow flex-col">
+<div class="flex flex-1 items-center justify-center p-4 sm:p-6 lg:p-8">
+<div class="flex w-full max-w-md flex-col items-center gap-8 rounded-xl bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm p-8 shadow-2xl dark:shadow-black/50">
+<!-- Logo Container -->
+<div class="flex flex-col items-center gap-2">
+<svg class="h-12 w-12 text-primary" fill="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M16 8c0-2.21-1.79-4-4-4S8 5.79 8 8v1.5c-1.68 0.41-3 1.92-3 3.65V20h14v-6.85c0-1.73-1.32-3.24-3-3.65V8zm-6 0c0-1.1.9-2 2-2s2 .9 2 2v1h-4V8zM5 18v-4.85c0-1.21.75-2.25 1.86-2.69A5.37 5.37 0 0 1 7 10.4v1.1h10v-1.1c0-.43.06-.85.16-1.26C18.25 10.9 19 11.94 19 13.15V18H5z"></path></svg>
+<p class="font-bold text-lg text-text-light dark:text-text-dark">DineCall</p>
+</div>
+<!-- Header Text -->
+<div class="flex w-full flex-col items-center text-center">
+<p class="text-text-light dark:text-text-dark text-3xl font-black leading-tight tracking-[-0.033em]">Staff Login</p>
+<p class="text-text-light/70 dark:text-text-dark/70 mt-2 text-base">Waiter &amp; Admin Access</p>
+</div>
+<!-- Login Form -->
+<div class="flex w-full flex-col gap-4">
+<!-- Username/Email Field -->
+<label class="flex flex-col flex-1">
+<p class="text-text-light dark:text-text-dark text-base font-medium leading-normal pb-2">Username/Email</p>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light dark:border-border-dark bg-white dark:bg-background-dark/50 h-14 placeholder:text-text-light/50 dark:placeholder:text-text-dark/50 p-[15px] text-base font-normal leading-normal" placeholder="Enter your username or email" value=""/>
+</label>
+<!-- Password Field -->
+<label class="flex flex-col flex-1">
+<p class="text-text-light dark:text-text-dark text-base font-medium leading-normal pb-2">Password</p>
+<div class="relative flex w-full flex-1 items-stretch">
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light dark:border-border-dark bg-white dark:bg-background-dark/50 h-14 placeholder:text-text-light/50 dark:placeholder:text-text-dark/50 p-[15px] pr-12 text-base font-normal leading-normal" placeholder="Enter your password" type="password" value=""/>
+<button aria-label="Toggle password visibility" class="absolute inset-y-0 right-0 flex items-center pr-3 text-text-light/60 dark:text-text-dark/60">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</div>
+</label>
+</div>
+<!-- Login Button -->
+<div class="flex w-full pt-2">
+<button class="flex min-w-[84px] max-w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 flex-1 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-opacity-90 active:bg-opacity-80 transition-colors">
+<span class="truncate">Login</span>
+</button>
+</div>
+<!-- Forgot Password Link -->
+<a class="text-sm font-medium text-primary hover:text-opacity-80 transition-colors" href="#">Forgot Password?</a>
+<!-- Footer -->
+<div class="w-full border-t border-border-light dark:border-border-dark pt-6 text-center">
+<p class="text-xs text-text-light/60 dark:text-text-dark/60">© DineCall 2024</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body></html>

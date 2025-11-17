@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Set New Password</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#4A90E2",
+              "success": "#28A745",
+              "error": "#DC3545",
+              "background-light": "#F8F9FA",
+              "background-dark": "#101820",
+              "text-light": "#333333",
+              "text-dark": "#F8F9FA",
+              "border-light": "#DEE2E6",
+              "border-dark": "#495057",
+            },
+            fontFamily: {
+              "display": ["Work Sans", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark">
+<div class="relative flex min-h-screen w-full flex-col items-center justify-center p-4">
+<!-- Header Logo -->
+<div class="absolute top-8 left-8 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-3xl">
+            restaurant_menu
+        </span>
+<p class="font-bold text-xl text-text-light dark:text-text-dark">QuickServe</p>
+</div>
+<!-- Set Password Form Card -->
+<div class="w-full max-w-md" id="password-form-container">
+<div class="flex flex-col gap-8 rounded-xl border border-border-light dark:border-border-dark bg-white dark:bg-background-dark p-8 shadow-sm">
+<!-- Page Heading -->
+<div class="flex flex-col gap-2">
+<h1 class="text-3xl font-black tracking-tight text-text-light dark:text-text-dark">Set a New Password</h1>
+<p class="text-base font-normal text-slate-500 dark:text-slate-400">Please create a new, secure password for your account.</p>
+</div>
+<!-- Form Fields -->
+<div class="flex flex-col gap-6">
+<!-- New Password Field -->
+<label class="flex flex-col">
+<p class="pb-2 text-base font-medium text-text-light dark:text-text-dark">New Password</p>
+<div class="flex w-full flex-1 items-stretch rounded-lg border border-border-light dark:border-border-dark focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-l-lg border-0 bg-transparent text-text-light dark:text-text-dark placeholder:text-slate-400 dark:placeholder:text-slate-500 p-3 text-base focus:outline-none focus:ring-0" placeholder="Enter your new password" type="password" value=""/>
+<div class="flex cursor-pointer items-center justify-center px-3 text-slate-500 dark:text-slate-400">
+<span class="material-symbols-outlined text-2xl">visibility</span>
+</div>
+</div>
+</label>
+<!-- Confirm New Password Field -->
+<label class="flex flex-col">
+<p class="pb-2 text-base font-medium text-text-light dark:text-text-dark">Confirm New Password</p>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg border border-border-light dark:border-border-dark bg-transparent text-text-light dark:text-text-dark placeholder:text-slate-400 dark:placeholder:text-slate-500 p-3 text-base focus:border-primary focus:ring-2 focus:ring-primary/20" placeholder="Re-enter your new password" type="password" value=""/>
+</label>
+</div>
+<!-- Password Requirements Checklist -->
+<div>
+<p class="text-sm font-medium text-text-light dark:text-text-dark mb-2">Password must contain:</p>
+<div class="flex flex-col gap-2">
+<label class="flex items-center gap-x-3">
+<input checked="" class="h-4 w-4 rounded border-border-light bg-transparent text-success checked:bg-success checked:border-success focus:ring-0 focus:ring-offset-0 disabled:opacity-50" disabled="" type="checkbox"/>
+<p class="text-sm font-normal text-slate-500 dark:text-slate-400">At least 8 characters</p>
+</label>
+<label class="flex items-center gap-x-3">
+<input checked="" class="h-4 w-4 rounded border-border-light bg-transparent text-success checked:bg-success checked:border-success focus:ring-0 focus:ring-offset-0 disabled:opacity-50" disabled="" type="checkbox"/>
+<p class="text-sm font-normal text-slate-500 dark:text-slate-400">Includes a number</p>
+</label>
+<label class="flex items-center gap-x-3">
+<input class="h-4 w-4 rounded border-border-light bg-transparent text-success checked:bg-success checked:border-success focus:ring-0 focus:ring-offset-0 disabled:opacity-50" disabled="" type="checkbox"/>
+<p class="text-sm font-normal text-slate-500 dark:text-slate-400">Includes a special character</p>
+</label>
+</div>
+</div>
+<!-- Action Button -->
+<button class="flex h-12 w-full items-center justify-center rounded-lg bg-primary px-6 text-base font-bold text-white shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 dark:focus:ring-offset-background-dark">
+                Reset Password
+            </button>
+</div>
+</div>
+<!-- Success State Card (Initially Hidden) -->
+<div class="hidden w-full max-w-md" id="success-state-container">
+<div class="flex flex-col items-center gap-6 rounded-xl border border-border-light dark:border-border-dark bg-white dark:bg-background-dark p-8 text-center shadow-sm">
+<!-- Success Icon -->
+<div class="flex h-16 w-16 items-center justify-center rounded-full bg-success/10">
+<span class="material-symbols-outlined text-success text-4xl">
+                    check_circle
+                </span>
+</div>
+<!-- Success Heading -->
+<div class="flex flex-col gap-2">
+<h1 class="text-3xl font-black tracking-tight text-text-light dark:text-text-dark">Password Updated!</h1>
+<p class="text-base font-normal text-slate-500 dark:text-slate-400">You can now log in with your new password.</p>
+</div>
+<!-- Action Button -->
+<a class="flex h-12 w-full items-center justify-center rounded-lg bg-primary px-6 text-base font-bold text-white shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 dark:focus:ring-offset-background-dark" href="#">
+                Return to Login
+            </a>
+</div>
+</div>
+</div>
+</body></html>

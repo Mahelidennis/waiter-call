@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Waiter Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24
+      }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#0df259",
+              "background-light": "#f5f8f6",
+              "background-dark": "#102216",
+            },
+            fontFamily: {
+              "display": ["Work Sans", "Noto Sans", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-gray-800 dark:text-gray-200">
+<div class="relative flex min-h-screen w-full">
+<!-- SideNavBar -->
+<aside class="flex flex-col w-64 border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-background-dark p-4 shrink-0">
+<div class="flex flex-col justify-between h-full">
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Restaurant logo" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCDX0ygArdjf1PpGGIHQ7-gnt1eqEE0KE0JxPaQEbw777nUuRGrsF2wnfnd89OhmZWeieHLIBxe58ebcglNVdZAVL9MFNWG73V-QX1omvoBBEzYOD7FgrCHYQlMaqiJqJwCqgNk5-wik4nGIHKyMZkaIYrvpzqkq5bXslmqCsUipgK0wT5IfbCI3z7ckNjO6mJxso0Nl8bw3vodse7LKUEN5iOkqmU10HzxHCt51p3jfpBGqVQo_lREbQpuCNn_hGC7ooAiORpkpw");'></div>
+<div class="flex flex-col">
+<h1 class="text-gray-900 dark:text-white text-base font-medium leading-normal">The Grand Eatery</h1>
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">Admin Panel</p>
+</div>
+</div>
+<nav class="flex flex-col gap-2 mt-4">
+<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-background-light dark:hover:bg-gray-800" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<p class="text-sm font-medium leading-normal">Dashboard</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/20 text-gray-900 dark:text-white dark:bg-primary/30" href="#">
+<span class="material-symbols-outlined">group</span>
+<p class="text-sm font-medium leading-normal">Waiter Management</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-background-light dark:hover:bg-gray-800" href="#">
+<span class="material-symbols-outlined">table_restaurant</span>
+<p class="text-sm font-medium leading-normal">Table Status</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-background-light dark:hover:bg-gray-800" href="#">
+<span class="material-symbols-outlined">menu_book</span>
+<p class="text-sm font-medium leading-normal">Menu</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-background-light dark:hover:bg-gray-800" href="#">
+<span class="material-symbols-outlined">settings</span>
+<p class="text-sm font-medium leading-normal">Settings</p>
+</a>
+</nav>
+</div>
+<div class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-background-light dark:hover:bg-gray-800" href="#">
+<span class="material-symbols-outlined">help</span>
+<p class="text-sm font-medium leading-normal">Help</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-background-light dark:hover:bg-gray-800" href="#">
+<span class="material-symbols-outlined">logout</span>
+<p class="text-sm font-medium leading-normal">Logout</p>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 p-6 lg:p-8">
+<div class="max-w-7xl mx-auto">
+<!-- PageHeading -->
+<header class="flex flex-wrap justify-between items-center gap-4 mb-6">
+<div class="flex flex-col gap-2">
+<h1 class="text-gray-900 dark:text-white text-3xl lg:text-4xl font-black leading-tight tracking-[-0.033em]">Waiter Management</h1>
+<p class="text-gray-500 dark:text-gray-400 text-base font-normal leading-normal">Add, edit, and manage your restaurant's waiter profiles.</p>
+</div>
+<button class="flex items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-5 bg-primary text-background-dark text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90">
+<span class="material-symbols-outlined">add</span>
+<span class="truncate">Add New Waiter</span>
+</button>
+</header>
+<!-- Toolbar & Search -->
+<div class="flex flex-col md:flex-row gap-4 mb-4">
+<!-- SearchBar -->
+<div class="flex-1">
+<label class="flex flex-col min-w-40 h-12 w-full">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+<div class="text-gray-500 dark:text-gray-400 flex items-center justify-center pl-4">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-900 dark:text-white focus:outline-0 focus:ring-0 border-none bg-transparent h-full placeholder:text-gray-500 dark:placeholder:text-gray-400 pl-2 text-base font-normal leading-normal" placeholder="Search by name or contact info..." value=""/>
+</div>
+</label>
+</div>
+<!-- Chips/Filters -->
+<div class="flex items-center gap-3">
+<button class="flex h-12 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-4">
+<p class="text-gray-700 dark:text-gray-300 text-sm font-medium leading-normal">Status: All</p>
+<span class="material-symbols-outlined text-gray-500 dark:text-gray-400">expand_more</span>
+</button>
+</div>
+</div>
+<!-- Waiter List Table -->
+<div class="bg-white dark:bg-background-dark/50 rounded-lg border border-gray-200 dark:border-gray-800 overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-background-light dark:bg-gray-800">
+<tr>
+<th class="p-4 text-sm font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Name</th>
+<th class="p-4 text-sm font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Contact Info</th>
+<th class="p-4 text-sm font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Assigned Tables</th>
+<th class="p-4 text-sm font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Status</th>
+<th class="p-4 text-sm font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-gray-200 dark:divide-gray-800">
+<!-- Table Row 1 -->
+<tr>
+<td class="p-4 whitespace-nowrap">
+<div class="flex items-center gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Avatar of Olivia Chen" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC-OY2y2jwsGBy_OsSJRUBIdLpiHjdKrAbskRL7SBCpN8s60jHtNMZyEoSVNDV91EoHc_U48N8RRtA4URPsbrEsTsMkayvnKLHcAGKPjPRAnU308MS-QiAXAj1TyNWmwvNDtbA1eWrF3dkxfQgfCgGSAlknNDtX9lwsQz-UsgbvS_W__LwfJIARjkeJ0cG9-OAIf-PPVqk5LVPa8PJnQae3XxtD6-45EIrxP6KqFEvtF9ZOX_v-8lCka0MMHAgcnDebdcA53UsIww");'></div>
+<p class="text-gray-900 dark:text-white font-medium">Olivia Chen</p>
+</div>
+</td>
+<td class="p-4 whitespace-nowrap text-gray-600 dark:text-gray-300">olivia.c@email.com</td>
+<td class="p-4 whitespace-nowrap text-gray-600 dark:text-gray-300">Tables: 1, 2, 5, 6</td>
+<td class="p-4 whitespace-nowrap">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">Active</span>
+</td>
+<td class="p-4 whitespace-nowrap text-right">
+<div class="flex justify-end gap-2">
+<button class="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-background-light dark:hover:bg-gray-800">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-background-light dark:hover:bg-gray-800">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Table Row 2 -->
+<tr>
+<td class="p-4 whitespace-nowrap">
+<div class="flex items-center gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Avatar of Ben Carter" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAvdx12C7J2ZC2p1l8l-Rxb1yhuGqXbGJsmnqszzLl7bthhaNALya7HjRjOnwEk3kGbYJOf09OtqPSgIMzRFINaIOMjkV7T4r17SBNIWN5CAf77vJ1C80Vh_MtXyDazOtFtvWG6glUmU3vPwb4iKRZ0veCBvi1wigv_UReJPoXdFEjfjCEfys8tTzdM09Pt3ZLdQRLxWa2mSrAYTu0eJ3mg8ZaSRRAlGmu2Ci4BrgviFQ_FfabcTb4UN7I7zjFKyeaBi58u-M4Zww");'></div>
+<p class="text-gray-900 dark:text-white font-medium">Ben Carter</p>
+</div>
+</td>
+<td class="p-4 whitespace-nowrap text-gray-600 dark:text-gray-300">(555) 123-4567</td>
+<td class="p-4 whitespace-nowrap text-gray-600 dark:text-gray-300">Tables: 8, 9, 10</td>
+<td class="p-4 whitespace-nowrap">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">Active</span>
+</td>
+<td class="p-4 whitespace-nowrap text-right">
+<div class="flex justify-end gap-2">
+<button class="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-background-light dark:hover:bg-gray-800">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-background-light dark:hover:bg-gray-800">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Table Row 3 -->
+<tr>
+<td class="p-4 whitespace-nowrap">
+<div class="flex items-center gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Avatar of Aisha Khan" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDwXDg-d_XS0BAWDIqopdna47H9juOCm_ABWAV7ZyiT3R08XqgzRvcA8ijMmJzQ6OOgNI8aiaCJGvRZ6Ev3F0Pd3bpI332JCVKuoWMQNw78i9BIgwdScKKlYQFk1zqJwXzPmV23CZC7CpQtxAsd6S440cC2mLTPKQR6v_UWY9tYdAS4Me_DvFxznHTiO32fvwuG2FA5A-weGpI3ssYO7Zs1sKsZMUTx1CjS1c-LMb-hCFQ4gnqYZZozCGs1KtmCpxSNsoyErRYR3A");'></div>
+<p class="text-gray-900 dark:text-white font-medium">Aisha Khan</p>
+</div>
+</td>
+<td class="p-4 whitespace-nowrap text-gray-600 dark:text-gray-300">aisha.k@email.com</td>
+<td class="p-4 whitespace-nowrap text-gray-600 dark:text-gray-300">Patio Section</td>
+<td class="p-4 whitespace-nowrap">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">Inactive</span>
+</td>
+<td class="p-4 whitespace-nowrap text-right">
+<div class="flex justify-end gap-2">
+<button class="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-background-light dark:hover:bg-gray-800">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-background-light dark:hover:bg-gray-800">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Table Row 4 -->
+<tr>
+<td class="p-4 whitespace-nowrap">
+<div class="flex items-center gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Avatar of Marco Rossi" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDN4xh2nqzaV5ZnZp3CADbXZ6TnparBhJWfP0ahmOndfLWhEkYefqg6F73i7pVtJPU1u5CFYqY9oM4ByBchaudDFZLfrnZBrBzFconesFwLPrn6czQ0aCrDmj4h0OZFntI24NtvF-H_JMdTiX2hSy2OiPUouS39zi1FOGsx7SxDUMMt9C5WiyxcACDBj-T7YOEmQy-GZnA-6PchZkkEaHgtkbRMX3Uu13Nxm29WWKEBOiiACxnU6qL5uji6ITtoG6p1_GN0qetVNA");'></div>
+<p class="text-gray-900 dark:text-white font-medium">Marco Rossi</p>
+</div>
+</td>
+<td class="p-4 whitespace-nowrap text-gray-600 dark:text-gray-300">(555) 987-6543</td>
+<td class="p-4 whitespace-nowrap text-gray-600 dark:text-gray-300">Tables: 3, 4, 7</td>
+<td class="p-4 whitespace-nowrap">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">Active</span>
+</td>
+<td class="p-4 whitespace-nowrap text-right">
+<div class="flex justify-end gap-2">
+<button class="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-background-light dark:hover:bg-gray-800">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-background-light dark:hover:bg-gray-800">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

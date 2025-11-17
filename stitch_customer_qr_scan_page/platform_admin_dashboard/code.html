@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Administrator Dashboard - WaiterCall Platform</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0A3D62",
+                        "secondary": "#1DD1A1",
+                        "background-light": "#F8F9FA",
+                        "background-dark": "#101820",
+                        "text-light": "#495057",
+                        "text-dark": "#E9ECEF",
+                        "border-light": "#E9ECEF",
+                        "border-dark": "#343A40",
+                        "card-light": "#FFFFFF",
+                        "card-dark": "#1C252E",
+                        "positive": "#1DD1A1",
+                        "negative": "#DC3545"
+                    },
+                    fontFamily: {
+                        "display": ["Work Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
+<div class="relative flex min-h-screen w-full">
+<!-- SideNavBar -->
+<aside class="flex h-screen w-64 flex-col border-r border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark sticky top-0">
+<div class="flex h-full min-h-0 flex-col justify-between p-4">
+<div class="flex flex-col gap-8">
+<div class="flex items-center gap-3 px-3">
+<div class="text-primary size-8">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_6_535)">
+<path clip-rule="evenodd" d="M47.2426 24L24 47.2426L0.757355 24L24 0.757355L47.2426 24ZM12.2426 21H35.7574L24 9.24264L12.2426 21Z" fill="currentColor" fill-rule="evenodd"></path>
+</g>
+<defs>
+<clippath id="clip0_6_535">
+<rect fill="white" height="48" width="48"></rect>
+</clippath>
+</defs>
+</svg>
+</div>
+<h1 class="text-text-light dark:text-text-dark text-xl font-bold">WaiterCall</h1>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 rounded-lg bg-primary/10 px-3 py-2 text-primary" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<p class="text-sm font-semibold leading-normal">Dashboard</p>
+</a>
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-primary/10 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">restaurant</span>
+<p class="text-sm font-medium leading-normal">Restaurants</p>
+</a>
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-primary/10 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">credit_card</span>
+<p class="text-sm font-medium leading-normal">Subscriptions</p>
+</a>
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-primary/10 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<p class="text-sm font-medium leading-normal">Analytics</p>
+</a>
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-primary/10 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<p class="text-sm font-medium leading-normal">Settings</p>
+</a>
+</nav>
+</div>
+<div class="flex flex-col gap-2 border-t border-border-light dark:border-border-dark pt-4">
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-primary/10 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">logout</span>
+<p class="text-sm font-medium leading-normal">Logout</p>
+</a>
+<div class="flex gap-3 px-3 py-2">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Admin profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDYe5UjTGF3xvcaxDlB_pnb8nP6DsgSYEsBt7O1xnTHV0AMbs573-4scqEhtu5TqDDyMaOjONyL7npLWi6uTkqr6Q8h3d12yFT4hrE1MgIBhalHalqWu3MwszBOsWP_n2f0vP45yMbZHlxHNZQX63xttEvB7WDRE3l6QW-aBkWNCtELlShkM0_Yru0Xp85TwMPPKSw82kjdZZPFnOo4kuLq4OPn7_2Z7rEH_V2LOB-SN3zagHTB4D_4DxOXrxb0qLIaHi4nxNUvNg");'></div>
+<div class="flex flex-col">
+<h1 class="text-text-light dark:text-text-dark text-base font-medium leading-normal">Alex Drake</h1>
+<p class="text-text-light/70 dark:text-text-dark/70 text-sm font-normal leading-normal">Administrator</p>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<div class="flex flex-1 flex-col">
+<!-- TopNavBar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-border-light dark:border-border-dark px-8 py-4 sticky top-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm z-10">
+<!-- PageHeading -->
+<div class="flex flex-wrap items-center gap-3">
+<h1 class="text-text-light dark:text-text-dark text-2xl font-bold leading-tight">Administrator Dashboard</h1>
+</div>
+<div class="flex items-center gap-4">
+<!-- Chips/Date Range Picker -->
+<div class="flex gap-2">
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark px-4 transition-colors hover:border-primary">
+<p class="text-text-light dark:text-text-dark text-sm font-medium leading-normal">Last 7 Days</p>
+<span class="material-symbols-outlined text-text-light dark:text-text-dark text-lg">expand_more</span>
+</button>
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark px-4 transition-colors hover:border-primary">
+<p class="text-text-light dark:text-text-dark text-sm font-medium leading-normal">Custom Range</p>
+<span class="material-symbols-outlined text-text-light dark:text-text-dark text-lg">calendar_today</span>
+</button>
+</div>
+<button class="flex cursor-pointer items-center justify-center rounded-full size-10 bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark text-text-light dark:text-text-dark hover:border-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</div>
+</header>
+<main class="flex-1 p-8">
+<div class="flex flex-col gap-8">
+<!-- Stats / KPI Banner -->
+<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+<div class="flex flex-col gap-2 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark p-6">
+<p class="text-base font-medium leading-normal">Total Active Restaurants</p>
+<p class="text-3xl font-bold leading-tight">1,204</p>
+<p class="text-positive text-sm font-medium leading-normal">+2.5% vs last month</p>
+</div>
+<div class="flex flex-col gap-2 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark p-6">
+<p class="text-base font-medium leading-normal">New Sign-ups (This Month)</p>
+<p class="text-3xl font-bold leading-tight">88</p>
+<p class="text-positive text-sm font-medium leading-normal">+15% vs last month</p>
+</div>
+<div class="flex flex-col gap-2 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark p-6">
+<p class="text-base font-medium leading-normal">Total Waiter Calls (Today)</p>
+<p class="text-3xl font-bold leading-tight">5,678</p>
+<p class="text-positive text-sm font-medium leading-normal">+8.2% vs yesterday</p>
+</div>
+<div class="flex flex-col gap-2 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark p-6">
+<p class="text-base font-medium leading-normal">Monthly Recurring Revenue</p>
+<p class="text-3xl font-bold leading-tight">$48,950</p>
+<p class="text-negative text-sm font-medium leading-normal">-1.8% vs last month</p>
+</div>
+</div>
+<!-- Data Visualization Cards -->
+<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+<div class="lg:col-span-2 flex flex-col gap-4 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark p-6">
+<h3 class="text-lg font-semibold">System-Wide Waiter Calls</h3>
+<div class="h-64 flex items-center justify-center">
+<img class="h-full w-full object-contain dark:invert" data-alt="A line chart showing an upward trend in waiter calls over the last 30 days, with peaks during weekends." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwXUZei6C0Qh48jsq9YEkaLyXJ7Qa5eOwDmQdul6efH9KvyYhCIVsa4YAo-H66cfdtCOapI4MCvOFoqHyaHfHp-I8yl29IOKLNiWVx_KTOnNpY_yEvn_-boarGK5wWm5GxnZ-6yDHz7zrYiuqpBt1GyIhdVJJ4SEzrd1dOeuU1HE3eBvhbYI6uWVb60QKU0JAe0MtBqQiMhz758jRStY7KVizavEH9Ly-1Ea8l9h0dso4PvAD2dZhGjjUFN_NnYtT3zAfwaDB8ag"/>
+</div>
+</div>
+<div class="flex flex-col gap-4 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark p-6">
+<h3 class="text-lg font-semibold">Subscription Plan Distribution</h3>
+<div class="h-64 flex items-center justify-center">
+<img class="h-full w-full object-contain dark:brightness-75" data-alt="A donut chart showing subscription distribution: 60% Pro Plan, 30% Basic Plan, 10% Enterprise Plan." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3Uj3OCqLU6ZNP1ygWBWzFltoE3xAzrb41FYNz9kc9RhtfmyCWJLxe9H7lu6K9ii767A9GV9fuVuALdF7UzHbUdi66u8IojHOrF-QTf_SVbz2I2prb5mZkWUD35Wbwoq6dYl8deDPg7bp-jbf0Ti7WxEzWpwL9wXRi-jZb1c0hTjTLMB-nEXpXSBjIwabKZnEt9YG5_I3niHinmSb3zNGQ-F9W6Rqub_M3DcYAWlJKTOJke1I0h9OFMBB58wpgRZBGf-EeI6H0lQ"/>
+</div>
+</div>
+</div>
+<!-- Searchable & Filterable Table -->
+<div class="rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark">
+<div class="flex flex-wrap items-center justify-between gap-4 p-6">
+<h3 class="text-lg font-semibold">All Restaurants</h3>
+<div class="relative w-full max-w-sm">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-light/50 dark:text-text-dark/50">search</span>
+<input class="w-full rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark pl-10 pr-4 py-2 focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Search by restaurant name..." type="text"/>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left text-sm">
+<thead class="border-b border-border-light dark:border-border-dark text-text-light/70 dark:text-text-dark/70">
+<tr>
+<th class="px-6 py-3 font-medium">Restaurant Name</th>
+<th class="px-6 py-3 font-medium">Status</th>
+<th class="px-6 py-3 font-medium">Subscription Plan</th>
+<th class="px-6 py-3 font-medium">Sign-up Date</th>
+<th class="px-6 py-3 font-medium text-right">Actions</th>
+</tr>
+</thead>
+<tbody>
+<tr class="border-b border-border-light dark:border-border-dark">
+<td class="px-6 py-4 font-medium">The Gourmet Kitchen</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="size-2 rounded-full bg-positive"></div>
+<span>Active</span>
+</div>
+</td>
+<td class="px-6 py-4">Pro Plan</td>
+<td class="px-6 py-4">2023-08-15</td>
+<td class="px-6 py-4 text-right">
+<button class="text-primary hover:underline font-semibold">View Details</button>
+</td>
+</tr>
+<tr class="border-b border-border-light dark:border-border-dark">
+<td class="px-6 py-4 font-medium">Ocean's Bite Seafood</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="size-2 rounded-full bg-positive"></div>
+<span>Active</span>
+</div>
+</td>
+<td class="px-6 py-4">Enterprise</td>
+<td class="px-6 py-4">2023-05-20</td>
+<td class="px-6 py-4 text-right">
+<button class="text-primary hover:underline font-semibold">View Details</button>
+</td>
+</tr>
+<tr class="border-b border-border-light dark:border-border-dark">
+<td class="px-6 py-4 font-medium">Pasta Paradise</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="size-2 rounded-full bg-negative"></div>
+<span>Inactive</span>
+</div>
+</td>
+<td class="px-6 py-4">Basic Plan</td>
+<td class="px-6 py-4">2024-01-10</td>
+<td class="px-6 py-4 text-right">
+<button class="text-primary hover:underline font-semibold">View Details</button>
+</td>
+</tr>
+<tr class="border-b border-border-light dark:border-border-dark">
+<td class="px-6 py-4 font-medium">The Burger Joint</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="size-2 rounded-full bg-positive"></div>
+<span>Active</span>
+</div>
+</td>
+<td class="px-6 py-4">Pro Plan</td>
+<td class="px-6 py-4">2023-11-01</td>
+<td class="px-6 py-4 text-right">
+<button class="text-primary hover:underline font-semibold">View Details</button>
+</td>
+</tr>
+<tr>
+<td class="px-6 py-4 font-medium">Spicy Fusion</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="size-2 rounded-full bg-yellow-500"></div>
+<span>Payment Due</span>
+</div>
+</td>
+<td class="px-6 py-4">Pro Plan</td>
+<td class="px-6 py-4">2023-02-28</td>
+<td class="px-6 py-4 text-right">
+<button class="text-primary hover:underline font-semibold">View Details</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="flex items-center justify-between p-4">
+<span class="text-sm">Showing 1 to 5 of 1,204 results</span>
+<div class="flex gap-2">
+<button class="px-4 py-2 rounded-lg border border-border-light dark:border-border-dark text-sm font-medium hover:border-primary">Previous</button>
+<button class="px-4 py-2 rounded-lg border border-border-light dark:border-border-dark text-sm font-medium hover:border-primary">Next</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>

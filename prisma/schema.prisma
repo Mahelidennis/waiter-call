@@ -1,15 +1,164 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+// Restaurant model - represents a restaurant using the system
+model Restaurant {
+  id            String       @id @default(uuid())
+  name          String
+  slug          String       @unique // For URL routing (e.g., /r/restaurant-slug)
+  email         String       @unique
+  phone         String?
+  address       String?
+  logoUrl       String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  
+  // Relations
+  tables        Table[]
+  waiters       Waiter[]
+  promotions    Promotion[]
+  subscriptions Subscription[]
+  calls         Call[]
+  
+  @@index([slug])
+}
+
+// Table model - represents a physical table in the restaurant
+model Table {
+  id            String       @id @default(uuid())
+  restaurantId String
+  number        String       // Table number/identifier (e.g., "T1", "Table 5")
+  qrCode        String       @unique // Unique identifier for QR code
+  isActive      Boolean      @default(true)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  
+  // Relations
+  restaurant    Restaurant   @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  calls         Call[]
+  assignedWaiters WaiterTable[]
+  
+  @@unique([restaurantId, number])
+  @@index([qrCode])
+  @@index([restaurantId])
+}
+
+// Waiter model - represents a waiter/staff member
+model Waiter {
+  id            String       @id @default(uuid())
+  restaurantId String
+  name          String
+  email         String?
+  phone         String?
+  isActive      Boolean      @default(true)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  
+  // Relations
+  restaurant    Restaurant   @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  calls         Call[]
+  assignedTables WaiterTable[]
+  
+  @@index([restaurantId])
+}
+
+// Many-to-many relationship between Waiters and Tables
+model WaiterTable {
+  id        String   @id @default(uuid())
+  waiterId  String
+  tableId   String
+  createdAt DateTime @default(now())
+  
+  waiter    Waiter   @relation(fields: [waiterId], references: [id], onDelete: Cascade)
+  table     Table    @relation(fields: [tableId], references: [id], onDelete: Cascade)
+  
+  @@unique([waiterId, tableId])
+  @@index([waiterId])
+  @@index([tableId])
+}
+
+// Call model - represents a customer's call for a waiter
+model Call {
+  id            String       @id @default(uuid())
+  restaurantId  String
+  tableId       String
+  waiterId      String?      // Assigned waiter (can be null if auto-assigned)
+  status        CallStatus   @default(PENDING)
+  requestedAt   DateTime     @default(now())
+  handledAt     DateTime?
+  responseTime  Int?         // Response time in seconds
+  
+  // Relations
+  restaurant    Restaurant   @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  table         Table        @relation(fields: [tableId], references: [id], onDelete: Cascade)
+  waiter        Waiter?      @relation(fields: [waiterId], references: [id], onDelete: SetNull)
+  
+  @@index([restaurantId])
+  @@index([tableId])
+  @@index([waiterId])
+  @@index([status])
+  @@index([requestedAt])
+}
+
+enum CallStatus {
+  PENDING
+  HANDLED
+  CANCELLED
+}
+
+// Promotion model - represents ads/promotions shown to customers
+model Promotion {
+  id            String       @id @default(uuid())
+  restaurantId  String
+  title         String
+  description   String?
+  imageUrl      String?
+  linkUrl       String?
+  isActive      Boolean      @default(true)
+  startDate     DateTime?
+  endDate       DateTime?
+  displayOrder  Int          @default(0)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  
+  // Relations
+  restaurant    Restaurant   @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  
+  @@index([restaurantId])
+  @@index([isActive])
+}
+
+// Subscription model - tracks restaurant subscriptions
+model Subscription {
+  id                String            @id @default(uuid())
+  restaurantId      String            @unique
+  stripeCustomerId  String?          @unique
+  stripeSubscriptionId String?       @unique
+  status            SubscriptionStatus @default(TRIAL)
+  plan              String            @default("basic") // basic, premium, etc.
+  currentPeriodEnd  DateTime?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  
+  // Relations
+  restaurant        Restaurant        @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  
+  @@index([restaurantId])
+  @@index([status])
+}
+
+enum SubscriptionStatus {
+  TRIAL
+  ACTIVE
+  CANCELLED
+  PAST_DUE
 }

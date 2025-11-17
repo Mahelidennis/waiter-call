@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>WaiterCall - Revolutionize Your Restaurant Service</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#0df259",
+              "background-light": "#f5f8f6",
+              "background-dark": "#102216",
+            },
+            fontFamily: {
+              display: ["Work Sans"],
+            },
+            borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
+          },
+        },
+      };
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+      }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-[#111813] dark:text-gray-200">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<div class="flex flex-1 justify-center py-5">
+<div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+<header class="sticky top-5 z-50 flex items-center justify-between whitespace-nowrap border border-solid border-[#dbe6df] dark:border-gray-700 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm px-10 py-3 rounded-xl mx-4">
+<div class="flex items-center gap-3">
+<div class="flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-sm">
+<svg class="h-5 w-5 text-[#0df259]" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 2v20"></path>
+<path d="M18.36 18.36 12 12 5.64 5.64"></path>
+<path d="m5.64 18.36 6.36-6.36"></path>
+</svg>
+</div>
+<h2 class="text-[#111813] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">WaiterCall</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<div class="hidden md:flex items-center gap-9">
+<a class="text-[#111813] dark:text-gray-300 hover:text-primary dark:hover:text-primary text-sm font-medium leading-normal" href="#features">Features</a>
+<a class="text-[#111813] dark:text-gray-300 hover:text-primary dark:hover:text-primary text-sm font-medium leading-normal" href="#pricing">Pricing</a>
+<a class="text-[#111813] dark:text-gray-300 hover:text-primary dark:hover:text-primary text-sm font-medium leading-normal" href="#testimonials">Testimonials</a>
+</div>
+<div class="flex gap-2">
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-[#111813] text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">Sign Up</span>
+</button>
+<button class="hidden sm:flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#f0f5f1] dark:bg-primary/20 text-[#111813] dark:text-white text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">Request a Demo</span>
+</button>
+</div>
+</div>
+</header>
+<div class="w-full @container py-10 md:py-20">
+<div class="flex flex-col-reverse gap-6 px-4 py-10 @[480px]:gap-8 @[864px]:flex-row items-center">
+<div class="flex flex-col gap-6 @[480px]:min-w-[400px] @[480px]:gap-8 @[864px]:justify-center text-center @[864px]:text-left w-full @[864px]:w-1/2">
+<div class="flex flex-col gap-2">
+<h1 class="text-[#111813] dark:text-white text-4xl font-black leading-tight tracking-[-0.033em] @[480px]:text-5xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em]">Revolutionize Your Restaurant Service. Instantly.</h1>
+<h2 class="text-[#111813] dark:text-gray-300 text-sm font-normal leading-normal @[480px]:text-base @[480px]:font-normal @[480px]:leading-normal">Empower your customers to call a waiter with a simple QR scan, boosting efficiency and enhancing their dining experience.</h2>
+</div>
+<div class="flex-wrap gap-3 flex justify-center @[864px]:justify-start">
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-primary text-[#111813] text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em]">
+<span class="truncate">Get Started Today</span>
+</button>
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-[#f0f5f1] dark:bg-primary/20 text-[#111813] dark:text-white text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em]">
+<span class="truncate">Request a Free Demo</span>
+</button>
+</div>
+</div>
+<div class="w-full @[864px]:w-1/2 bg-center bg-no-repeat aspect-square bg-cover rounded-xl" data-alt="A smartphone on a restaurant table displaying the WaiterCall interface with a QR code." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBTpa5pOI0TtvTZf-CSGLXojOX7jjJy-Pfw7yIABIPZZwp0NF0oAe0crZpNCac-P71u1Pv5kObzpUK2LIRLTbFcLYUYZaCcdF9LCfym0vyh30QD1d0Pufu29cTBG0kjRE7QZJypNBxl3C_6ZwSAQWLP4NnoNGEYmIqHTiKr4Wrm-ZiYGYLn-z6cBTvuEPW9AV8o0tuxLPAYXt4778Lvhu62a9EwR-MLX5zZZjDwjYUUzGTGD9OzqCjvyvOP7zEK5ZIv4ABA_zlqMw');"></div>
+</div>
+</div>
+<div class="px-4 py-10">
+<h2 class="text-[#111813] dark:text-white text-center text-[22px] font-bold leading-tight tracking-[-0.015em] pb-3 pt-5">Tired of Missed Opportunities and Unhappy Diners?</h2>
+<p class="text-[#111813] dark:text-gray-300 text-center text-base font-normal leading-normal pb-3 pt-1">The old way of frantic hand-waving leads to frustrated customers and lost revenue. The new way is a seamless, instant connection between your diners and your staff.</p>
+<div class="grid md:grid-cols-2 gap-8 mt-8">
+<div class="flex flex-col gap-4 p-6 rounded-xl border border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-900/20">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-red-500">cancel</span>
+<h3 class="text-lg font-bold text-red-800 dark:text-red-300">The Old Way</h3>
+</div>
+<p class="text-red-700 dark:text-red-400">Guests struggle to get attention, leading to frustration, negative reviews, and lost sales on that extra round of drinks or dessert.</p>
+</div>
+<div class="flex flex-col gap-4 p-6 rounded-xl border border-green-200 dark:border-green-900 bg-green-50 dark:bg-green-900/20">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-green-500">check_circle</span>
+<h3 class="text-lg font-bold text-green-800 dark:text-green-300">The New Way with WaiterCall</h3>
+</div>
+<p class="text-green-700 dark:text-green-400">A simple QR scan instantly notifies your staff. Service is prompt, customers are delighted, and your revenue grows.</p>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-10 px-4 py-10 @container" id="features">
+<div class="flex flex-col gap-4 text-center">
+<h1 class="text-[#111813] dark:text-white tracking-light text-[32px] font-bold leading-tight @[480px]:text-4xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em] max-w-[720px] mx-auto">Everything You Need for Flawless Service</h1>
+<p class="text-[#111813] dark:text-gray-300 text-base font-normal leading-normal max-w-[720px] mx-auto">Our powerful features are designed to integrate smoothly into your workflow, creating a better experience for both your customers and your team.</p>
+</div>
+<div class="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4 p-0">
+<div class="flex flex-1 gap-3 rounded-xl border border-[#dbe6df] dark:border-gray-700 bg-white dark:bg-background-dark/50 p-4 flex-col">
+<span class="material-symbols-outlined text-primary text-3xl">qr_code_scanner</span>
+<div class="flex flex-col gap-1">
+<h2 class="text-[#111813] dark:text-white text-base font-bold leading-tight">Instant QR Code Calling</h2>
+<p class="text-[#608a6e] dark:text-gray-400 text-sm font-normal leading-normal">Diners can request service with a quick scan of a QR code placed on their table. No app download required.</p>
+</div>
+</div>
+<div class="flex flex-1 gap-3 rounded-xl border border-[#dbe6df] dark:border-gray-700 bg-white dark:bg-background-dark/50 p-4 flex-col">
+<span class="material-symbols-outlined text-primary text-3xl">dashboard</span>
+<div class="flex flex-col gap-1">
+<h2 class="text-[#111813] dark:text-white text-base font-bold leading-tight">Real-Time Waiter Dashboard</h2>
+<p class="text-[#608a6e] dark:text-gray-400 text-sm font-normal leading-normal">Your staff gets instant, organized notifications on a central dashboard, showing exactly which table needs assistance.</p>
+</div>
+</div>
+<div class="flex flex-1 gap-3 rounded-xl border border-[#dbe6df] dark:border-gray-700 bg-white dark:bg-background-dark/50 p-4 flex-col">
+<span class="material-symbols-outlined text-primary text-3xl">analytics</span>
+<div class="flex flex-col gap-1">
+<h2 class="text-[#111813] dark:text-white text-base font-bold leading-tight">Admin Analytics &amp; Insights</h2>
+<p class="text-[#608a6e] dark:text-gray-400 text-sm font-normal leading-normal">Track response times, peak hours, and staff performance to make data-driven decisions and optimize operations.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="px-4 py-10" id="testimonials">
+<div class="text-center mb-10">
+<h2 class="text-3xl font-bold dark:text-white">Loved by Restaurant Owners</h2>
+<p class="text-base text-gray-600 dark:text-gray-400 mt-2">See what our partners are saying about WaiterCall.</p>
+</div>
+<div class="grid md:grid-cols-2 gap-8">
+<div class="p-6 rounded-xl border border-[#dbe6df] dark:border-gray-700 bg-white dark:bg-background-dark/50 flex flex-col gap-4">
+<p class="text-gray-700 dark:text-gray-300 italic">"WaiterCall has been a game-changer. Our service is faster, our customers are happier, and we've seen a 15% increase in drink re-orders. It's incredibly simple and effective."</p>
+<div class="flex items-center gap-4 mt-auto">
+<img class="w-12 h-12 rounded-full object-cover" data-alt="Photo of Sarah Chen" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxluTNZnviqXhrooL6-Un1DGHuzEsWLvo8Vl_E7LMs0_6-595bNnCm2vmZJcMXnzUkfim9fJs-jDPWaAnoFs4PbJvoLjVBSr4bqJ34-LD5CLU_tVlkQFUma8AKcsAWlaTIC3rjOulUpADgJ527V_c3vZNGDUVQ0c0mwObvzEdymKuqfYlF8BpT68MJ7mDmfQ9Gc776C32dSvmlG83guaMOYkqpNPTxSJZm-hJmNQAyU-rDFXccDp2UMRLbu4TNKNIMPdtfVOub5w"/>
+<div>
+<h4 class="font-bold dark:text-white">Sarah Chen</h4>
+<p class="text-sm text-gray-500 dark:text-gray-400">Owner, The Gourmet Bistro</p>
+</div>
+</div>
+</div>
+<div class="p-6 rounded-xl border border-[#dbe6df] dark:border-gray-700 bg-white dark:bg-background-dark/50 flex flex-col gap-4">
+<p class="text-gray-700 dark:text-gray-300 italic">"I was skeptical at first, but the real-time dashboard keeps my team perfectly in sync. We're handling rush hour with ease and customer complaints about wait times have vanished."</p>
+<div class="flex items-center gap-4 mt-auto">
+<img class="w-12 h-12 rounded-full object-cover" data-alt="Photo of Marco Rivera" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAAXGDbE8YGpvJNjK8aQk-mEaXUaxXyX2P2NoJW0YMSLOhxr2ok0hsJtM30dI9tHKU1JCn5wws6yBvuG2EYiJhfba9eSCw-xByrdUXiQrsvwCm8tRoCbNjRLHO-_HcPPm3gAYQlFJjDVIgf_53xuyFtPO4ZPozKasWNBp1ieH0dg1ysAkbsizTDmelMD76uOp7oLz3-jMquKpako_USrJn6YRoRd7qECBE24E7GUh8Eh03xdtScbraDSd4KnLVhpj1MkY49KpMPhQ"/>
+<div>
+<h4 class="font-bold dark:text-white">Marco Rivera</h4>
+<p class="text-sm text-gray-500 dark:text-gray-400">Manager, La Familia Trattoria</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="px-4 py-10" id="pricing">
+<div class="text-center mb-10">
+<h2 class="text-3xl font-bold dark:text-white">Simple, Transparent Pricing</h2>
+<p class="text-base text-gray-600 dark:text-gray-400 mt-2">Choose the plan that's right for your business. No hidden fees.</p>
+</div>
+<div class="grid md:grid-cols-3 gap-8 items-end">
+<div class="p-6 rounded-xl border border-[#dbe6df] dark:border-gray-700 bg-white dark:bg-background-dark/50 flex flex-col gap-4">
+<h3 class="text-lg font-bold text-primary">Basic</h3>
+<p class="text-4xl font-black dark:text-white">$49<span class="text-base font-medium text-gray-500">/mo</span></p>
+<p class="text-sm text-gray-600 dark:text-gray-400">Perfect for small cafes and bistros getting started.</p>
+<ul class="space-y-2 text-sm text-gray-700 dark:text-gray-300 mt-4">
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-primary text-base">check</span> Up to 15 Tables</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-primary text-base">check</span> QR Code Calling</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-primary text-base">check</span> Waiter Dashboard</li>
+</ul>
+<button class="w-full mt-6 flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#f0f5f1] dark:bg-primary/20 text-[#111813] dark:text-white text-sm font-bold leading-normal tracking-[0.015em]">Choose Plan</button>
+</div>
+<div class="p-8 rounded-xl border-2 border-primary bg-white dark:bg-background-dark/50 flex flex-col gap-4 relative">
+<div class="absolute top-0 -translate-y-1/2 left-1/2 -translate-x-1/2 bg-primary text-black px-3 py-1 text-xs font-bold rounded-full uppercase">Most Popular</div>
+<h3 class="text-lg font-bold text-primary">Pro</h3>
+<p class="text-5xl font-black dark:text-white">$99<span class="text-base font-medium text-gray-500">/mo</span></p>
+<p class="text-sm text-gray-600 dark:text-gray-400">For growing restaurants that need more power and insights.</p>
+<ul class="space-y-2 text-sm text-gray-700 dark:text-gray-300 mt-4">
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-primary text-base">check</span> Up to 50 Tables</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-primary text-base">check</span> All Basic Features</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-primary text-base">check</span> Performance Analytics</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-primary text-base">check</span> Priority Support</li>
+</ul>
+<button class="w-full mt-6 flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary text-[#111813] text-base font-bold leading-normal tracking-[0.015em]">Choose Plan</button>
+</div>
+<div class="p-6 rounded-xl border border-[#dbe6df] dark:border-gray-700 bg-white dark:bg-background-dark/50 flex flex-col gap-4">
+<h3 class="text-lg font-bold text-primary">Enterprise</h3>
+<p class="text-4xl font-black dark:text-white">Custom</p>
+<p class="text-sm text-gray-600 dark:text-gray-400">Tailored solutions for large chains and restaurant groups.</p>
+<ul class="space-y-2 text-sm text-gray-700 dark:text-gray-300 mt-4">
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-primary text-base">check</span> Unlimited Tables</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-primary text-base">check</span> All Pro Features</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-primary text-base">check</span> Dedicated Account Manager</li>
+</ul>
+<button class="w-full mt-6 flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#f0f5f1] dark:bg-primary/20 text-[#111813] dark:text-white text-sm font-bold leading-normal tracking-[0.015em]">Contact Us</button>
+</div>
+</div>
+</div>
+<div class="px-4 py-16">
+<div class="bg-primary/20 dark:bg-primary/10 rounded-xl p-10 text-center">
+<h2 class="text-3xl font-bold text-[#111813] dark:text-white">Ready to Elevate Your Service?</h2>
+<p class="text-base text-gray-700 dark:text-gray-300 mt-2 mb-6 max-w-xl mx-auto">Join dozens of successful restaurants who trust WaiterCall to improve efficiency and delight their customers.</p>
+<button class="flex mx-auto min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary text-[#111813] text-base font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">Start Your Free Trial</span>
+</button>
+</div>
+</div>
+<footer class="px-10 py-8 border-t border-solid border-[#f0f5f1] dark:border-gray-800">
+<div class="flex flex-col md:flex-row items-center justify-between gap-6">
+<div class="flex items-center gap-3">
+<div class="flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm">
+<svg class="h-4 w-4 text-[#0df259]" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 2v20"></path>
+<path d="M18.36 18.36 12 12 5.64 5.64"></path>
+<path d="m5.64 18.36 6.36-6.36"></path>
+</svg>
+</div>
+<h2 class="text-[#111813] dark:text-white text-base font-bold leading-tight">WaiterCall</h2>
+</div>
+<div class="flex gap-6">
+<a class="text-sm text-gray-600 dark:text-gray-400 hover:text-primary" href="#">About Us</a>
+<a class="text-sm text-gray-600 dark:text-gray-400 hover:text-primary" href="#">Contact</a>
+<a class="text-sm text-gray-600 dark:text-gray-400 hover:text-primary" href="#">Privacy Policy</a>
+</div>
+<p class="text-sm text-gray-500 dark:text-gray-500">© 2024 WaiterCall. All rights reserved.</p>
+</div>
+</footer>
+</div>
+</div>
+</div>
+</div>
+
+</body></html>

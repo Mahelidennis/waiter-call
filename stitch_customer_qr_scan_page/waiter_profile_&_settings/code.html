@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Waiter Profile Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#50B83C",
+              "background-light": "#F8F9FA",
+              "background-dark": "#102216",
+              "content-light": "#ffffff",
+              "content-dark": "#1a2c20",
+              "text-light": "#333333",
+              "text-dark": "#e0e0e0",
+              "subtle-light": "#666666",
+              "subtle-dark": "#a0a0a0",
+              "border-light": "#E0E0E0",
+              "border-dark": "#334438",
+              "primary-subtle": "rgba(80, 184, 60, 0.1)"
+            },
+            fontFamily: {
+              "display": ["Work Sans", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.5rem", "lg": "0.75rem", "xl": "1rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
+<div class="relative flex min-h-screen w-full">
+<!-- SideNavBar -->
+<aside class="flex flex-col w-64 p-4 bg-content-light dark:bg-content-dark border-r border-border-light dark:border-border-dark">
+<div class="flex items-center gap-2 mb-10">
+<span class="material-symbols-outlined text-primary text-3xl">table_restaurant</span>
+<h1 class="text-xl font-bold text-text-light dark:text-text-dark">QuickCall</h1>
+</div>
+<div class="flex flex-col flex-grow">
+<div class="flex flex-col gap-4">
+<div class="flex gap-3 items-center">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Waiter profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDgto_wcDYyt8AMVoBhs7k0ZWdp50roGJlNkP8j2IfFRaB9pNc2rvpyNgyRchqcKBadh9bkD1kGULQCF2tVNsH7OTWiDxi0CcRYDvTF0tuwYzz0Lojxg5zj4l2Q2mABo9URkSUKen36BOAaAjOxLmDxPHz5E6xGpAC9RSrTB7S43vGo7n9qIeB4YxU5gDLfUdkBiPPBDDWcOr0mu_CiVzyb4n5koyaWThA88asQHOA5XnfEwftjcbrl1Z-lv6CTep1u2tSuBJxfqg");'></div>
+<div class="flex flex-col">
+<h2 class="text-base font-medium leading-normal text-text-light dark:text-text-dark">Alex Martinez</h2>
+<p class="text-sm font-normal leading-normal text-subtle-light dark:text-subtle-dark">Waiter</p>
+</div>
+</div>
+<div class="flex flex-col gap-2 mt-6">
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT bg-primary-subtle text-primary" href="#">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">person</span>
+<p class="text-sm font-medium leading-normal">Profile</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-subtle-light dark:text-subtle-dark hover:bg-primary-subtle hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<p class="text-sm font-medium leading-normal">Notifications</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-subtle-light dark:text-subtle-dark hover:bg-primary-subtle hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">deck</span>
+<p class="text-sm font-medium leading-normal">My Tables</p>
+</a>
+</div>
+</div>
+<div class="mt-auto flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-subtle-light dark:text-subtle-dark hover:bg-primary-subtle hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">logout</span>
+<p class="text-sm font-medium leading-normal">Logout</p>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 p-8 overflow-y-auto">
+<div class="max-w-4xl mx-auto">
+<!-- PageHeading -->
+<div class="mb-8">
+<p class="text-4xl font-black leading-tight tracking-[-0.033em] text-text-light dark:text-text-dark">Profile Settings</p>
+</div>
+<!-- Profile Section -->
+<section class="bg-content-light dark:bg-content-dark p-6 rounded-lg border border-border-light dark:border-border-dark mb-8">
+<!-- ProfileHeader -->
+<div class="flex p-4 @container border-b border-border-light dark:border-border-dark pb-6 mb-6">
+<div class="flex w-full flex-col gap-4 @[520px]:flex-row @[520px]:justify-between @[520px]:items-center">
+<div class="flex gap-4 items-center">
+<div class="relative">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-24 w-24" data-alt="Waiter profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCWBj-4icKpN2CAupFiBa33o4RQWEFyyA_BV1H1qvA-f8c95Gpp_W3pKHR0DMaG9k8URQDaKSMPxjHeKR1mDhXhZm0G5t92t855soHisNBj-_ewy6yeuf8nuANvRkNUPWrXNKUbOKGDJ0pn0ZRzKCM8lvAflvDK5rt2bWM9CRYvrVK5pOsEQXt92rutZ8WZmYmGG_-6tKhOzamYFJ1K6UPR-WE9jS7zA9lfFNC8kZnQMKL2CZoqPm_h_NbPRqsPCStboDPuUDfH0Q");'></div>
+<button class="absolute bottom-0 right-0 flex items-center justify-center size-8 bg-primary text-white rounded-full hover:bg-primary/90">
+<span class="material-symbols-outlined text-base">edit</span>
+</button>
+</div>
+<div class="flex flex-col justify-center">
+<p class="text-xl font-bold leading-tight tracking-[-0.015em] text-text-light dark:text-text-dark">Alex Martinez</p>
+<p class="text-base font-normal leading-normal text-subtle-light dark:text-subtle-dark">alex.martinez@restaurant.com</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Form -->
+<div class="p-4">
+<h2 class="text-xl font-bold leading-tight tracking-[-0.015em] mb-6 text-text-light dark:text-text-dark">Personal Information</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- TextField: Full Name -->
+<label class="flex flex-col">
+<p class="text-sm font-medium leading-normal pb-2 text-text-light dark:text-text-dark">Full Name</p>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-DEFAULT text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark h-12 placeholder:text-subtle-light dark:placeholder:text-subtle-dark px-3 text-base font-normal leading-normal" value="Alex Martinez"/>
+</label>
+<!-- TextField: Email -->
+<label class="flex flex-col">
+<p class="text-sm font-medium leading-normal pb-2 text-text-light dark:text-text-dark">Email Address</p>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-DEFAULT text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark h-12 placeholder:text-subtle-light dark:placeholder:text-subtle-dark px-3 text-base font-normal leading-normal" value="alex.martinez@restaurant.com"/>
+</label>
+<!-- TextField: Phone Number -->
+<label class="flex flex-col">
+<p class="text-sm font-medium leading-normal pb-2 text-text-light dark:text-text-dark">Phone Number</p>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-DEFAULT text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark h-12 placeholder:text-subtle-light dark:placeholder:text-subtle-dark px-3 text-base font-normal leading-normal" value="(555) 123-4567"/>
+</label>
+</div>
+<div class="flex justify-end mt-8">
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-DEFAULT h-10 px-6 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors">
+<span class="truncate">Save Changes</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Notification Settings Section -->
+<section class="bg-content-light dark:bg-content-dark p-6 rounded-lg border border-border-light dark:border-border-dark mb-8">
+<h2 class="text-xl font-bold leading-tight tracking-[-0.015em] mb-6 text-text-light dark:text-text-dark">Notification Settings</h2>
+<div class="space-y-6">
+<!-- Toggle Switch: Sound -->
+<div class="flex items-center justify-between">
+<div>
+<p class="font-medium text-text-light dark:text-text-dark">Sound Alerts</p>
+<p class="text-sm text-subtle-light dark:text-subtle-dark">Play a sound for new customer calls.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 rounded-full peer peer-focus:ring-2 peer-focus:ring-primary/50 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- Toggle Switch: Vibration -->
+<div class="flex items-center justify-between">
+<div>
+<p class="font-medium text-text-light dark:text-text-dark">Vibration Alerts</p>
+<p class="text-sm text-subtle-light dark:text-subtle-dark">Vibrate your mobile device on new calls.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 rounded-full peer peer-focus:ring-2 peer-focus:ring-primary/50 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- Toggle Switch: Push Notifications -->
+<div class="flex items-center justify-between">
+<div>
+<p class="font-medium text-text-light dark:text-text-dark">Desktop Push Notifications</p>
+<p class="text-sm text-subtle-light dark:text-subtle-dark">Show alerts directly on your desktop.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 rounded-full peer peer-focus:ring-2 peer-focus:ring-primary/50 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+</section>
+<!-- My Tables Section -->
+<section class="bg-content-light dark:bg-content-dark p-6 rounded-lg border border-border-light dark:border-border-dark">
+<h2 class="text-xl font-bold leading-tight tracking-[-0.015em] mb-4 text-text-light dark:text-text-dark">Today's Shift &amp; Tables</h2>
+<p class="text-base text-subtle-light dark:text-subtle-dark mb-6">Shift: 4:00 PM - 10:00 PM</p>
+<div>
+<h3 class="font-medium text-text-light dark:text-text-dark mb-4">Currently Assigned Tables</h3>
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+<div class="flex flex-col items-center justify-center p-4 bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark rounded-lg">
+<span class="material-symbols-outlined text-primary text-3xl mb-1">deck</span>
+<span class="font-bold text-lg text-text-light dark:text-text-dark">12</span>
+</div>
+<div class="flex flex-col items-center justify-center p-4 bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark rounded-lg">
+<span class="material-symbols-outlined text-primary text-3xl mb-1">deck</span>
+<span class="font-bold text-lg text-text-light dark:text-text-dark">14</span>
+</div>
+<div class="flex flex-col items-center justify-center p-4 bg-primary-subtle border border-dashed border-primary/50 rounded-lg text-primary">
+<span class="material-symbols-outlined text-3xl mb-1">add</span>
+<span class="font-bold text-lg">Add</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+</div>
+</body></html>

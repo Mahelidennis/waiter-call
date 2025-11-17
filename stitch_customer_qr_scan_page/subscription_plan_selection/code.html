@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>QuickCall Pricing</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#0df259",
+            "background-light": "#f5f8f6",
+            "background-dark": "#102216",
+          },
+          fontFamily: {
+            "display": ["Work Sans", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#111813] dark:text-background-light">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<!-- TopNavBar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/20 px-4 sm:px-10 lg:px-20 py-4 bg-background-light dark:bg-background-dark/80 sticky top-0 z-50 backdrop-blur-sm">
+<div class="flex items-center gap-4 text-[#111813] dark:text-primary">
+<div class="size-6">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M44 11.2727C44 14.0109 39.8386 16.3957 33.69 17.6364C39.8386 18.877 44 21.2618 44 24C44 26.7382 39.8386 29.123 33.69 30.3636C39.8386 31.6043 44 33.9891 44 36.7273C44 40.7439 35.0457 44 24 44C12.9543 44 4 40.7439 4 36.7273C4 33.9891 8.16144 31.6043 14.31 30.3636C8.16144 29.123 4 26.7382 4 24C4 21.2618 8.16144 18.877 14.31 17.6364C8.16144 16.3957 4 14.0109 4 11.2727C4 7.25611 12.9543 4 24 4C35.0457 4 44 7.25611 44 11.2727Z" fill="currentColor"></path>
+</svg>
+</div>
+<h2 class="text-xl font-bold tracking-[-0.015em]">QuickCall</h2>
+</div>
+<div class="hidden md:flex flex-1 justify-end gap-8">
+<div class="flex items-center gap-9">
+<a class="text-[#111813] dark:text-background-light/80 text-sm font-medium leading-normal hover:text-primary dark:hover:text-primary" href="#">Features</a>
+<a class="text-[#111813] dark:text-background-light/80 text-sm font-medium leading-normal hover:text-primary dark:hover:text-primary" href="#">Pricing</a>
+<a class="text-[#111813] dark:text-background-light/80 text-sm font-medium leading-normal hover:text-primary dark:hover:text-primary" href="#">Contact Sales</a>
+<a class="text-[#111813] dark:text-background-light/80 text-sm font-medium leading-normal hover:text-primary dark:hover:text-primary" href="#">Help</a>
+</div>
+<div class="flex gap-2">
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary/20 dark:bg-primary/30 text-[#111813] dark:text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/40 dark:hover:bg-primary/50">
+<span class="truncate">Log In</span>
+</button>
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-[#111813] text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/90">
+<span class="truncate">Sign Up</span>
+</button>
+</div>
+</div>
+</header>
+<main class="flex-1">
+<div class="px-4 sm:px-6 lg:px-8 py-12 lg:py-20 flex justify-center">
+<div class="layout-content-container flex flex-col max-w-6xl flex-1 gap-12">
+<!-- PageHeading & SegmentedButtons -->
+<section class="flex flex-col items-center gap-8 text-center">
+<div class="flex flex-col gap-3">
+<p class="text-[#111813] dark:text-white text-4xl md:text-5xl font-black leading-tight tracking-[-0.033em]">Find the Perfect Plan for Your Restaurant</p>
+<p class="text-[#608a6e] dark:text-background-light/60 text-lg font-normal leading-normal max-w-2xl mx-auto">Choose a plan and start improving your table service today. Cancel anytime.</p>
+</div>
+<div class="flex w-full max-w-sm px-4 py-3">
+<div class="flex h-12 flex-1 items-center justify-center rounded-xl bg-background-dark/5 dark:bg-background-light/5 p-1.5">
+<label class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-lg px-2 has-[:checked]:bg-white dark:has-[:checked]:bg-background-dark/50 has-[:checked]:shadow-lg text-gray-500 dark:text-gray-400 has-[:checked]:text-[#111813] dark:has-[:checked]:text-white text-sm font-medium leading-normal">
+<span class="truncate">Monthly</span>
+<input class="invisible w-0" name="billing-cycle" type="radio" value="Monthly"/>
+</label>
+<label class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-lg px-2 has-[:checked]:bg-white dark:has-[:checked]:bg-background-dark/50 has-[:checked]:shadow-lg text-gray-500 dark:text-gray-400 has-[:checked]:text-[#111813] dark:has-[:checked]:text-white text-sm font-medium leading-normal">
+<span class="truncate">Annually (Save 20%)</span>
+<input checked="" class="invisible w-0" name="billing-cycle" type="radio" value="Annually (Save 20%)"/>
+</label>
+</div>
+</div>
+</section>
+<!-- PricingCards -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<div class="flex flex-1 flex-col gap-6 rounded-xl border border-solid border-primary/20 bg-white/50 dark:bg-background-dark/50 p-6">
+<div class="flex flex-col gap-2">
+<h3 class="text-[#111813] dark:text-white text-lg font-bold leading-tight">Basic</h3>
+<p class="flex items-baseline gap-1 text-[#111813] dark:text-white">
+<span class="text-5xl font-black leading-tight tracking-[-0.033em]">$29</span>
+<span class="text-base font-bold leading-tight text-gray-500 dark:text-gray-400">/month</span>
+</p>
+<p class="text-sm text-gray-600 dark:text-gray-300">For small restaurants getting started.</p>
+</div>
+<button class="flex w-full min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-4 bg-primary/20 dark:bg-primary/30 text-[#111813] dark:text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-primary/40 dark:hover:bg-primary/50">
+<span class="truncate">Choose Basic</span>
+</button>
+<div class="flex flex-col gap-3 pt-2 border-t border-primary/10">
+<p class="text-sm font-bold text-[#111813] dark:text-white">INCLUDES:</p>
+<div class="flex gap-3 text-[13px] font-normal leading-normal text-[#111813] dark:text-background-light/80 items-center">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                    QR Code Generation
+                  </div>
+<div class="flex gap-3 text-[13px] font-normal leading-normal text-[#111813] dark:text-background-light/80 items-center">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                    Waiter Call System
+                  </div>
+<div class="flex gap-3 text-[13px] font-normal leading-normal text-[#111813] dark:text-background-light/80 items-center">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                    Up to 15 Tables
+                  </div>
+<div class="flex gap-3 text-[13px] font-normal leading-normal text-[#111813] dark:text-background-light/80 items-center">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                    Basic Support
+                  </div>
+</div>
+</div>
+<div class="flex flex-1 flex-col gap-6 rounded-xl border-2 border-solid border-primary bg-white dark:bg-background-dark p-6 shadow-2xl shadow-primary/20 relative overflow-hidden">
+<div class="absolute top-0 right-0 text-xs font-bold leading-normal tracking-[0.015em] bg-primary px-6 py-1.5 text-center text-black" style="transform: rotate(45deg) translate(28%, -5%); transform-origin: center;">Popular</div>
+<div class="flex flex-col gap-2">
+<h3 class="text-[#111813] dark:text-white text-lg font-bold leading-tight">Pro</h3>
+<p class="flex items-baseline gap-1 text-[#111813] dark:text-white">
+<span class="text-5xl font-black leading-tight tracking-[-0.033em]">$79</span>
+<span class="text-base font-bold leading-tight text-gray-500 dark:text-gray-400">/month</span>
+</p>
+<p class="text-sm text-gray-600 dark:text-gray-300">For growing restaurants needing more tools.</p>
+</div>
+<button class="flex w-full min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-4 bg-primary text-[#111813] text-base font-bold leading-normal tracking-[0.015em] hover:bg-primary/90">
+<span class="truncate">Start Free Trial</span>
+</button>
+<div class="flex flex-col gap-3 pt-2 border-t border-primary/20">
+<p class="text-sm font-bold text-[#111813] dark:text-white">EVERYTHING IN BASIC, PLUS:</p>
+<div class="flex gap-3 text-[13px] font-normal leading-normal text-[#111813] dark:text-background-light/80 items-center">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                    Performance Analytics
+                  </div>
+<div class="flex gap-3 text-[13px] font-normal leading-normal text-[#111813] dark:text-background-light/80 items-center">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                    Digital Menu Integration
+                  </div>
+<div class="flex gap-3 text-[13px] font-normal leading-normal text-[#111813] dark:text-background-light/80 items-center">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                    Up to 50 Tables
+                  </div>
+<div class="flex gap-3 text-[13px] font-normal leading-normal text-[#111813] dark:text-background-light/80 items-center">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                    Priority Support
+                  </div>
+</div>
+</div>
+<div class="flex flex-1 flex-col gap-6 rounded-xl border border-solid border-primary/20 bg-white/50 dark:bg-background-dark/50 p-6">
+<div class="flex flex-col gap-2">
+<h3 class="text-[#111813] dark:text-white text-lg font-bold leading-tight">Enterprise</h3>
+<p class="flex items-baseline gap-1 text-[#111813] dark:text-white">
+<span class="text-5xl font-black leading-tight tracking-[-0.033em]">Custom</span>
+</p>
+<p class="text-sm text-gray-600 dark:text-gray-300">For large chains and custom needs.</p>
+</div>
+<button class="flex w-full min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-4 bg-primary/20 dark:bg-primary/30 text-[#111813] dark:text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-primary/40 dark:hover:bg-primary/50">
+<span class="truncate">Contact Sales</span>
+</button>
+<div class="flex flex-col gap-3 pt-2 border-t border-primary/10">
+<p class="text-sm font-bold text-[#111813] dark:text-white">EVERYTHING IN PRO, PLUS:</p>
+<div class="flex gap-3 text-[13px] font-normal leading-normal text-[#111813] dark:text-background-light/80 items-center">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                    Custom Branding
+                  </div>
+<div class="flex gap-3 text-[13px] font-normal leading-normal text-[#111813] dark:text-background-light/80 items-center">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                    Multi-location Management
+                  </div>
+<div class="flex gap-3 text-[13px] font-normal leading-normal text-[#111813] dark:text-background-light/80 items-center">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                    Dedicated Account Manager
+                  </div>
+<div class="flex gap-3 text-[13px] font-normal leading-normal text-[#111813] dark:text-background-light/80 items-center">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                    API Access
+                  </div>
+</div>
+</div>
+</section>
+<!-- Feature Comparison Table -->
+<section class="flex flex-col gap-6 pt-12">
+<h4 class="text-center text-3xl font-bold text-[#111813] dark:text-white tracking-tight">Compare All Features</h4>
+<div class="overflow-x-auto rounded-xl border border-primary/10 bg-white/50 dark:bg-background-dark/50">
+<table class="w-full min-w-[600px] text-sm text-left">
+<thead class="border-b border-primary/10">
+<tr>
+<th class="px-6 py-4 font-bold text-lg text-[#111813] dark:text-white" scope="col">Features</th>
+<th class="px-6 py-4 text-center font-medium text-gray-700 dark:text-gray-300" scope="col">Basic</th>
+<th class="px-6 py-4 text-center font-medium text-gray-700 dark:text-gray-300" scope="col">
+<div class="flex flex-col items-center"><span>Pro</span><span class="text-xs font-bold text-primary">(Recommended)</span></div>
+</th>
+<th class="px-6 py-4 text-center font-medium text-gray-700 dark:text-gray-300" scope="col">Enterprise</th>
+</tr>
+</thead>
+<tbody>
+<tr class="border-b border-primary/10">
+<td class="px-6 py-4 font-medium text-[#111813] dark:text-white">QR Code Generation</td>
+<td class="px-6 py-4 text-center"><span class="material-symbols-outlined text-primary">check</span></td>
+<td class="px-6 py-4 text-center"><span class="material-symbols-outlined text-primary">check</span></td>
+<td class="px-6 py-4 text-center"><span class="material-symbols-outlined text-primary">check</span></td>
+</tr>
+<tr class="border-b border-primary/10 bg-background-light/50 dark:bg-background-dark/30">
+<td class="px-6 py-4 font-medium text-[#111813] dark:text-white">Table Count</td>
+<td class="px-6 py-4 text-center text-gray-600 dark:text-gray-400">Up to 15</td>
+<td class="px-6 py-4 text-center text-gray-600 dark:text-gray-400">Up to 50</td>
+<td class="px-6 py-4 text-center text-gray-600 dark:text-gray-400">Unlimited</td>
+</tr>
+<tr class="border-b border-primary/10">
+<td class="px-6 py-4 font-medium text-[#111813] dark:text-white">Performance Analytics</td>
+<td class="px-6 py-4 text-center"><span class="material-symbols-outlined text-gray-400 dark:text-gray-600">close</span></td>
+<td class="px-6 py-4 text-center"><span class="material-symbols-outlined text-primary">check</span></td>
+<td class="px-6 py-4 text-center"><span class="material-symbols-outlined text-primary">check</span></td>
+</tr>
+<tr class="border-b border-primary/10 bg-background-light/50 dark:bg-background-dark/30">
+<td class="px-6 py-4 font-medium text-[#111813] dark:text-white">Digital Menu Integration</td>
+<td class="px-6 py-4 text-center"><span class="material-symbols-outlined text-gray-400 dark:text-gray-600">close</span></td>
+<td class="px-6 py-4 text-center"><span class="material-symbols-outlined text-primary">check</span></td>
+<td class="px-6 py-4 text-center"><span class="material-symbols-outlined text-primary">check</span></td>
+</tr>
+<tr class="border-b border-primary/10">
+<td class="px-6 py-4 font-medium text-[#111813] dark:text-white">Custom Branding</td>
+<td class="px-6 py-4 text-center"><span class="material-symbols-outlined text-gray-400 dark:text-gray-600">close</span></td>
+<td class="px-6 py-4 text-center"><span class="material-symbols-outlined text-gray-400 dark:text-gray-600">close</span></td>
+<td class="px-6 py-4 text-center"><span class="material-symbols-outlined text-primary">check</span></td>
+</tr>
+<tr class="bg-background-light/50 dark:bg-background-dark/30">
+<td class="px-6 py-4 font-medium text-[#111813] dark:text-white">Dedicated Account Manager</td>
+<td class="px-6 py-4 text-center"><span class="material-symbols-outlined text-gray-400 dark:text-gray-600">close</span></td>
+<td class="px-6 py-4 text-center"><span class="material-symbols-outlined text-gray-400 dark:text-gray-600">close</span></td>
+<td class="px-6 py-4 text-center"><span class="material-symbols-outlined text-primary">check</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- FAQ Section -->
+<section class="flex flex-col gap-6 pt-12 max-w-4xl mx-auto w-full">
+<h4 class="text-center text-3xl font-bold text-[#111813] dark:text-white tracking-tight">Frequently Asked Questions</h4>
+<div class="flex flex-col gap-4">
+<details class="group rounded-xl p-6 bg-white/50 dark:bg-background-dark/50 border border-primary/10">
+<summary class="flex cursor-pointer items-center justify-between font-bold text-[#111813] dark:text-white">
+                        Can I change my plan later?
+                        <span class="material-symbols-outlined transition-transform group-open:rotate-180">expand_more</span>
+</summary>
+<p class="mt-4 text-gray-600 dark:text-gray-300">Yes, you can upgrade, downgrade, or cancel your plan at any time from your account dashboard. Changes will be prorated for the current billing cycle.</p>
+</details>
+<details class="group rounded-xl p-6 bg-white/50 dark:bg-background-dark/50 border border-primary/10">
+<summary class="flex cursor-pointer items-center justify-between font-bold text-[#111813] dark:text-white">
+                        What happens after my trial ends?
+                        <span class="material-symbols-outlined transition-transform group-open:rotate-180">expand_more</span>
+</summary>
+<p class="mt-4 text-gray-600 dark:text-gray-300">We will notify you before your 14-day trial ends. You can then choose to upgrade to a paid plan to continue using the service. If you don't, your account will be paused, but your data will not be deleted immediately.</p>
+</details>
+<details class="group rounded-xl p-6 bg-white/50 dark:bg-background-dark/50 border border-primary/10">
+<summary class="flex cursor-pointer items-center justify-between font-bold text-[#111813] dark:text-white">
+                        Is there a setup fee?
+                        <span class="material-symbols-outlined transition-transform group-open:rotate-180">expand_more</span>
+</summary>
+<p class="mt-4 text-gray-600 dark:text-gray-300">No, there are no setup fees on any of our plans. You just pay the monthly or annual subscription fee. We also offer free onboarding assistance to get you started smoothly.</p>
+</details>
+</div>
+</section>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-white dark:bg-background-dark/50 border-t border-primary/10 mt-20">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex items-center gap-3">
+<div class="size-5 text-[#111813] dark:text-primary">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M44 11.2727C44 14.0109 39.8386 16.3957 33.69 17.6364C39.8386 18.877 44 21.2618 44 24C44 26.7382 39.8386 29.123 33.69 30.3636C39.8386 31.6043 44 33.9891 44 36.7273C44 40.7439 35.0457 44 24 44C12.9543 44 4 40.7439 4 36.7273C4 33.9891 8.16144 31.6043 14.31 30.3636C8.16144 29.123 4 26.7382 4 24C4 21.2618 8.16144 18.877 14.31 17.6364C8.16144 16.3957 4 14.0109 4 11.2727C4 7.25611 12.9543 4 24 4C35.0457 4 44 7.25611 44 11.2727Z" fill="currentColor"></path>
+</svg>
+</div>
+<p class="text-sm text-gray-600 dark:text-gray-400">© 2024 QuickCall. All rights reserved.</p>
+</div>
+<div class="flex items-center gap-6">
+<a class="text-sm text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary" href="#">Terms of Service</a>
+<a class="text-sm text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary" href="#">Privacy Policy</a>
+<a class="text-sm text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary" href="#">Contact</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+</div>
+</body></html>

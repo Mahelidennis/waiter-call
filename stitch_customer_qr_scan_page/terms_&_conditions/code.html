@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Terms and Conditions</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#0df259",
+              "background-light": "#f5f8f6",
+              "background-dark": "#102216",
+            },
+            fontFamily: {
+              "display": ["Work Sans", "Noto Sans", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark">
+<div class="relative flex min-h-screen w-full flex-col group/design-root overflow-x-hidden antialiased">
+<!-- Background Content (for demonstration) -->
+<div class="absolute inset-0 h-full w-full bg-background-light dark:bg-background-dark bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:48px_48px] -z-10"></div>
+<div class="p-8 font-display text-gray-700 dark:text-gray-300">
+<h1 class="text-3xl font-bold text-gray-900 dark:text-white">WaiterCall System Dashboard</h1>
+<p class="mt-2">Welcome, Table 12.</p>
+</div>
+<!-- Modal Overlay -->
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/60 dark:bg-black/70 p-4">
+<!-- Modal Container -->
+<div class="flex flex-col w-full max-w-2xl max-h-[90vh] bg-white dark:bg-gray-900 rounded-xl shadow-2xl">
+<!-- Modal Header -->
+<div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+<div class="flex flex-col">
+<p class="text-gray-900 dark:text-white text-2xl font-bold leading-tight tracking-tight">Terms and Conditions</p>
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">Last Updated: October 26, 2023</p>
+</div>
+<button class="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors">
+<span class="material-symbols-outlined text-gray-600 dark:text-gray-300 text-xl">close</span>
+</button>
+</div>
+<!-- Scrollable Content Area -->
+<div class="flex-1 overflow-y-auto p-6">
+<div class="layout-content-container flex flex-col w-full">
+<p class="text-gray-800 dark:text-gray-300 text-base font-normal leading-relaxed pb-4">
+                      Welcome to WaiterCall. This document outlines the terms and conditions governing your use of our platform. By accessing or using our service, you agree to be bound by these terms.
+                    </p>
+<h3 class="text-gray-900 dark:text-white text-lg font-bold leading-tight tracking-tight pt-4 pb-2">1. Acceptance of Terms</h3>
+<p class="text-gray-800 dark:text-gray-300 text-base font-normal leading-relaxed pb-4">
+                      By using this service, you confirm that you have read, understood, and agree to be bound by these terms. If you do not agree with any part of these terms, you must not use the service.
+                    </p>
+<h3 class="text-gray-900 dark:text-white text-lg font-bold leading-tight tracking-tight pt-4 pb-2">2. Description of Service</h3>
+<p class="text-gray-800 dark:text-gray-300 text-base font-normal leading-relaxed pb-4">
+                      Our service provides a web-based system for restaurant customers to call a waiter to their table by scanning a QR code. The service is provided "as is" and is intended to enhance your dining experience.
+                    </p>
+<h3 class="text-gray-900 dark:text-white text-lg font-bold leading-tight tracking-tight pt-4 pb-2">3. User Obligations &amp; Conduct</h3>
+<p class="text-gray-800 dark:text-gray-300 text-base font-normal leading-relaxed pb-4">
+                        You agree to use the service responsibly and only for its intended purpose. Misuse of the service, including but not limited to spamming requests or using the service for illicit activities, is strictly prohibited and may result in denial of service.
+                    </p>
+<h3 class="text-gray-900 dark:text-white text-lg font-bold leading-tight tracking-tight pt-4 pb-2">4. Privacy</h3>
+<p class="text-gray-800 dark:text-gray-300 text-base font-normal leading-relaxed pb-4">
+                        We respect your privacy. Our service is designed to be anonymous and does not collect personal identifiable information from diners. Please refer to our full Privacy Policy for more details.
+                    </p>
+<h3 class="text-gray-900 dark:text-white text-lg font-bold leading-tight tracking-tight pt-4 pb-2">5. Limitation of Liability</h3>
+<p class="text-gray-800 dark:text-gray-300 text-base font-normal leading-relaxed pb-4">
+                        The service is provided without warranties of any kind. We are not liable for any delays in service or issues arising from the use of this platform. The restaurant remains solely responsible for the service provided to you.
+                    </p>
+</div>
+</div>
+<!-- Modal Footer -->
+<div class="p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 rounded-b-xl">
+<p class="text-xs text-center text-gray-500 dark:text-gray-400 mb-4">By clicking 'Agree &amp; Continue', you confirm that you have read and agree to our Terms and Conditions.</p>
+<div class="flex items-center justify-end gap-4">
+<button class="px-5 py-2.5 rounded-lg text-sm font-semibold bg-gray-200/80 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white transition-colors">Decline</button>
+<button class="px-5 py-2.5 rounded-lg text-sm font-semibold bg-primary hover:opacity-90 text-background-dark transition-opacity">Agree &amp; Continue</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body></html>
