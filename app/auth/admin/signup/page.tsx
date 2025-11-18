@@ -45,9 +45,18 @@ export default function AdminSignupPage() {
         timeoutPromise,
       ])
 
-      const result = await response.json()
+      let result
+      try {
+        result = await response.json()
+      } catch (jsonError) {
+        // If response is not JSON, it might be an error
+        throw new Error('Server returned an invalid response. Please try again.')
+      }
+
       if (!response.ok) {
-        throw new Error(result.error || 'Failed to create admin account')
+        // Use the error message from the server if available
+        const serverError = result?.error || `Server error (${response.status}). Please try again.`
+        throw new Error(serverError)
       }
 
       setSuccess('Admin account created successfully. You can now sign in.')
@@ -55,15 +64,27 @@ export default function AdminSignupPage() {
         router.push('/auth/admin')
       }, 1500)
     } catch (err) {
-      const errorMessage = err instanceof Error 
-        ? err.message 
-        : 'Failed to sign up. Please check your connection and try again.'
-      setError(errorMessage)
+      let errorMessage = 'Failed to sign up. Please check your connection and try again.'
       
-      // If it's a timeout, provide more helpful message
-      if (err instanceof Error && err.message.includes('timeout')) {
-        setError('Request timed out. This might be due to slow network or server issues. Please try again.')
+      if (err instanceof Error) {
+        errorMessage = err.message
+      } else if (typeof err === 'string') {
+        errorMessage = err
       }
+      
+      // Provide more specific error messages
+      if (errorMessage.includes('timeout') || errorMessage.includes('timed out')) {
+        errorMessage = 'Request timed out. This might be due to slow network or server issues. Please try again.'
+      } else if (errorMessage.includes('already exists') || errorMessage.includes('already registered')) {
+        errorMessage = 'An account with this email already exists. Please use a different email or sign in instead.'
+      } else if (errorMessage.includes('configuration error') || errorMessage.includes('contact support')) {
+        errorMessage = 'Server configuration error. Please contact support or try again later.'
+      } else if (errorMessage.includes('Database connection')) {
+        errorMessage = 'Database connection error. Please try again in a moment.'
+      }
+      
+      setError(errorMessage)
+      console.error('Signup error:', err)
     } finally {
       setLoading(false)
     }

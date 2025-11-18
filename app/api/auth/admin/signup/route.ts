@@ -121,24 +121,46 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { data, error } = await withTimeout(
-      supabase.auth.admin.createUser({
-        email: adminEmail,
-        password: adminPassword,
-        email_confirm: true,
-        user_metadata: {
-          role: 'admin',
-          restaurantId: restaurant.id,
+    let supabaseResponse
+    try {
+      supabaseResponse = await withTimeout(
+        supabase.auth.admin.createUser({
+          email: adminEmail,
+          password: adminPassword,
+          email_confirm: true,
+          user_metadata: {
+            role: 'admin',
+            restaurantId: restaurant.id,
+          },
+          app_metadata: {
+            role: 'admin',
+            restaurantId: restaurant.id,
+          },
+        }),
+        15000 // 15 second timeout for Supabase
+      )
+    } catch (timeoutError: any) {
+      // Clean up restaurant if Supabase call times out
+      if (restaurantId) {
+        try {
+          await prisma.restaurant.delete({ where: { id: restaurantId } })
+        } catch (cleanupError) {
+          console.error('Error cleaning up restaurant:', cleanupError)
+        }
+      }
+      
+      console.error('Supabase API timeout:', timeoutError)
+      return NextResponse.json(
+        { 
+          error: 'Connection to authentication service timed out. Please check your internet connection and try again.'
         },
-        app_metadata: {
-          role: 'admin',
-          restaurantId: restaurant.id,
-        },
-      }),
-      15000 // 15 second timeout for Supabase
-    )
+        { status: 504 }
+      )
+    }
 
-    if (error || !data.user) {
+    const { data, error } = supabaseResponse
+
+    if (error || !data?.user) {
       // Clean up restaurant if Supabase user creation fails
       if (restaurantId) {
         try {
@@ -149,15 +171,33 @@ export async function POST(request: NextRequest) {
       }
       
       const errorMessage = error?.message || 'Failed to create admin account'
-      console.error('Supabase user creation error:', errorMessage)
+      console.error('Supabase user creation error:', {
+        message: errorMessage,
+        status: error?.status,
+        code: error?.code,
+        email: adminEmail,
+      })
+      
+      // Provide more specific error messages
+      let userFriendlyError = 'Failed to create admin account. Please try again.'
+      
+      if (errorMessage.includes('already registered') || errorMessage.includes('already exists') || error?.code === 'user_already_exists') {
+        userFriendlyError = 'An account with this email already exists. Please use a different email or sign in instead.'
+      } else if (errorMessage.includes('Invalid email') || error?.code === 'invalid_email') {
+        userFriendlyError = 'Invalid email address. Please check and try again.'
+      } else if (errorMessage.includes('Password') || error?.code === 'weak_password') {
+        userFriendlyError = 'Password is too weak. Please use a stronger password (at least 6 characters).'
+      } else if (error?.status === 400) {
+        userFriendlyError = errorMessage || 'Invalid request. Please check your information and try again.'
+      } else if (error?.status === 401 || error?.status === 403) {
+        userFriendlyError = 'Authentication service configuration error. Please contact support.'
+      } else if (error?.status === 500 || error?.status === 503) {
+        userFriendlyError = 'Authentication service is temporarily unavailable. Please try again in a moment.'
+      }
       
       return NextResponse.json(
-        { 
-          error: errorMessage.includes('already registered') 
-            ? 'An account with this email already exists'
-            : errorMessage || 'Failed to create admin account. Please try again.'
-        },
-        { status: 400 }
+        { error: userFriendlyError },
+        { status: error?.status || 400 }
       )
     }
 
@@ -169,7 +209,12 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     )
   } catch (error: any) {
-    console.error('Admin signup error:', error)
+    console.error('Admin signup error:', {
+      message: error?.message,
+      stack: error?.stack,
+      name: error?.name,
+      restaurantId,
+    })
     
     // Clean up restaurant if it was created
     if (restaurantId) {
@@ -182,10 +227,26 @@ export async function POST(request: NextRequest) {
     
     const errorMessage = error?.message || 'Failed to create account'
     
-    if (errorMessage.includes('timeout')) {
+    if (errorMessage.includes('timeout') || errorMessage.includes('Timeout')) {
       return NextResponse.json(
         { error: 'Request timed out. Please check your connection and try again.' },
         { status: 504 }
+      )
+    }
+    
+    // Check for database connection errors
+    if (errorMessage.includes('connect') || errorMessage.includes('ECONNREFUSED') || errorMessage.includes('database')) {
+      return NextResponse.json(
+        { error: 'Database connection error. Please check your database configuration.' },
+        { status: 503 }
+      )
+    }
+    
+    // Check for Prisma errors
+    if (error?.code === 'P2002') {
+      return NextResponse.json(
+        { error: 'A restaurant with this name or email already exists.' },
+        { status: 400 }
       )
     }
     
