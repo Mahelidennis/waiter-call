@@ -130,3 +130,4 @@ Visit: http://localhost:3000
 - All pages are mobile-responsive
 - Ready for production deployment on Vercel
 
+

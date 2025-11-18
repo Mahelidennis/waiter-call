@@ -125,3 +125,4 @@ Visit: http://localhost:3000/admin/test-rest-1
 ✅ All pages are mobile-friendly
 ✅ No app installation needed
 
+

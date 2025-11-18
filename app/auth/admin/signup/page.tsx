@@ -30,11 +30,20 @@ export default function AdminSignupPage() {
     setLoading(true)
 
     try {
-      const response = await fetch('/api/auth/admin/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+      // Create a timeout promise
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        setTimeout(() => reject(new Error('Request timed out. Please try again.')), 30000) // 30 second timeout
       })
+
+      // Race between fetch and timeout
+      const response = await Promise.race([
+        fetch('/api/auth/admin/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(form),
+        }),
+        timeoutPromise,
+      ])
 
       const result = await response.json()
       if (!response.ok) {
@@ -46,7 +55,15 @@ export default function AdminSignupPage() {
         router.push('/auth/admin')
       }, 1500)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to sign up')
+      const errorMessage = err instanceof Error 
+        ? err.message 
+        : 'Failed to sign up. Please check your connection and try again.'
+      setError(errorMessage)
+      
+      // If it's a timeout, provide more helpful message
+      if (err instanceof Error && err.message.includes('timeout')) {
+        setError('Request timed out. This might be due to slow network or server issues. Please try again.')
+      }
     } finally {
       setLoading(false)
     }
@@ -172,4 +189,5 @@ export default function AdminSignupPage() {
     </div>
   )
 }
+
 

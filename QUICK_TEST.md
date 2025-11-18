@@ -47,3 +47,4 @@ http://localhost:3000/admin/test-rest-1
 ⏳ Need to enable Realtime for `Call` table
 ⏳ Need to set up RLS policies
 
+

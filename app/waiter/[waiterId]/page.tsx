@@ -40,18 +40,27 @@ export default function WaiterDashboard() {
 
   useEffect(() => {
     fetchWaiter()
-    fetchCalls()
-    setupRealtimeSubscription()
   }, [waiterId])
+
+  useEffect(() => {
+    if (waiter) {
+      fetchCalls()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filter, waiter])
 
   async function fetchWaiter() {
     try {
       const response = await fetch(`/api/waiters/${waiterId}`)
-      if (!response.ok) return
+      if (!response.ok) {
+        setLoading(false)
+        return
+      }
       const data = await response.json()
       setWaiter(data)
     } catch (error) {
       console.error('Error fetching waiter:', error)
+      setLoading(false)
     }
   }
 
@@ -59,7 +68,8 @@ export default function WaiterDashboard() {
     try {
       if (!waiter) return
       
-      const response = await fetch(`/api/calls?restaurantId=${waiter.restaurantId}&status=PENDING`)
+      // Fetch all calls for the restaurant, not just pending
+      const response = await fetch(`/api/calls?restaurantId=${waiter.restaurantId}`)
       if (!response.ok) return
       
       const data = await response.json()
@@ -69,6 +79,9 @@ export default function WaiterDashboard() {
         filtered = data.filter((call: Call) => call.waiterId === waiterId)
       } else if (filter === 'handled') {
         filtered = data.filter((call: Call) => call.status === 'HANDLED')
+      } else {
+        // For 'all' filter, show pending calls first
+        filtered = data.filter((call: Call) => call.status === 'PENDING')
       }
       setCalls(filtered)
     } catch (error) {
@@ -82,9 +95,12 @@ export default function WaiterDashboard() {
     if (waiter) {
       fetchCalls()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter, waiter])
 
-  function setupRealtimeSubscription() {
+  useEffect(() => {
+    if (!waiter) return
+
     const channel = supabase
       .channel(`waiter-calls-${waiterId}`)
       .on(
@@ -125,7 +141,7 @@ export default function WaiterDashboard() {
     return () => {
       supabase.removeChannel(channel)
     }
-  }
+  }, [waiter, waiterId])
 
   async function handleCall(callId: string) {
     try {

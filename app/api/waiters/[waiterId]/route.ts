@@ -1,6 +1,53 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 
+// Get a waiter
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ waiterId: string }> }
+) {
+  try {
+    const { waiterId } = await params
+
+    const waiter = await prisma.waiter.findUnique({
+      where: { id: waiterId },
+      include: {
+        restaurant: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        assignedTables: {
+          include: {
+            table: {
+              select: {
+                id: true,
+                number: true,
+              },
+            },
+          },
+        },
+      },
+    })
+
+    if (!waiter) {
+      return NextResponse.json(
+        { error: 'Waiter not found' },
+        { status: 404 }
+      )
+    }
+
+    return NextResponse.json(waiter)
+  } catch (error) {
+    console.error('Error fetching waiter:', error)
+    return NextResponse.json(
+      { error: 'Failed to fetch waiter' },
+      { status: 500 }
+    )
+  }
+}
+
 // Update a waiter
 export async function PATCH(
   request: NextRequest,
