@@ -16,8 +16,12 @@ function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
 export async function POST(request: NextRequest) {
   let restaurantId: string | null = null
   
+  // Log the start of signup for debugging
+  console.log('Signup request received at:', new Date().toISOString())
+  
   try {
     const body = await request.json()
+    console.log('Signup request body received (email hidden)')
     const {
       restaurantName,
       adminEmail,
@@ -84,7 +88,12 @@ export async function POST(request: NextRequest) {
     restaurantId = restaurant.id
 
     // Validate Supabase environment variables before making the call
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    const missingVars = []
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL) missingVars.push('NEXT_PUBLIC_SUPABASE_URL')
+    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) missingVars.push('SUPABASE_SERVICE_ROLE_KEY')
+    
+    if (missingVars.length > 0) {
+      console.error('Missing environment variables:', missingVars)
       // Clean up restaurant
       if (restaurantId) {
         try {
@@ -95,7 +104,9 @@ export async function POST(request: NextRequest) {
       }
       
       return NextResponse.json(
-        { error: 'Server configuration error. Please contact support.' },
+        { 
+          error: `Server configuration error: Missing ${missingVars.join(', ')}. Please check your Vercel environment variables.` 
+        },
         { status: 500 }
       )
     }
