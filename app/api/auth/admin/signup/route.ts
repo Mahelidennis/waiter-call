@@ -3,6 +3,12 @@ import { prisma } from '@/lib/db'
 import { createServiceClient } from '@/lib/supabase/server'
 import { slugify } from '@/lib/utils/slugify'
 
+// Configure route for execution time
+// Vercel Hobby: 10s max, Pro: 60s max
+// Using 10s to work on both plans
+export const maxDuration = 10
+export const runtime = 'nodejs'
+
 // Helper function to add timeout to promises
 function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
   return Promise.race([
@@ -56,13 +62,25 @@ export async function POST(request: NextRequest) {
 
     const slug = slugify(restaurantName)
     
-    // Check for existing restaurant with timeout
-    const existingRestaurant = await withTimeout(
-      prisma.restaurant.findUnique({
-        where: { slug },
-      }),
-      5000 // 5 second timeout
-    )
+    // Check for existing restaurant with timeout (reduced for serverless)
+    let existingRestaurant
+    try {
+      existingRestaurant = await withTimeout(
+        prisma.restaurant.findUnique({
+          where: { slug },
+        }),
+        3000 // 3 second timeout
+      )
+    } catch (dbError: any) {
+      console.error('Database query error (findUnique):', dbError)
+      if (dbError.message?.includes('timeout') || dbError.code === 'P1001') {
+        return NextResponse.json(
+          { error: 'Database connection timeout. Please try again.' },
+          { status: 503 }
+        )
+      }
+      throw dbError
+    }
 
     if (existingRestaurant) {
       return NextResponse.json(
@@ -71,19 +89,37 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create restaurant record first with timeout
-    const restaurant = await withTimeout(
-      prisma.restaurant.create({
-        data: {
-          name: restaurantName,
-          slug,
-          email: adminEmail,
-          phone: phone || null,
-          address: address || null,
-        },
-      }),
-      10000 // 10 second timeout
-    )
+    // Create restaurant record first with timeout (reduced for serverless)
+    let restaurant
+    try {
+      restaurant = await withTimeout(
+        prisma.restaurant.create({
+          data: {
+            name: restaurantName,
+            slug,
+            email: adminEmail,
+            phone: phone || null,
+            address: address || null,
+          },
+        }),
+        5000 // 5 second timeout
+      )
+    } catch (dbError: any) {
+      console.error('Database query error (create):', dbError)
+      if (dbError.message?.includes('timeout') || dbError.code === 'P1001') {
+        return NextResponse.json(
+          { error: 'Database connection timeout. Please try again.' },
+          { status: 503 }
+        )
+      }
+      if (dbError.code === 'P2002') {
+        return NextResponse.json(
+          { error: 'A restaurant with this name or email already exists.' },
+          { status: 400 }
+        )
+      }
+      throw dbError
+    }
     
     restaurantId = restaurant.id
 
@@ -148,7 +184,7 @@ export async function POST(request: NextRequest) {
             restaurantId: restaurant.id,
           },
         }),
-        15000 // 15 second timeout for Supabase
+        6000 // 6 second timeout for Supabase (must complete within 10s total)
       )
     } catch (timeoutError: any) {
       // Clean up restaurant if Supabase call times out
