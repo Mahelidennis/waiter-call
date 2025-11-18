@@ -1,8 +1,18 @@
 import { PrismaClient } from '@prisma/client'
 
-// Ensure DATABASE_URL is set
-if (!process.env.DATABASE_URL) {
-  console.error('DATABASE_URL is not set. Please check your .env or .env.local file.')
+// Validate DATABASE_URL format
+const databaseUrl = process.env.DATABASE_URL
+
+if (!databaseUrl) {
+  const error = 'DATABASE_URL is not set. Please check your Vercel environment variables.'
+  console.error(error)
+  throw new Error(error)
+}
+
+if (!databaseUrl.startsWith('postgresql://') && !databaseUrl.startsWith('postgres://')) {
+  const error = `DATABASE_URL must start with 'postgresql://' or 'postgres://'. Current value starts with: ${databaseUrl.substring(0, 20)}...`
+  console.error(error)
+  throw new Error(error)
 }
 
 const globalForPrisma = globalThis as unknown as {
@@ -15,7 +25,7 @@ export const prisma =
     log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
     datasources: {
       db: {
-        url: process.env.DATABASE_URL,
+        url: databaseUrl,
       },
     },
   })

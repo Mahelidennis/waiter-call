@@ -22,6 +22,26 @@ function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
 export async function POST(request: NextRequest) {
   let restaurantId: string | null = null
   
+  // Validate DATABASE_URL before proceeding
+  const databaseUrl = process.env.DATABASE_URL
+  if (!databaseUrl) {
+    return NextResponse.json(
+      { 
+        error: 'DATABASE_URL is not configured. Please set it in your Vercel environment variables. The URL should start with postgresql:// or postgres://'
+      },
+      { status: 500 }
+    )
+  }
+  
+  if (!databaseUrl.startsWith('postgresql://') && !databaseUrl.startsWith('postgres://')) {
+    return NextResponse.json(
+      { 
+        error: `DATABASE_URL format is invalid. It must start with 'postgresql://' or 'postgres://'. Please check your Vercel environment variables.`
+      },
+      { status: 500 }
+    )
+  }
+  
   // Log the start of signup for debugging
   console.log('Signup request received at:', new Date().toISOString())
   
@@ -67,7 +87,7 @@ export async function POST(request: NextRequest) {
     try {
       existingRestaurant = await withTimeout(
         prisma.restaurant.findUnique({
-          where: { slug },
+      where: { slug },
         }),
         3000 // 3 second timeout
       )
@@ -94,13 +114,13 @@ export async function POST(request: NextRequest) {
     try {
       restaurant = await withTimeout(
         prisma.restaurant.create({
-          data: {
-            name: restaurantName,
-            slug,
-            email: adminEmail,
-            phone: phone || null,
-            address: address || null,
-          },
+      data: {
+        name: restaurantName,
+        slug,
+        email: adminEmail,
+        phone: phone || null,
+        address: address || null,
+      },
         }),
         5000 // 5 second timeout
       )
@@ -172,17 +192,17 @@ export async function POST(request: NextRequest) {
     try {
       supabaseResponse = await withTimeout(
         supabase.auth.admin.createUser({
-          email: adminEmail,
-          password: adminPassword,
-          email_confirm: true,
-          user_metadata: {
-            role: 'admin',
-            restaurantId: restaurant.id,
-          },
-          app_metadata: {
-            role: 'admin',
-            restaurantId: restaurant.id,
-          },
+      email: adminEmail,
+      password: adminPassword,
+      email_confirm: true,
+      user_metadata: {
+        role: 'admin',
+        restaurantId: restaurant.id,
+      },
+      app_metadata: {
+        role: 'admin',
+        restaurantId: restaurant.id,
+      },
         }),
         6000 // 6 second timeout for Supabase (must complete within 10s total)
       )
