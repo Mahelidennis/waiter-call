@@ -31,3 +31,5 @@ The error suggests that Next.js isn't reading the environment variables from `.e
 After restarting the server, the environment variables should load properly.
 
 
+
+

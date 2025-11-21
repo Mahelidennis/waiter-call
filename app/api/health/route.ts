@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server'
+import { validateDatabaseUrl } from '@/lib/utils/databaseUrl'
 
 // Health check endpoint to verify environment variables and connections
 export async function GET() {
+  const databaseValidation = validateDatabaseUrl(process.env.DATABASE_URL)
   const databaseUrl = process.env.DATABASE_URL || ''
-  const databaseUrlValid = databaseUrl.startsWith('postgresql://') || databaseUrl.startsWith('postgres://')
-  
+
   const checks = {
     supabase: {
       url: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -13,7 +14,7 @@ export async function GET() {
     },
     database: {
       url: !!process.env.DATABASE_URL,
-      urlFormatValid: databaseUrlValid,
+      urlFormatValid: databaseValidation.isValid,
       urlPreview: databaseUrl ? `${databaseUrl.substring(0, 20)}...` : 'not set',
     },
     timestamp: new Date().toISOString(),
@@ -28,7 +29,7 @@ export async function GET() {
 
   const issues = []
   if (!checks.database.url) issues.push('DATABASE_URL is not set')
-  else if (!checks.database.urlFormatValid) issues.push(`DATABASE_URL format is invalid. Must start with 'postgresql://' or 'postgres://'`)
+  else if (!checks.database.urlFormatValid && databaseValidation.errorMessage) issues.push(databaseValidation.errorMessage)
   if (!checks.supabase.url) issues.push('NEXT_PUBLIC_SUPABASE_URL is not set')
   if (!checks.supabase.anonKey) issues.push('NEXT_PUBLIC_SUPABASE_ANON_KEY is not set')
   if (!checks.supabase.serviceRoleKey) issues.push('SUPABASE_SERVICE_ROLE_KEY is not set')

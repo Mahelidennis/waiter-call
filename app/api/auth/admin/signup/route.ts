@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { createServiceClient } from '@/lib/supabase/server'
 import { slugify } from '@/lib/utils/slugify'
+import { validateDatabaseUrl } from '@/lib/utils/databaseUrl'
 
 // Configure route for execution time
 // Vercel Hobby: 10s max, Pro: 60s max
@@ -23,20 +24,11 @@ export async function POST(request: NextRequest) {
   let restaurantId: string | null = null
   
   // Validate DATABASE_URL before proceeding
-  const databaseUrl = process.env.DATABASE_URL
-  if (!databaseUrl) {
+  const databaseValidation = validateDatabaseUrl(process.env.DATABASE_URL)
+  if (!databaseValidation.isValid) {
     return NextResponse.json(
       { 
-        error: 'DATABASE_URL is not configured. Please set it in your Vercel environment variables. The URL should start with postgresql:// or postgres://'
-      },
-      { status: 500 }
-    )
-  }
-  
-  if (!databaseUrl.startsWith('postgresql://') && !databaseUrl.startsWith('postgres://')) {
-    return NextResponse.json(
-      { 
-        error: `DATABASE_URL format is invalid. It must start with 'postgresql://' or 'postgres://'. Please check your Vercel environment variables.`
+        error: databaseValidation.errorMessage || 'DATABASE_URL is invalid. Please check your environment variables.',
       },
       { status: 500 }
     )

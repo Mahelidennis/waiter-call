@@ -1,16 +1,10 @@
 import { PrismaClient } from '@prisma/client'
+import { validateDatabaseUrl } from '@/lib/utils/databaseUrl'
 
-// Validate DATABASE_URL format
-const databaseUrl = process.env.DATABASE_URL
+const { isValid, normalizedUrl, errorMessage } = validateDatabaseUrl(process.env.DATABASE_URL)
 
-if (!databaseUrl) {
-  const error = 'DATABASE_URL is not set. Please check your Vercel environment variables.'
-  console.error(error)
-  throw new Error(error)
-}
-
-if (!databaseUrl.startsWith('postgresql://') && !databaseUrl.startsWith('postgres://')) {
-  const error = `DATABASE_URL must start with 'postgresql://' or 'postgres://'. Current value starts with: ${databaseUrl.substring(0, 20)}...`
+if (!isValid || !normalizedUrl) {
+  const error = errorMessage || 'DATABASE_URL is invalid. Please check your environment variables.'
   console.error(error)
   throw new Error(error)
 }
@@ -25,7 +19,7 @@ export const prisma =
     log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
     datasources: {
       db: {
-        url: databaseUrl,
+        url: normalizedUrl,
       },
     },
   })

@@ -56,3 +56,5 @@ postgresql://postgres.xxxxx:[YOUR-PASSWORD]@aws-0-us-east-1.pooler.supabase.com:
 4. Look for "Connection info" or "Connection parameters" section
 
 
+
+
