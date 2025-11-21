@@ -1,3 +1,4 @@
+here is the content for file /lib/utils/databaseUrl.ts
 const PROTOCOL = 'postgresql://'
 const DATABASE_URL_PATTERN = /^postgresql:\/\/[^:]+:[^@]+@[^:]+:5432\/[^/]+$/i
 
