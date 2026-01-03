@@ -131,3 +131,9 @@ export default function WaiterModal({ isOpen, onClose, onSave, waiter, restauran
 
 
 
+
+
+
+
+
+
