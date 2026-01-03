@@ -1,13 +1,19 @@
 import { PrismaClient } from '@prisma/client'
 import { validateDatabaseUrl } from '@/lib/utils/databaseUrl'
 
-const { isValid, normalizedUrl, errorMessage } = validateDatabaseUrl(process.env.DATABASE_URL)
+// Validate DATABASE_URL but don't throw during build
+// This allows the build to complete even if env vars aren't set yet
+const databaseUrl = process.env.DATABASE_URL
+const validation = validateDatabaseUrl(databaseUrl)
 
-if (!isValid || !normalizedUrl) {
-  const error = errorMessage || 'DATABASE_URL is invalid. Please check your environment variables.'
-  console.error(error)
-  throw new Error(error)
+// Only log errors, don't throw during module load (build time)
+if (!validation.isValid) {
+  console.error('DATABASE_URL validation warning:', validation.errorMessage)
+  console.error('Build will continue, but database operations will fail at runtime if not fixed.')
 }
+
+// Use validated URL if valid, otherwise use original (Prisma will handle the error)
+const normalizedUrl = validation.normalizedUrl || databaseUrl
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
@@ -19,7 +25,7 @@ export const prisma =
     log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
     datasources: {
       db: {
-        url: normalizedUrl,
+        url: normalizedUrl || 'postgresql://placeholder:placeholder@localhost:5432/placeholder',
       },
     },
   })
