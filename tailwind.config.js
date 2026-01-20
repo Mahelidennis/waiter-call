@@ -14,7 +14,7 @@ module.exports = {
         'background-dark': '#102216',
       },
       fontFamily: {
-        display: ['Work Sans', 'Noto Sans', 'sans-serif'],
+        display: ['var(--font-display)', 'Noto Sans', 'sans-serif'],
       },
       borderRadius: {
         DEFAULT: '0.25rem',

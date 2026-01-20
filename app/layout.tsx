@@ -1,5 +1,12 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import { Work_Sans } from 'next/font/google'
+
+const workSans = Work_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800', '900'],
+  variable: '--font-display',
+})
 
 export const metadata: Metadata = {
   title: 'Waiter Call System',
@@ -13,7 +20,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="light">
-      <body className="font-display bg-background-light dark:bg-background-dark text-[#111813] dark:text-white">
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+        />
+      </head>
+      <body
+        className={`${workSans.variable} font-display bg-background-light dark:bg-background-dark text-[#111813] dark:text-white`}
+      >
         {children}
       </body>
     </html>
