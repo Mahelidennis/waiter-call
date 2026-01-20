@@ -6,18 +6,20 @@ This guide will help you configure your Waiter Call System on Vercel.
 
 You **MUST** set these environment variables in your Vercel project settings:
 
-### Supabase Configuration
-1. Go to your Vercel project → Settings → Environment Variables
-2. Add the following variables:
+### Required Variables
+- `NEXT_PUBLIC_SUPABASE_URL` - Your Supabase project URL
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Your Supabase anonymous key
+- `SUPABASE_SERVICE_ROLE_KEY` - Your Supabase service role key (for admin operations)
+- `DATABASE_URL` - PostgreSQL connection string
+
+**📖 For detailed step-by-step instructions, see [VERCEL_ENV_SETUP.md](./VERCEL_ENV_SETUP.md)**
+
+### Quick Reference
 
 ```
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
-```
-
-### Database Configuration
-```
 DATABASE_URL=postgresql://postgres:[YOUR-PASSWORD]@db.[PROJECT-REF].supabase.co:5432/postgres
 ```
 
@@ -32,18 +34,6 @@ NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
 STRIPE_SECRET_KEY=your_stripe_secret_key
 STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
 ```
-
-## How to Get Supabase Credentials
-
-1. Go to [supabase.com](https://supabase.com) and open your project
-2. **Settings** → **API**:
-   - Copy **Project URL** → `NEXT_PUBLIC_SUPABASE_URL`
-   - Copy **anon public** key → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-   - Copy **service_role secret** key → `SUPABASE_SERVICE_ROLE_KEY`
-3. **Settings** → **Database**:
-   - Copy **Connection string** → **URI** format
-   - Replace `[YOUR-PASSWORD]` with your database password
-   - This becomes your `DATABASE_URL`
 
 ## Database Setup
 
@@ -65,6 +55,8 @@ For real-time waiter notifications to work:
 1. Go to Supabase Dashboard → **Database** → **Replication**
 2. Enable replication for the `Call` table
 3. This allows real-time updates when customers call waiters
+
+**📖 For detailed instructions, see [REALTIME_SETUP.md](./REALTIME_SETUP.md)**
 
 ## Build Configuration
 

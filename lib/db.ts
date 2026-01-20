@@ -1,36 +1,44 @@
 import { PrismaClient } from '@prisma/client'
 import { validateDatabaseUrl } from '@/lib/utils/databaseUrl'
 
-// Validate DATABASE_URL but don't throw during build
-// This allows the build to complete even if env vars aren't set yet
-const databaseUrl = process.env.DATABASE_URL
-const validation = validateDatabaseUrl(databaseUrl)
+const validation = validateDatabaseUrl(process.env.DATABASE_URL)
 
-// Only log errors, don't throw during module load (build time)
-if (!validation.isValid) {
-  console.error('DATABASE_URL validation warning:', validation.errorMessage)
-  console.error('Build will continue, but database operations will fail at runtime if not fixed.')
+// Log validation results but never block the build
+if (!validation.isValid && validation.errorMessage) {
+  console.error('[DB] DATABASE_URL invalid:', validation.errorMessage)
+  console.error('[DB] Prisma will fail at runtime until this is fixed.')
 }
 
-// Use validated URL if valid, otherwise use original (Prisma will handle the error)
-const normalizedUrl = validation.normalizedUrl || databaseUrl
+if (validation.warnings?.length) {
+  console.warn('[DB] DATABASE_URL warnings:', validation.warnings.join(' | '))
+}
+
+const datasourceUrl =
+  validation.normalizedUrl ||
+  process.env.DATABASE_URL ||
+  'postgresql://placeholder:placeholder@localhost:6543/placeholder?sslmode=require&pgbouncer=true&connection_limit=1'
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
 }
 
-export const prisma =
-  globalForPrisma.prisma ??
-  new PrismaClient({
+function createPrismaClient() {
+  return new PrismaClient({
     log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
     datasources: {
       db: {
-        url: normalizedUrl || 'postgresql://placeholder:placeholder@localhost:5432/placeholder',
+        url: datasourceUrl,
       },
     },
   })
+}
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+export const prisma = globalForPrisma.prisma ?? createPrismaClient()
+
+// Cache the client in development to survive hot reloads
+if (process.env.NODE_ENV !== 'production') {
+  globalForPrisma.prisma = prisma
+}
 
 // Handle Prisma disconnection gracefully
 if (typeof process !== 'undefined') {

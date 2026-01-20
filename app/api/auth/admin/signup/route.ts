@@ -10,6 +10,38 @@ import { validateDatabaseUrl } from '@/lib/utils/databaseUrl'
 export const maxDuration = 10
 export const runtime = 'nodejs'
 
+function isPrismaConnectionError(error: any) {
+  const message = typeof error?.message === 'string' ? error.message.toLowerCase() : ''
+  const code = error?.code
+  return (
+    code === 'P1001' || // can't reach database server
+    code === 'P1002' || // connection timeout
+    code === 'P1017' || // server closed connection
+    message.includes('timeout') ||
+    message.includes('timed out') ||
+    message.includes('getaddrinfo') ||
+    message.includes('connect') ||
+    message.includes('connection refused')
+  )
+}
+
+function prismaConnectionProblemResponse(error: any, action: string) {
+  const payload: Record<string, unknown> = {
+    error: 'Database connection error. Please try again shortly.',
+    action,
+  }
+
+  if (process.env.NODE_ENV === 'development') {
+    payload.details = {
+      code: error?.code,
+      message: error?.message,
+      stack: error?.stack,
+    }
+  }
+
+  return NextResponse.json(payload, { status: 503 })
+}
+
 // Helper function to add timeout to promises
 function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
   return Promise.race([
@@ -38,6 +70,14 @@ export async function POST(request: NextRequest) {
   console.log('Signup request received at:', new Date().toISOString())
   
   try {
+    // Fail fast on runtime connection issues instead of timing out later
+    try {
+      await prisma.$connect()
+    } catch (dbError) {
+      console.error('Prisma connection error during signup:', dbError)
+      return prismaConnectionProblemResponse(dbError, 'connect')
+    }
+
     const body = await request.json()
     console.log('Signup request body received (email hidden)')
     const {
@@ -85,11 +125,8 @@ export async function POST(request: NextRequest) {
       )
     } catch (dbError: any) {
       console.error('Database query error (findUnique):', dbError)
-      if (dbError.message?.includes('timeout') || dbError.code === 'P1001') {
-        return NextResponse.json(
-          { error: 'Database connection timeout. Please try again.' },
-          { status: 503 }
-        )
+      if (isPrismaConnectionError(dbError)) {
+        return prismaConnectionProblemResponse(dbError, 'find restaurant by slug')
       }
       throw dbError
     }
@@ -118,11 +155,8 @@ export async function POST(request: NextRequest) {
       )
     } catch (dbError: any) {
       console.error('Database query error (create):', dbError)
-      if (dbError.message?.includes('timeout') || dbError.code === 'P1001') {
-        return NextResponse.json(
-          { error: 'Database connection timeout. Please try again.' },
-          { status: 503 }
-        )
+      if (isPrismaConnectionError(dbError)) {
+        return prismaConnectionProblemResponse(dbError, 'create restaurant')
       }
       if (dbError.code === 'P2002') {
         return NextResponse.json(
@@ -293,12 +327,8 @@ export async function POST(request: NextRequest) {
       )
     }
     
-    // Check for database connection errors
-    if (errorMessage.includes('connect') || errorMessage.includes('ECONNREFUSED') || errorMessage.includes('database')) {
-      return NextResponse.json(
-        { error: 'Database connection error. Please check your database configuration.' },
-        { status: 503 }
-      )
+    if (isPrismaConnectionError(error)) {
+      return prismaConnectionProblemResponse(error, 'signup')
     }
     
     // Check for Prisma errors
