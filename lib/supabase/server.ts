@@ -18,10 +18,16 @@ export async function createServerClient() {
         return cookieStore.get(name)?.value
       },
       set(name: string, value: string, options: any) {
-        cookieStore.set({ name, value, ...options })
+        // In Server Components, cookies are read-only. In Route Handlers / Server Actions,
+        // cookies are mutable. We no-op when mutation isn't available.
+        try {
+          ;(cookieStore as any).set?.({ name, value, ...options })
+        } catch {}
       },
       remove(name: string, options: any) {
-        cookieStore.set({ name, value: '', ...options, maxAge: 0 })
+        try {
+          ;(cookieStore as any).set?.({ name, value: '', ...options, maxAge: 0 })
+        } catch {}
       },
     },
   })
