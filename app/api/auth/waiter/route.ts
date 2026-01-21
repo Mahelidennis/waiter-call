@@ -49,126 +49,137 @@ function isRateLimited(key: string) {
 
 export async function POST(request: NextRequest) {
   const clientKey = getClientKey(request)
-  if (isRateLimited(clientKey)) {
-    return NextResponse.json(
-      { error: 'Too many attempts. Please try again later.' },
-      { status: 429 }
-    )
-  }
-
-  let body: LoginBody
   try {
-    body = await request.json()
-  } catch {
-    return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
-  }
-
-  const accessCode = body.accessCode?.trim()
-  if (!accessCode || accessCode.length < 4 || accessCode.length > 8) {
-    recordAttempt(clientKey)
-    return NextResponse.json({ error: 'Invalid access code' }, { status: 400 })
-  }
-
-  if (!body.restaurantId && !body.restaurantCode) {
-    recordAttempt(clientKey)
-    return NextResponse.json(
-      { error: 'Restaurant is required' },
-      { status: 400 }
-    )
-  }
-
-  const restaurant = await prisma.restaurant.findFirst({
-    where: body.restaurantId
-      ? { id: body.restaurantId }
-      : { OR: [{ slug: body.restaurantCode! }, { id: body.restaurantCode! }] },
-    select: {
-      id: true,
-      name: true,
-      slug: true,
-    },
-  })
-
-  if (!restaurant) {
-    recordAttempt(clientKey)
-    return NextResponse.json(
-      { error: 'Restaurant not found' },
-      { status: 404 }
-    )
-  }
-
-  const waiters = await prisma.waiter.findMany({
-    where: {
-      restaurantId: restaurant.id,
-      isActive: true,
-      accessCodeHash: {
-        not: null,
-      },
-    },
-    select: {
-      id: true,
-      name: true,
-      accessCodeHash: true,
-      restaurantId: true,
-    },
-  })
-
-  let matchedWaiter:
-    | {
-        id: string
-        name: string
-        restaurantId: string
-        accessCodeHash: string
-      }
-    | null = null
-
-  for (const waiter of waiters) {
-    if (!waiter.accessCodeHash) continue
-    const isValid = await verifyAccessCode(accessCode, waiter.accessCodeHash)
-    if (isValid) {
-      // Prisma keeps `accessCodeHash` typed as `string | null` even with `not: null` filters,
-      // so we construct a value with a non-null hash after the guard above.
-      matchedWaiter = {
-        ...waiter,
-        accessCodeHash: waiter.accessCodeHash,
-      }
-      break
+    if (isRateLimited(clientKey)) {
+      return NextResponse.json(
+        { error: 'Too many attempts. Please try again later.' },
+        { status: 429 }
+      )
     }
-  }
 
-  if (!matchedWaiter) {
-    recordAttempt(clientKey)
-    return NextResponse.json(
-      { error: 'Invalid access code or inactive waiter' },
-      { status: 401 }
+    let body: LoginBody
+    try {
+      body = await request.json()
+    } catch {
+      return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
+    }
+
+    const accessCode = body.accessCode?.trim()
+    if (!accessCode || accessCode.length < 4 || accessCode.length > 8) {
+      recordAttempt(clientKey)
+      return NextResponse.json(
+        { error: 'Invalid access code' },
+        { status: 400 }
+      )
+    }
+
+    if (!body.restaurantId && !body.restaurantCode) {
+      recordAttempt(clientKey)
+      return NextResponse.json(
+        { error: 'Restaurant is required' },
+        { status: 400 }
+      )
+    }
+
+    const restaurant = await prisma.restaurant.findFirst({
+      where: body.restaurantId
+        ? { id: body.restaurantId }
+        : { OR: [{ slug: body.restaurantCode! }, { id: body.restaurantCode! }] },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+      },
+    })
+
+    if (!restaurant) {
+      recordAttempt(clientKey)
+      return NextResponse.json(
+        { error: 'Restaurant not found' },
+        { status: 404 }
+      )
+    }
+
+    const waiters = await prisma.waiter.findMany({
+      where: {
+        restaurantId: restaurant.id,
+        isActive: true,
+        accessCodeHash: {
+          not: null,
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        accessCodeHash: true,
+        restaurantId: true,
+      },
+    })
+
+    let matchedWaiter:
+      | {
+          id: string
+          name: string
+          restaurantId: string
+          accessCodeHash: string
+        }
+      | null = null
+
+    for (const waiter of waiters) {
+      if (!waiter.accessCodeHash) continue
+      const isValid = await verifyAccessCode(accessCode, waiter.accessCodeHash)
+      if (isValid) {
+        // Prisma keeps `accessCodeHash` typed as `string | null` even with `not: null` filters,
+        // so we construct a value with a non-null hash after the guard above.
+        matchedWaiter = {
+          ...waiter,
+          accessCodeHash: waiter.accessCodeHash,
+        }
+        break
+      }
+    }
+
+    if (!matchedWaiter) {
+      recordAttempt(clientKey)
+      return NextResponse.json(
+        { error: 'Invalid access code or inactive waiter' },
+        { status: 401 }
+      )
+    }
+
+    const { token, maxAge } = createWaiterSessionToken(
+      matchedWaiter.id,
+      restaurant.id
     )
+
+    const response = NextResponse.json({
+      waiter: {
+        id: matchedWaiter.id,
+        name: matchedWaiter.name,
+        restaurantId: matchedWaiter.restaurantId,
+        restaurantName: restaurant.name,
+        restaurantSlug: restaurant.slug,
+      },
+    })
+
+    response.cookies.set({
+      name: getWaiterSessionCookieName(),
+      value: token,
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      maxAge,
+      path: '/',
+    })
+
+    return response
+  } catch (error: unknown) {
+    recordAttempt(clientKey)
+    console.error('Error authenticating waiter:', error)
+    const message =
+      error instanceof Error ? error.message : 'Internal server error'
+    return NextResponse.json({ error: message }, { status: 500 })
   }
-
-  const { token, maxAge } = createWaiterSessionToken(
-    matchedWaiter.id,
-    restaurant.id
-  )
-
-  const response = NextResponse.json({
-    waiter: {
-      id: matchedWaiter.id,
-      name: matchedWaiter.name,
-      restaurantId: matchedWaiter.restaurantId,
-      restaurantName: restaurant.name,
-      restaurantSlug: restaurant.slug,
-    },
-  })
-
-  response.cookies.set({
-    name: getWaiterSessionCookieName(),
-    value: token,
-    httpOnly: true,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
-    maxAge,
-    path: '/',
-  })
-
-  return response
 }
 
 export async function DELETE() {

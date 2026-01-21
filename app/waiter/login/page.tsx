@@ -77,9 +77,19 @@ function WaiterLoginInner() {
         body: JSON.stringify(payload),
       })
 
-      const data = await res.json()
+      // Guard against non-JSON/empty error responses (otherwise we get "Unexpected end of JSON input")
+      const contentType = res.headers.get('content-type') || ''
+      const raw = await res.text()
+      const data =
+        contentType.includes('application/json') && raw
+          ? (JSON.parse(raw) as any)
+          : {}
       if (!res.ok) {
-        throw new Error(data?.error || 'Login failed')
+        throw new Error(
+          (data && typeof data.error === 'string' && data.error) ||
+            raw ||
+            'Login failed'
+        )
       }
 
       const target =

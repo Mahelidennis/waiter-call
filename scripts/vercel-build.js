@@ -41,13 +41,21 @@ async function main() {
   console.log('Running prisma generate…')
   await run('npx', ['prisma', 'generate'])
 
-  // Keep Vercel from hanging for 45 minutes if DB is unreachable.
-  console.log('Running prisma migrate deploy…')
-  await runWithTimeout(
-    'prisma migrate deploy',
-    () => run('npx', ['prisma', 'migrate', 'deploy']),
-    120_000
-  )
+  const skipMigrate =
+    String(process.env.SKIP_PRISMA_MIGRATE || '').toLowerCase() === '1' ||
+    String(process.env.SKIP_PRISMA_MIGRATE || '').toLowerCase() === 'true'
+
+  if (skipMigrate) {
+    console.log('Skipping prisma migrate deploy (SKIP_PRISMA_MIGRATE=true).')
+  } else {
+    // Keep Vercel from hanging for 45 minutes if DB is unreachable.
+    console.log('Running prisma migrate deploy…')
+    await runWithTimeout(
+      'prisma migrate deploy',
+      () => run('npx', ['prisma', 'migrate', 'deploy']),
+      120_000
+    )
+  }
 
   console.log('Running next build…')
   await run('npx', ['next', 'build'])
