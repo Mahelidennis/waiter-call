@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 import { redirect } from 'next/navigation'
-import { requireWaiter } from '@/lib/auth/server'
+import { requireWaiterSession } from '@/lib/auth/waiterSession'
 
 export default async function WaiterLayout({
   children,
@@ -12,9 +12,9 @@ export default async function WaiterLayout({
   const { waiterId } = await params
   const path = `/waiter/${waiterId}`
   try {
-    await requireWaiter(waiterId)
+    await requireWaiterSession(waiterId)
   } catch {
-    redirect(`/auth/waiter?redirect=${encodeURIComponent(path)}`)
+    redirect(`/waiter/login?redirect=${encodeURIComponent(path)}`)
   }
 
   return <>{children}</>

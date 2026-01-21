@@ -11,7 +11,13 @@ export async function GET(
 
     const waiter = await prisma.waiter.findUnique({
       where: { id: waiterId },
-      include: {
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        isActive: true,
+        restaurantId: true,
         restaurant: {
           select: {
             id: true,
@@ -76,6 +82,14 @@ export async function PATCH(
         ...(email !== undefined && { email }),
         ...(phone !== undefined && { phone }),
         ...(isActive !== undefined && { isActive }),
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        isActive: true,
+        restaurantId: true,
       },
     })
 

@@ -59,6 +59,7 @@ model Waiter {
   name          String
   email         String?
   phone         String?
+  accessCodeHash String?     // Hashed 6-digit access code for PIN-based authentication
   isActive      Boolean      @default(true)
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt

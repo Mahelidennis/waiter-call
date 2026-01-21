@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
+import {
+  generateNumericAccessCode,
+  hashAccessCode,
+} from '@/lib/auth/waiterAccess'
 
 export async function GET(
   request: NextRequest,
@@ -11,7 +15,12 @@ export async function GET(
     const waiters = await prisma.waiter.findMany({
       where: { restaurantId },
       orderBy: { name: 'asc' },
-      include: {
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        isActive: true,
         assignedTables: {
           include: {
             table: {
@@ -52,6 +61,9 @@ export async function POST(
       )
     }
 
+    const accessCode = generateNumericAccessCode()
+    const accessCodeHash = await hashAccessCode(accessCode)
+
     const waiter = await prisma.waiter.create({
       data: {
         restaurantId,
@@ -59,10 +71,22 @@ export async function POST(
         email: email || null,
         phone: phone || null,
         isActive: true,
+        accessCodeHash,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        isActive: true,
+        restaurantId: true,
       },
     })
 
-    return NextResponse.json(waiter, { status: 201 })
+    return NextResponse.json(
+      { waiter, accessCode },
+      { status: 201 }
+    )
   } catch (error) {
     console.error('Error creating waiter:', error)
     return NextResponse.json(

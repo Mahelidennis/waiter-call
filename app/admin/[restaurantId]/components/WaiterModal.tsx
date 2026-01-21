@@ -106,6 +106,11 @@ export default function WaiterModal({ isOpen, onClose, onSave, waiter, restauran
               <span className="text-sm text-gray-700">Active</span>
             </label>
           </div>
+          {!waiter && (
+            <div className="mb-4 rounded-lg bg-indigo-50 border border-indigo-100 px-3 py-2 text-xs text-indigo-700">
+              A 6-digit access code will be generated automatically and shown once after saving.
+            </div>
+          )}
           <div className="flex gap-2 justify-end">
             <button
               type="button"

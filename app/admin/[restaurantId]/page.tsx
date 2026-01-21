@@ -57,6 +57,7 @@ export default function AdminPage() {
   const [promotions, setPromotions] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<'overview' | 'tables' | 'waiters' | 'promotions' | 'calls'>('overview')
+  const [accessCodeInfo, setAccessCodeInfo] = useState<{ code: string; waiterName: string } | null>(null)
   
   // Modal states
   const [tableModalOpen, setTableModalOpen] = useState(false)
@@ -152,6 +153,13 @@ export default function AdminPage() {
       body: JSON.stringify(data),
     })
     if (!response.ok) throw new Error('Failed to create waiter')
+    const payload = await response.json()
+    if (payload?.accessCode) {
+      setAccessCodeInfo({
+        code: payload.accessCode,
+        waiterName: payload.waiter?.name || 'Waiter',
+      })
+    }
     fetchData()
   }
 
@@ -214,6 +222,25 @@ export default function AdminPage() {
       body: JSON.stringify({ tableIds }),
     })
     if (!response.ok) throw new Error('Failed to assign tables')
+    fetchData()
+  }
+
+  async function handleResetAccessCode(waiter: Waiter) {
+    if (!confirm(`Reset access code for ${waiter.name}?`)) return
+    const response = await fetch(`/api/waiters/${waiter.id}/access-code`, {
+      method: 'POST',
+    })
+    if (!response.ok) {
+      alert('Failed to reset access code')
+      return
+    }
+    const payload = await response.json()
+    if (payload?.accessCode) {
+      setAccessCodeInfo({
+        code: payload.accessCode,
+        waiterName: waiter.name,
+      })
+    }
     fetchData()
   }
 
@@ -651,6 +678,13 @@ export default function AdminPage() {
                             Edit
                           </button>
                           <button
+                            onClick={() => handleResetAccessCode(waiter)}
+                            className="text-amber-600 hover:text-amber-900"
+                            title="Reset access code"
+                          >
+                            Reset Access Code
+                          </button>
+                          <button
                             onClick={() => handleDeleteWaiter(waiter.id)}
                             className="text-red-600 hover:text-red-900"
                           >
@@ -845,6 +879,35 @@ export default function AdminPage() {
           restaurantId={restaurantId}
           onSave={handleAssignTables}
         />
+
+      {accessCodeInfo && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
+            <h3 className="text-xl font-semibold text-gray-900">Waiter Access Code</h3>
+            <p className="text-gray-600 text-sm">
+              Provide this code to <span className="font-medium text-gray-900">{accessCodeInfo.waiterName}</span>.
+              It will not be shown again.
+            </p>
+            <div className="rounded-lg border border-dashed border-indigo-300 bg-indigo-50 px-4 py-3 flex items-center justify-between">
+              <span className="text-sm text-gray-700">Access Code</span>
+              <span className="text-2xl font-mono font-bold tracking-widest text-indigo-700">
+                {accessCodeInfo.code}
+              </span>
+            </div>
+            <div className="rounded-lg bg-yellow-50 border border-yellow-200 px-3 py-2 text-sm text-yellow-800">
+              Save this code securely. Reset to generate a new one.
+            </div>
+            <div className="flex justify-end">
+              <button
+                onClick={() => setAccessCodeInfo(null)}
+                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+              >
+                Got it
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       </main>
     </div>
   )
