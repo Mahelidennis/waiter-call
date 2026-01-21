@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect } from 'react'
+import { Suspense, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 
-export default function LegacyWaiterAuthRedirect() {
+function LegacyWaiterAuthRedirectInner() {
   const router = useRouter()
   const searchParams = useSearchParams()
   useEffect(() => {
@@ -15,5 +15,13 @@ export default function LegacyWaiterAuthRedirect() {
   }, [router, searchParams])
 
   return null
+}
+
+export default function LegacyWaiterAuthRedirect() {
+  return (
+    <Suspense fallback={null}>
+      <LegacyWaiterAuthRedirectInner />
+    </Suspense>
+  )
 }
 

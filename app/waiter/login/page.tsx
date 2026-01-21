@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { Suspense, useEffect, useMemo, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 
 type Restaurant = {
@@ -10,6 +10,22 @@ type Restaurant = {
 }
 
 export default function WaiterLoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+          <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-8">
+            Loading...
+          </div>
+        </div>
+      }
+    >
+      <WaiterLoginInner />
+    </Suspense>
+  )
+}
+
+function WaiterLoginInner() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const redirect = searchParams.get('redirect') || ''

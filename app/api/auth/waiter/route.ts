@@ -125,7 +125,12 @@ export async function POST(request: NextRequest) {
     if (!waiter.accessCodeHash) continue
     const isValid = await verifyAccessCode(accessCode, waiter.accessCodeHash)
     if (isValid) {
-      matchedWaiter = waiter
+      // Prisma keeps `accessCodeHash` typed as `string | null` even with `not: null` filters,
+      // so we construct a value with a non-null hash after the guard above.
+      matchedWaiter = {
+        ...waiter,
+        accessCodeHash: waiter.accessCodeHash,
+      }
       break
     }
   }
