@@ -17,12 +17,17 @@ const MAX_ATTEMPTS_PER_WINDOW = 5
 const attemptStore = new Map<string, number[]>()
 
 function getClientKey(request: NextRequest): string {
-  return (
-    request.headers.get('x-forwarded-for') ||
-    request.headers.get('x-real-ip') ||
-    request.ip ||
-    'unknown'
-  )
+  const forwardedFor = request.headers.get('x-forwarded-for')
+  if (forwardedFor) {
+    const firstIp = forwardedFor
+      .split(',')
+      .map((value) => value.trim())
+      .find(Boolean)
+    if (firstIp) return firstIp
+  }
+
+  const realIp = request.headers.get('x-real-ip')
+  return realIp ?? 'unknown'
 }
 
 function recordAttempt(key: string) {
