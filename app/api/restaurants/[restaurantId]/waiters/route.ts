@@ -61,6 +61,19 @@ export async function POST(
       )
     }
 
+    // Ensure the restaurant exists before creating a waiter to avoid FK errors.
+    const restaurant = await prisma.restaurant.findUnique({
+      where: { id: restaurantId },
+      select: { id: true },
+    })
+
+    if (!restaurant) {
+      return NextResponse.json(
+        { error: 'Restaurant not found' },
+        { status: 404 }
+      )
+    }
+
     const accessCode = generateNumericAccessCode()
     const accessCodeHash = await hashAccessCode(accessCode)
 
@@ -87,11 +100,10 @@ export async function POST(
       { waiter, accessCode },
       { status: 201 }
     )
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error creating waiter:', error)
-    return NextResponse.json(
-      { error: 'Failed to create waiter' },
-      { status: 500 }
-    )
+    const message =
+      error instanceof Error ? error.message : 'Failed to create waiter'
+    return NextResponse.json({ error: message }, { status: 500 })
   }
 }
