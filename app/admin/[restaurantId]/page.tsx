@@ -6,6 +6,7 @@ import TableModal from './components/TableModal'
 import WaiterModal from './components/WaiterModal'
 import PromotionModal from './components/PromotionModal'
 import WaiterAssignmentModal from './components/WaiterAssignmentModal'
+import AdminHeader from './components/AdminHeader'
 
 interface Restaurant {
   id: string
@@ -69,7 +70,6 @@ export default function AdminPage() {
   const [selectedPromotion, setSelectedPromotion] = useState<any | null>(null)
   const [assignmentModalOpen, setAssignmentModalOpen] = useState(false)
   const [selectedWaiterForAssignment, setSelectedWaiterForAssignment] = useState<Waiter | null>(null)
-  const [accountMenuOpen, setAccountMenuOpen] = useState(false)
 
   async function handleLogout() {
     try {
@@ -86,19 +86,6 @@ export default function AdminPage() {
   useEffect(() => {
     fetchData()
   }, [restaurantId])
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (accountMenuOpen) {
-        setAccountMenuOpen(false)
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [accountMenuOpen])
 
   async function fetchData() {
     try {
@@ -360,59 +347,19 @@ export default function AdminPage() {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
-        {/* Header */}
-        <header className="bg-white border-b border-gray-200 px-6 py-4">
+        {/* Admin Header */}
+        <AdminHeader currentPage={activeTab} />
+
+        {/* Page Header */}
+        <div className="bg-white border-b border-gray-200 px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <h2 className="text-xl font-semibold text-gray-900">
                 {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
               </h2>
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  className="w-64 pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                />
-                <span className="material-symbols-outlined absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                  search
-                </span>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <button className="relative p-2 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
-                <span className="material-symbols-outlined text-xl">notifications</span>
-                <span className="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full"></span>
-              </button>
-              <div className="relative">
-                <button 
-                  onClick={() => setAccountMenuOpen(!accountMenuOpen)}
-                  className="p-2 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
-                >
-                  <span className="material-symbols-outlined text-xl">account_circle</span>
-                </button>
-                
-                {accountMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
-                    <div className="px-4 py-2 border-b border-gray-100">
-                      <p className="text-sm font-medium text-gray-900">{restaurant?.name || 'Admin'}</p>
-                      <p className="text-xs text-gray-500">Administrator</p>
-                    </div>
-                    <button
-                      onClick={() => {
-                        setAccountMenuOpen(false)
-                        handleLogout()
-                      }}
-                      className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
-                    >
-                      <span className="material-symbols-outlined text-lg">logout</span>
-                      Log Out
-                    </button>
-                  </div>
-                )}
-              </div>
             </div>
           </div>
-        </header>
+        </div>
 
         {/* Content */}
         <main className="flex-1 overflow-auto p-6">
