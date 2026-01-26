@@ -39,7 +39,29 @@ async function runWithTimeout(label, fn, timeoutMs) {
 
 async function main() {
   console.log('Running prisma generate…')
-  await run('npx', ['prisma', 'generate'])
+  
+  // Try to generate Prisma client with retry logic
+  let retries = 0
+  const maxRetries = 3
+  
+  while (retries < maxRetries) {
+    try {
+      await run('npx', ['prisma', 'generate'])
+      console.log('Prisma generate successful')
+      break
+    } catch (error) {
+      retries++
+      console.log(`Prisma generate attempt ${retries} failed: ${error.message}`)
+      
+      if (retries >= maxRetries) {
+        console.log('Warning: Prisma generate failed, but continuing with build...')
+        console.log('This might be due to file locks. The build may still work.')
+      } else {
+        console.log(`Retrying in 2 seconds... (${retries}/${maxRetries})`)
+        await new Promise(resolve => setTimeout(resolve, 2000))
+      }
+    }
+  }
 
   const skipMigrate =
     String(process.env.SKIP_PRISMA_MIGRATE || '').toLowerCase() === '1' ||

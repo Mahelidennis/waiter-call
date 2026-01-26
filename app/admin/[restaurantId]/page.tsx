@@ -523,114 +523,92 @@ export default function AdminPage() {
         )}
 
         {activeTab === 'waiters' && (
-          <div>
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold">Waiters</h2>
+          <div className="bg-white rounded-xl border border-gray-200">
+            <div className="p-6 border-b border-gray-200 flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-gray-900">Waiters</h3>
               <button
                 onClick={() => {
                   setSelectedWaiter(null)
                   setWaiterModalOpen(true)
                 }}
-                className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700"
+                className="px-4 py-2 bg-primary text-gray-900 rounded-lg hover:bg-primary/90 transition-colors font-medium"
               >
                 Add Waiter
               </button>
             </div>
-            <div className="bg-white rounded-lg shadow overflow-hidden">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                      Name
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                      Email
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                      Assigned Tables
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                      Status
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                      Actions
-                    </th>
+                    <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                    <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                    <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Tables</th>
+                    <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="divide-y divide-gray-200">
                   {waiters.map((waiter) => (
-                    <tr key={waiter.id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {waiter.name}
+                    <tr key={waiter.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                            <span className="material-symbols-outlined text-gray-600 text-sm">person</span>
+                          </div>
+                          <span className="font-medium text-gray-900">{waiter.name}</span>
+                        </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {waiter.email || '-'}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-gray-600">{waiter.email || '-'}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">
                         {waiter.assignedTables && waiter.assignedTables.length > 0 ? (
-                          <div className="flex flex-wrap gap-1">
+                          <div className="flex gap-1">
                             {waiter.assignedTables.map((at) => (
-                              <span
-                                key={at.table.id}
-                                className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-100 text-blue-800"
-                              >
+                              <span key={at.table.id} className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
                                 {at.table.number}
                               </span>
                             ))}
                           </div>
                         ) : (
-                          <span className="text-gray-400 italic">No tables assigned</span>
+                          <span className="text-gray-400">No tables</span>
                         )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className={`px-2 py-1 text-xs rounded ${
-                            waiter.isActive
-                              ? 'bg-green-100 text-green-700'
-                              : 'bg-gray-100 text-gray-700'
-                          }`}
-                        >
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          waiter.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
+                        }`}>
                           {waiter.isActive ? 'Active' : 'Inactive'}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        <div className="flex flex-wrap gap-2">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center gap-2">
                           <a
                             href={`/waiter/${waiter.id}`}
                             target="_blank"
-                            className="text-indigo-600 hover:text-indigo-900"
+                            className="text-primary hover:text-primary/80 font-medium text-sm"
                           >
-                            View Dashboard
+                            View
                           </a>
                           <button
                             onClick={() => {
                               setSelectedWaiterForAssignment(waiter)
                               setAssignmentModalOpen(true)
                             }}
-                            className="text-purple-600 hover:text-purple-900"
-                            title="Assign Tables"
+                            className="text-gray-600 hover:text-gray-900 font-medium text-sm"
                           >
-                            Assign Tables
+                            Assign
                           </button>
                           <button
                             onClick={() => {
                               setSelectedWaiter(waiter)
                               setWaiterModalOpen(true)
                             }}
-                            className="text-blue-600 hover:text-blue-900"
+                            className="text-gray-600 hover:text-gray-900 font-medium text-sm"
                           >
                             Edit
                           </button>
                           <button
-                            onClick={() => handleResetAccessCode(waiter)}
-                            className="text-amber-600 hover:text-amber-900"
-                            title="Reset access code"
-                          >
-                            Reset Access Code
-                          </button>
-                          <button
                             onClick={() => handleDeleteWaiter(waiter.id)}
-                            className="text-red-600 hover:text-red-900"
+                            className="text-red-600 hover:text-red-900 font-medium text-sm"
                           >
                             Delete
                           </button>
@@ -645,71 +623,55 @@ export default function AdminPage() {
         )}
 
         {activeTab === 'promotions' && (
-          <div>
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold">Promotions</h2>
+          <div className="bg-white rounded-xl border border-gray-200">
+            <div className="p-6 border-b border-gray-200 flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-gray-900">Promotions</h3>
               <button
                 onClick={() => {
                   setSelectedPromotion(null)
                   setPromotionModalOpen(true)
                 }}
-                className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700"
+                className="px-4 py-2 bg-primary text-gray-900 rounded-lg hover:bg-primary/90 transition-colors font-medium"
               >
                 Add Promotion
               </button>
             </div>
-            <div className="bg-white rounded-lg shadow overflow-hidden">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                      Title
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                      Description
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                      Status
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                      Actions
-                    </th>
+                    <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                    <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                    <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="divide-y divide-gray-200">
                   {promotions.map((promo) => (
-                    <tr key={promo.id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {promo.title}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-500">
-                        {promo.description || '-'}
-                      </td>
+                    <tr key={promo.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{promo.title}</td>
+                      <td className="px-6 py-4 text-gray-600">{promo.description || '-'}</td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className={`px-2 py-1 text-xs rounded ${
-                            promo.isActive
-                              ? 'bg-green-100 text-green-700'
-                              : 'bg-gray-100 text-gray-700'
-                          }`}
-                        >
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          promo.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
+                        }`}>
                           {promo.isActive ? 'Active' : 'Inactive'}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        <div className="flex gap-2">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center gap-2">
                           <button
                             onClick={() => {
                               setSelectedPromotion(promo)
                               setPromotionModalOpen(true)
                             }}
-                            className="text-blue-600 hover:text-blue-900"
+                            className="text-gray-600 hover:text-gray-900 font-medium text-sm"
                           >
                             Edit
                           </button>
                           <button
                             onClick={() => handleDeletePromotion(promo.id)}
-                            className="text-red-600 hover:text-red-900"
+                            className="text-red-600 hover:text-red-900 font-medium text-sm"
                           >
                             Delete
                           </button>
@@ -724,49 +686,46 @@ export default function AdminPage() {
         )}
 
         {activeTab === 'calls' && (
-          <div>
-            <h2 className="text-xl font-semibold mb-4">All Calls</h2>
-            <div className="bg-white rounded-lg shadow overflow-hidden">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+          <div className="bg-white rounded-xl border border-gray-200">
+            <div className="p-6 border-b border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900">Call Analytics</h3>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                      Table
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                      Status
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                      Requested
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                      Response Time
-                    </th>
+                    <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Table</th>
+                    <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Requested</th>
+                    <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Response Time</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="divide-y divide-gray-200">
                   {calls.map((call) => (
-                    <tr key={call.id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {call.table.number}
+                    <tr key={call.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                            <span className="material-symbols-outlined text-gray-600 text-sm">table_restaurant</span>
+                          </div>
+                          <span className="font-medium text-gray-900">{call.table.number}</span>
+                        </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className={`px-2 py-1 text-xs rounded ${
-                            call.status === 'PENDING'
-                              ? 'bg-orange-100 text-orange-700'
-                              : call.status === 'HANDLED'
-                              ? 'bg-green-100 text-green-700'
-                              : 'bg-gray-100 text-gray-700'
-                          }`}
-                        >
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          call.status === 'PENDING'
+                            ? 'bg-orange-100 text-orange-700'
+                            : call.status === 'HANDLED'
+                            ? 'bg-green-100 text-green-700'
+                            : 'bg-gray-100 text-gray-700'
+                        }`}>
                           {call.status}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-gray-600">
                         {new Date(call.requestedAt).toLocaleString()}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-gray-600">
                         {call.responseTime ? `${call.responseTime}s` : '-'}
                       </td>
                     </tr>
@@ -776,41 +735,41 @@ export default function AdminPage() {
             </div>
           </div>
         )}
-      </div>
+        </main>
 
-      {/* Modals */}
-      <TableModal
-        isOpen={tableModalOpen}
-        onClose={() => {
-          setTableModalOpen(false)
-          setSelectedTable(null)
-        }}
-        onSave={selectedTable ? handleUpdateTable : handleCreateTable}
-        table={selectedTable}
-        restaurantId={restaurantId}
-      />
+        {/* Modals */}
+        <TableModal
+          isOpen={tableModalOpen}
+          onClose={() => {
+            setTableModalOpen(false)
+            setSelectedTable(null)
+          }}
+          onSave={selectedTable ? handleUpdateTable : handleCreateTable}
+          table={selectedTable}
+          restaurantId={restaurantId}
+        />
 
-      <WaiterModal
-        isOpen={waiterModalOpen}
-        onClose={() => {
-          setWaiterModalOpen(false)
-          setSelectedWaiter(null)
-        }}
-        onSave={selectedWaiter ? handleUpdateWaiter : handleCreateWaiter}
-        waiter={selectedWaiter}
-        restaurantId={restaurantId}
-      />
+        <WaiterModal
+          isOpen={waiterModalOpen}
+          onClose={() => {
+            setWaiterModalOpen(false)
+            setSelectedWaiter(null)
+          }}
+          onSave={selectedWaiter ? handleUpdateWaiter : handleCreateWaiter}
+          waiter={selectedWaiter}
+          restaurantId={restaurantId}
+        />
 
-      <PromotionModal
-        isOpen={promotionModalOpen}
-        onClose={() => {
-          setPromotionModalOpen(false)
-          setSelectedPromotion(null)
-        }}
-        onSave={selectedPromotion ? handleUpdatePromotion : handleCreatePromotion}
-        promotion={selectedPromotion}
-        restaurantId={restaurantId}
-      />
+        <PromotionModal
+          isOpen={promotionModalOpen}
+          onClose={() => {
+            setPromotionModalOpen(false)
+            setSelectedPromotion(null)
+          }}
+          onSave={selectedPromotion ? handleUpdatePromotion : handleCreatePromotion}
+          promotion={selectedPromotion}
+          restaurantId={restaurantId}
+        />
 
         <WaiterAssignmentModal
           isOpen={assignmentModalOpen}
@@ -824,35 +783,35 @@ export default function AdminPage() {
           onSave={handleAssignTables}
         />
 
-      {accessCodeInfo && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
-            <h3 className="text-xl font-semibold text-gray-900">Waiter Access Code</h3>
-            <p className="text-gray-600 text-sm">
-              Provide this code to <span className="font-medium text-gray-900">{accessCodeInfo.waiterName}</span>.
-              It will not be shown again.
-            </p>
-            <div className="rounded-lg border border-dashed border-indigo-300 bg-indigo-50 px-4 py-3 flex items-center justify-between">
-              <span className="text-sm text-gray-700">Access Code</span>
-              <span className="text-2xl font-mono font-bold tracking-widest text-indigo-700">
-                {accessCodeInfo.code}
-              </span>
-            </div>
-            <div className="rounded-lg bg-yellow-50 border border-yellow-200 px-3 py-2 text-sm text-yellow-800">
-              Save this code securely. Reset to generate a new one.
-            </div>
-            <div className="flex justify-end">
-              <button
-                onClick={() => setAccessCodeInfo(null)}
-                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
-              >
-                Got it
-              </button>
+        {accessCodeInfo && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
+            <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
+              <h3 className="text-xl font-semibold text-gray-900">Waiter Access Code</h3>
+              <p className="text-gray-600 text-sm">
+                Provide this code to <span className="font-medium text-gray-900">{accessCodeInfo.waiterName}</span>.
+                It will not be shown again.
+              </p>
+              <div className="rounded-lg border border-dashed border-primary/30 bg-primary/5 px-4 py-3 flex items-center justify-between">
+                <span className="text-sm text-gray-700">Access Code</span>
+                <span className="text-2xl font-mono font-bold tracking-widest text-primary">
+                  {accessCodeInfo.code}
+                </span>
+              </div>
+              <div className="rounded-lg bg-yellow-50 border border-yellow-200 px-3 py-2 text-sm text-yellow-800">
+                Save this code securely. Reset to generate a new one.
+              </div>
+              <div className="flex justify-end">
+                <button
+                  onClick={() => setAccessCodeInfo(null)}
+                  className="px-4 py-2 bg-primary text-gray-900 rounded-lg hover:bg-primary/90 transition-colors"
+                >
+                  Got it
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-      </main>
+        )}
+      </div>
     </div>
   )
 }
