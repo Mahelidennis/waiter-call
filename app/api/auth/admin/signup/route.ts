@@ -169,31 +169,7 @@ export async function POST(request: NextRequest) {
     
     restaurantId = restaurant.id
 
-    // Validate Supabase environment variables before making the call
-    const missingVars = []
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL) missingVars.push('NEXT_PUBLIC_SUPABASE_URL')
-    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) missingVars.push('SUPABASE_SERVICE_ROLE_KEY')
-    
-    if (missingVars.length > 0) {
-      console.error('Missing environment variables:', missingVars)
-      // Clean up restaurant
-      if (restaurantId) {
-        try {
-          await prisma.restaurant.delete({ where: { id: restaurantId } })
-        } catch (cleanupError) {
-          console.error('Error cleaning up restaurant:', cleanupError)
-        }
-      }
-      
-      return NextResponse.json(
-        { 
-          error: `Server configuration error: Missing ${missingVars.join(', ')}. Please check your Vercel environment variables.` 
-        },
-        { status: 500 }
-      )
-    }
-
-    // Create Supabase user with timeout
+    // Create Supabase user and sign them in
     let supabase
     try {
       supabase = createServiceClient()
@@ -218,17 +194,17 @@ export async function POST(request: NextRequest) {
     try {
       supabaseResponse = await withTimeout(
         supabase.auth.admin.createUser({
-      email: adminEmail,
-      password: adminPassword,
-      email_confirm: true,
-      user_metadata: {
-        role: 'admin',
-        restaurantId: restaurant.id,
-      },
-      app_metadata: {
-        role: 'admin',
-        restaurantId: restaurant.id,
-      },
+          email: adminEmail,
+          password: adminPassword,
+          email_confirm: true,
+          user_metadata: {
+            role: 'admin',
+            restaurantId: restaurant.id,
+          },
+          app_metadata: {
+            role: 'admin',
+            restaurantId: restaurant.id,
+          },
         }),
         6000 // 6 second timeout for Supabase (must complete within 10s total)
       )
@@ -294,13 +270,66 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    return NextResponse.json(
-      {
-        success: true,
-        restaurantId: restaurant.id,
-      },
-      { status: 201 }
-    )
+    // Auto-login the user by creating a session
+    try {
+      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+        email: adminEmail,
+        password: adminPassword,
+      })
+
+      if (signInError || !signInData.session) {
+        console.error('Auto-login failed:', signInError)
+        // Still return success, but user will need to log in manually
+        return NextResponse.json(
+          {
+            success: true,
+            restaurantId: restaurant.id,
+            requiresLogin: true,
+          },
+          { status: 201 }
+        )
+      }
+
+      // Create response with session cookie
+      const response = NextResponse.json(
+        {
+          success: true,
+          restaurantId: restaurant.id,
+          requiresLogin: false,
+        },
+        { status: 201 }
+      )
+
+      // Set the session cookie
+      response.cookies.set('sb-access-token', signInData.session.access_token, {
+        path: '/',
+        maxAge: 60 * 60 * 24 * 7, // 7 days
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production',
+      })
+
+      response.cookies.set('sb-refresh-token', signInData.session.refresh_token, {
+        path: '/',
+        maxAge: 60 * 60 * 24 * 7, // 7 days
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production',
+      })
+
+      return response
+    } catch (autoLoginError) {
+      console.error('Auto-login error:', autoLoginError)
+      // Return success without auto-login
+      return NextResponse.json(
+        {
+          success: true,
+          restaurantId: restaurant.id,
+          requiresLogin: true,
+        },
+        { status: 201 }
+      )
+    }
   } catch (error: any) {
     console.error('Admin signup error:', {
       message: error?.message,

@@ -53,9 +53,9 @@ export default function AdminSignupPage() {
       return
     }
 
-    // Step 2 - Complete signup
+    // Validate step 2
     if (!form.adminEmail.trim() || !form.adminPassword.trim()) {
-      setError('Email and password are required')
+      setError('Please fill in all required fields')
       return
     }
 
@@ -67,55 +67,38 @@ export default function AdminSignupPage() {
     setLoading(true)
 
     try {
-      const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new Error('Request timed out. Please try again.')), 30000)
+      const response = await fetch('/api/auth/admin/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          restaurantName: form.restaurantName,
+          adminEmail: form.adminEmail,
+          adminPassword: form.adminPassword,
+          phone: form.phone,
+          address: form.address,
+        }),
       })
 
-      const response = await Promise.race([
-        fetch('/api/auth/admin/signup', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            restaurantName: form.restaurantName,
-            phone: form.phone,
-            address: form.address,
-            adminEmail: form.adminEmail,
-            adminPassword: form.adminPassword,
-          }),
-        }),
-        timeoutPromise,
-      ])
-
-      let result
-      try {
-        result = await response.json()
-      } catch (jsonError) {
-        throw new Error('Server returned an invalid response. Please try again.')
-      }
+      const data = await response.json()
 
       if (!response.ok) {
-        const serverError = result?.error || `Server error (${response.status}). Please try again.`
-        throw new Error(serverError)
+        setError(data.error || 'Failed to create account')
+        return
       }
 
-      // Show loading state before redirect
-      setLoading(false)
-      // Brief success state then redirect
-      setTimeout(() => {
-        router.push('/auth/admin')
-      }, 2000)
-    } catch (err) {
-      let errorMessage = 'Failed to create account. Please try again.'
-      
-      if (err instanceof Error) {
-        errorMessage = err.message
+      if (data.success) {
+        if (data.requiresLogin) {
+          // Auto-login failed, redirect to login
+          router.push('/auth/admin')
+        } else {
+          // Auto-login successful, redirect to success page
+          router.push('/auth/admin/success')
+        }
       }
-      
-      if (errorMessage.includes('already exists')) {
-        errorMessage = 'An account with this email already exists. Please sign in instead.'
-      }
-      
-      setError(errorMessage)
+    } catch (error) {
+      console.error('Signup error:', error)
+      setError('Something went wrong. Please try again.')
+    } finally {
       setLoading(false)
     }
   }
