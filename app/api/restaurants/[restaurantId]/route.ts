@@ -18,6 +18,7 @@ export async function GET(
         phone: true,
         address: true,
         logoUrl: true,
+        menuUrl: true,
       },
     })
 
@@ -51,6 +52,7 @@ export async function PATCH(
       data: {
         name: body.name,
         email: body.email,
+        menuUrl: body.menuUrl,
       },
       select: {
         id: true,
@@ -60,6 +62,7 @@ export async function PATCH(
         phone: true,
         address: true,
         logoUrl: true,
+        menuUrl: true,
       },
     })
 

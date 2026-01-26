@@ -12,6 +12,7 @@ interface TableData {
       name: string
       slug: string
       logoUrl?: string
+      menuUrl?: string
     }
   }
   promotions: Array<{
@@ -32,6 +33,8 @@ export default function TablePage() {
   const [statusMessage, setStatusMessage] = useState<string>('')
   const [error, setError] = useState<string | null>(null)
   const [currentPromo, setCurrentPromo] = useState(0)
+  const [showMenu, setShowMenu] = useState(false)
+  const [menuError, setMenuError] = useState<string | null>(null)
 
   useEffect(() => {
     fetchTableData()
@@ -97,6 +100,17 @@ export default function TablePage() {
     }
   }
 
+  function handleViewMenu() {
+    if (!data?.table.restaurant.menuUrl) return
+    setShowMenu(true)
+    setMenuError(null)
+  }
+
+  function handleBackToCallWaiter() {
+    setShowMenu(false)
+    setMenuError(null)
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background-light">
@@ -120,6 +134,57 @@ export default function TablePage() {
   }
 
   if (!data) return null
+
+  // Show Menu View
+  if (showMenu) {
+    return (
+      <div className="min-h-screen bg-white">
+        {/* Menu Header */}
+        <header className="flex items-center justify-between p-4 border-b border-gray-200">
+          <button
+            onClick={handleBackToCallWaiter}
+            className="flex items-center gap-2 text-gray-700 hover:text-gray-900"
+          >
+            <span className="material-symbols-outlined">arrow_back</span>
+            <span>Back to Call Waiter</span>
+          </button>
+          <h1 className="text-lg font-semibold text-gray-900">
+            {data.table.restaurant.name}
+          </h1>
+          <div className="w-20"></div> {/* Spacer for centering */}
+        </header>
+
+        {/* Menu Content */}
+        <div className="h-[calc(100vh-73px)]">
+          {menuError ? (
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center p-8">
+                <div className="text-red-600 mb-4">
+                  <span className="material-symbols-outlined text-4xl">error</span>
+                </div>
+                <h2 className="text-xl font-semibold text-gray-900 mb-2">Menu Unavailable</h2>
+                <p className="text-gray-600 mb-4">Please ask your waiter for assistance.</p>
+                <button
+                  onClick={handleBackToCallWaiter}
+                  className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
+                >
+                  Back to Call Waiter
+                </button>
+              </div>
+            </div>
+          ) : (
+            <iframe
+              src={data.table.restaurant.menuUrl}
+              className="w-full h-full border-0"
+              onLoad={() => setMenuError(null)}
+              onError={() => setMenuError('Menu unavailable. Please ask your waiter.')}
+              title="Restaurant Menu"
+            />
+          )}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
@@ -158,7 +223,7 @@ export default function TablePage() {
                   </p>
                 </div>
 
-                {/* SingleButton */}
+                {/* Action Buttons */}
                 <div className="flex flex-col items-center gap-4">
                   <button
                     onClick={handleCallWaiter}
@@ -172,6 +237,21 @@ export default function TablePage() {
                       {calling ? 'Calling...' : 'Call Waiter'}
                     </span>
                   </button>
+
+                  {/* View Menu Button - Only show if menuUrl exists */}
+                  {data.table.restaurant.menuUrl && (
+                    <button
+                      onClick={handleViewMenu}
+                      className="flex w-full min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-14 px-5 border-2 border-gray-300 text-gray-700 gap-3 text-lg font-bold leading-normal tracking-[0.015em] hover:border-gray-400 hover:bg-gray-50 active:border-gray-500 transition-colors duration-200"
+                    >
+                      <span className="material-symbols-outlined">
+                        restaurant_menu
+                      </span>
+                      <span className="truncate">
+                        View Menu
+                      </span>
+                    </button>
+                  )}
 
                   {/* BodyText for status */}
                   {statusMessage && (

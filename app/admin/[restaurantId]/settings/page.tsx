@@ -10,6 +10,7 @@ interface Restaurant {
   phone?: string
   address?: string
   logoUrl?: string
+  menuUrl?: string
 }
 
 interface SettingsForm {
@@ -18,6 +19,7 @@ interface SettingsForm {
   timezone: string
   currency: string
   autoRefresh: boolean
+  menuUrl: string
 }
 
 const timezones = [
@@ -56,6 +58,7 @@ export default function SettingsPage() {
     timezone: 'America/New_York',
     currency: 'USD',
     autoRefresh: true,
+    menuUrl: '',
   })
 
   const [originalForm, setOriginalForm] = useState<SettingsForm>(form)
@@ -112,6 +115,7 @@ export default function SettingsPage() {
           timezone: form.timezone, // Keep from localStorage
           currency: form.currency, // Keep from localStorage
           autoRefresh: form.autoRefresh, // Keep from localStorage
+          menuUrl: data.menuUrl || '',
         }
         
         setForm(newForm)
@@ -140,6 +144,7 @@ export default function SettingsPage() {
         body: JSON.stringify({
           name: form.restaurantName,
           email: form.supportEmail,
+          menuUrl: form.menuUrl,
         }),
       })
 
@@ -277,6 +282,26 @@ export default function SettingsPage() {
                   }`}
                 />
               </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Customer Menu */}
+        <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <h2 className="text-lg font-medium text-gray-900 mb-4">Customer Menu</h2>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Menu URL
+              </label>
+              <input
+                type="url"
+                value={form.menuUrl}
+                onChange={(e) => handleChange('menuUrl', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
+                placeholder="https://restaurant.com/menu"
+              />
+              <p className="mt-1 text-sm text-gray-500">Customers can view this menu from the QR code landing page</p>
             </div>
           </div>
         </div>

@@ -20,6 +20,7 @@ model Restaurant {
   phone         String?
   address       String?
   logoUrl       String?
+  menuUrl       String?      // External menu URL for customers
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
   

@@ -27,6 +27,7 @@ export async function GET(
             name: true,
             slug: true,
             logoUrl: true,
+            menuUrl: true,
           },
         },
         assignedWaiters: {
