@@ -268,211 +268,167 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="relative flex min-h-screen w-full flex-row bg-background-light dark:bg-background-dark">
-      {/* SideNavBar */}
-      <aside className="hidden md:flex w-64 flex-col bg-white dark:bg-background-dark dark:border-r dark:border-primary/20">
-        <div className="flex flex-col gap-4 p-4 h-full justify-between">
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-3 px-2">
-              <div className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 bg-primary/10 flex items-center justify-center">
-                <span className="material-symbols-outlined text-primary">table_restaurant</span>
-              </div>
-              <div className="flex flex-col">
-                <h1 className="text-gray-900 dark:text-white text-base font-medium leading-normal">
-                  {restaurant?.name || 'Restaurant'}
-                </h1>
-                <p className="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">
-                  Admin Panel
-                </p>
-              </div>
+    <div className="flex h-screen bg-gray-50">
+      {/* Sidebar */}
+      <aside className="w-64 bg-white border-r border-gray-200">
+        <div className="flex flex-col h-full">
+          {/* Logo */}
+          <div className="flex items-center gap-3 p-6 border-b border-gray-200">
+            <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-lg">●</span>
             </div>
-            <nav className="flex flex-col gap-2 mt-4">
-              <button
-                className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
-                  activeTab === 'overview'
-                    ? 'bg-primary/20 text-gray-900 dark:text-white'
-                    : 'hover:bg-primary/10 text-gray-900 dark:text-gray-300'
-                }`}
-                onClick={() => setActiveTab('overview')}
-              >
-                <span className="material-symbols-outlined text-gray-900 dark:text-gray-300">
-                  dashboard
-                </span>
-                <p className="text-sm font-medium leading-normal">Dashboard</p>
-              </button>
-              <button
-                className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
-                  activeTab === 'tables'
-                    ? 'bg-primary/20 text-gray-900 dark:text-white'
-                    : 'hover:bg-primary/10 text-gray-900 dark:text-gray-300'
-                }`}
-                onClick={() => setActiveTab('tables')}
-              >
-                <span className="material-symbols-outlined text-gray-900 dark:text-gray-300">
-                  table_restaurant
-                </span>
-                <p className="text-gray-900 dark:text-gray-300 text-sm font-medium leading-normal">
-                  Tables
-                </p>
-              </button>
-              <button
-                className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
-                  activeTab === 'waiters'
-                    ? 'bg-primary/20 text-gray-900 dark:text-white'
-                    : 'hover:bg-primary/10 text-gray-900 dark:text-gray-300'
-                }`}
-                onClick={() => setActiveTab('waiters')}
-              >
-                <span className="material-symbols-outlined text-gray-900 dark:text-gray-300">
-                  badge
-                </span>
-                <p className="text-gray-900 dark:text-gray-300 text-sm font-medium leading-normal">
-                  Waiters
-                </p>
-              </button>
-              <button
-                className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
-                  activeTab === 'promotions'
-                    ? 'bg-primary/20 text-gray-900 dark:text-white'
-                    : 'hover:bg-primary/10 text-gray-900 dark:text-gray-300'
-                }`}
-                onClick={() => setActiveTab('promotions')}
-              >
-                <span className="material-symbols-outlined text-gray-900 dark:text-gray-300">
-                  campaign
-                </span>
-                <p className="text-gray-900 dark:text-gray-300 text-sm font-medium leading-normal">
-                  Promotions
-                </p>
-              </button>
-              <button
-                className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
-                  activeTab === 'calls'
-                    ? 'bg-primary/20 text-gray-900 dark:text-white'
-                    : 'hover:bg-primary/10 text-gray-900 dark:text-gray-300'
-                }`}
-                onClick={() => setActiveTab('calls')}
-              >
-                <span className="material-symbols-outlined text-gray-900 dark:text-gray-300">
-                  bar_chart
-                </span>
-                <p className="text-gray-900 dark:text-gray-300 text-sm font-medium leading-normal">
-                  Analytics
-                </p>
-              </button>
-            </nav>
+            <div>
+              <h1 className="font-semibold text-gray-900">{restaurant?.name || 'Restaurant'}</h1>
+              <p className="text-sm text-gray-500">Admin Panel</p>
+            </div>
           </div>
-          <div className="flex flex-col gap-1">
-            <button className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/10 transition-colors duration-200">
-              <span className="material-symbols-outlined text-gray-900 dark:text-gray-300">
-                settings
-              </span>
-              <p className="text-gray-900 dark:text-gray-300 text-sm font-medium leading-normal">
-                Settings
-              </p>
-            </button>
-            <button className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/10 transition-colors duration-200">
-              <span className="material-symbols-outlined text-gray-900 dark:text-gray-300">
-                logout
-              </span>
-              <p className="text-gray-900 dark:text-gray-300 text-sm font-medium leading-normal">
-                Log Out
-              </p>
-            </button>
+
+          {/* Navigation */}
+          <nav className="flex-1 p-4">
+            <div className="space-y-1">
+              {[
+                { id: 'overview', label: 'Dashboard', icon: 'dashboard' },
+                { id: 'tables', label: 'Tables', icon: 'table_restaurant' },
+                { id: 'waiters', label: 'Waiters', icon: 'badge' },
+                { id: 'promotions', label: 'Promotions', icon: 'campaign' },
+                { id: 'calls', label: 'Analytics', icon: 'bar_chart' },
+              ].map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveTab(item.id as any)}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                    activeTab === item.id
+                      ? 'bg-primary/10 text-primary font-medium'
+                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-xl">{item.icon}</span>
+                  <span>{item.label}</span>
+                </button>
+              ))}
+            </div>
+          </nav>
+
+          {/* Bottom Actions */}
+          <div className="p-4 border-t border-gray-200">
+            <div className="space-y-1">
+              <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors">
+                <span className="material-symbols-outlined text-xl">settings</span>
+                <span>Settings</span>
+              </button>
+              <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors">
+                <span className="material-symbols-outlined text-xl">logout</span>
+                <span>Log Out</span>
+              </button>
+            </div>
           </div>
         </div>
       </aside>
 
-      {/* Main Area */}
-      <main className="flex-1 flex flex-col">
-        {/* TopNavBar */}
-        <header className="flex items-center justify-between whitespace-nowrap border-b border-gray-200 dark:border-primary/20 bg-white dark:bg-background-dark px-4 md:px-6 py-3 sticky top-0 z-10">
-          <div className="flex items-center gap-4 md:gap-8">
-            <h2 className="text-gray-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">
-              Dashboard
-            </h2>
-            <label className="hidden sm:flex flex-col min-w-40 h-10 max-w-64">
-              <div className="flex w-full flex-1 items-stretch rounded-lg h-full">
-                <div className="text-gray-500 dark:text-gray-400 flex border-none bg-background-light dark:bg-black/20 items-center justify-center pl-4 rounded-l-lg border-r-0">
-                  <span className="material-symbols-outlined">search</span>
-                </div>
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col">
+        {/* Header */}
+        <header className="bg-white border-b border-gray-200 px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <h2 className="text-xl font-semibold text-gray-900">
+                {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
+              </h2>
+              <div className="relative">
                 <input
-                  className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-900 dark:text-white focus:outline-0 focus:ring-0 border-none bg-background-light dark:bg-black/20 h-full placeholder:text-gray-500 dark:placeholder:text-gray-400 px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal"
-                  placeholder="Search"
+                  type="text"
+                  placeholder="Search..."
+                  className="w-64 pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
+                <span className="material-symbols-outlined absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                  search
+                </span>
               </div>
-            </label>
-          </div>
-          <div className="flex gap-3">
-            <button className="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 w-10 bg-background-light dark:bg-black/20 text-gray-900 dark:text-white gap-2 text-sm font-bold leading-normal tracking-[0.015em] relative">
-              <span className="material-symbols-outlined">notifications</span>
-              <span className="absolute top-2 right-2 flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-              </span>
-            </button>
-            <button className="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 w-10 bg-background-light dark:bg-black/20 text-gray-900 dark:text-white gap-2 text-sm font-bold leading-normal tracking-[0.015em]">
-              <span className="material-symbols-outlined">account_circle</span>
-            </button>
+            </div>
+            <div className="flex items-center gap-3">
+              <button className="relative p-2 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
+                <span className="material-symbols-outlined text-xl">notifications</span>
+                <span className="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full"></span>
+              </button>
+              <button className="p-2 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
+                <span className="material-symbols-outlined text-xl">account_circle</span>
+              </button>
+            </div>
           </div>
         </header>
 
-        {/* Tabs (top of content area on mobile) */}
-        <div className="px-4 md:px-6 py-4 border-b md:hidden bg-white dark:bg-background-dark">
-          <div className="flex gap-3 overflow-x-auto">
-            {(['overview', 'tables', 'waiters', 'promotions', 'calls'] as const).map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap ${
-                  activeTab === tab
-                    ? 'bg-primary text-background-dark'
-                    : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200'
-                }`}
-              >
-                {tab.charAt(0).toUpperCase() + tab.slice(1)}
-              </button>
-            ))}
-          </div>
-        </div>
-
         {/* Content */}
-        <div className="max-w-7xl mx-auto px-4 md:px-6 py-6 space-y-6">
+        <main className="flex-1 overflow-auto p-6">
         {activeTab === 'overview' && (
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Analytics</h2>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-              <div className="bg-white rounded-lg shadow p-6">
-                <p className="text-gray-600 text-sm mb-1">Total Calls</p>
-                <p className="text-3xl font-bold text-gray-900">{totalCalls}</p>
+          <div className="space-y-6">
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="bg-white rounded-xl p-6 border border-gray-200">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <span className="material-symbols-outlined text-blue-600 text-xl">phone_in_talk</span>
+                  </div>
+                  <span className="text-sm text-gray-500">Total</span>
+                </div>
+                <p className="text-2xl font-bold text-gray-900">{totalCalls}</p>
+                <p className="text-sm text-gray-600">Service Calls</p>
               </div>
-              <div className="bg-white rounded-lg shadow p-6">
-                <p className="text-gray-600 text-sm mb-1">Pending</p>
-                <p className="text-3xl font-bold text-orange-600">{pendingCalls}</p>
+
+              <div className="bg-white rounded-xl p-6 border border-gray-200">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                    <span className="material-symbols-outlined text-orange-600 text-xl">pending</span>
+                  </div>
+                  <span className="text-sm text-gray-500">Active</span>
+                </div>
+                <p className="text-2xl font-bold text-gray-900">{pendingCalls}</p>
+                <p className="text-sm text-gray-600">Pending Calls</p>
               </div>
-              <div className="bg-white rounded-lg shadow p-6">
-                <p className="text-gray-600 text-sm mb-1">Handled</p>
-                <p className="text-3xl font-bold text-green-600">{handledCalls}</p>
+
+              <div className="bg-white rounded-xl p-6 border border-gray-200">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                    <span className="material-symbols-outlined text-green-600 text-xl">check_circle</span>
+                  </div>
+                  <span className="text-sm text-gray-500">Completed</span>
+                </div>
+                <p className="text-2xl font-bold text-gray-900">{handledCalls}</p>
+                <p className="text-sm text-gray-600">Handled Calls</p>
               </div>
-              <div className="bg-white rounded-lg shadow p-6">
-                <p className="text-gray-600 text-sm mb-1">Avg Response</p>
-                <p className="text-3xl font-bold text-indigo-600">
-                  {avgResponseTime}s
-                </p>
+
+              <div className="bg-white rounded-xl p-6 border border-gray-200">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                    <span className="material-symbols-outlined text-purple-600 text-xl">timer</span>
+                  </div>
+                  <span className="text-sm text-gray-500">Average</span>
+                </div>
+                <p className="text-2xl font-bold text-gray-900">{avgResponseTime}s</p>
+                <p className="text-sm text-gray-600">Response Time</p>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-semibold mb-4">Recent Calls</h3>
-              <div className="space-y-2">
-                {calls.slice(0, 10).map((call) => (
-                  <div
-                    key={call.id}
-                    className="flex items-center justify-between p-3 bg-gray-50 rounded"
-                  >
-                    <div>
-                      <span className="font-medium">Table {call.table.number}</span>
-                      <span className={`ml-2 px-2 py-1 rounded text-xs ${
+            {/* Recent Activity */}
+            <div className="bg-white rounded-xl border border-gray-200">
+              <div className="p-6 border-b border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-900">Recent Activity</h3>
+              </div>
+              <div className="p-6">
+                <div className="space-y-4">
+                  {calls.slice(0, 10).map((call) => (
+                    <div key={call.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                      <div className="flex items-center gap-4">
+                        <div className={`w-2 h-2 rounded-full ${
+                          call.status === 'PENDING' ? 'bg-orange-500' : 'bg-green-500'
+                        }`}></div>
+                        <div>
+                          <p className="font-medium text-gray-900">Table {call.table.number}</p>
+                          <p className="text-sm text-gray-500">
+                            {new Date(call.requestedAt).toLocaleString()}
+                          </p>
+                        </div>
+                      </div>
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                         call.status === 'PENDING'
                           ? 'bg-orange-100 text-orange-700'
                           : 'bg-green-100 text-green-700'
@@ -480,91 +436,79 @@ export default function AdminPage() {
                         {call.status}
                       </span>
                     </div>
-                    <span className="text-sm text-gray-600">
-                      {new Date(call.requestedAt).toLocaleTimeString()}
-                    </span>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           </div>
         )}
 
         {activeTab === 'tables' && (
-          <div>
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold">Tables</h2>
+          <div className="bg-white rounded-xl border border-gray-200">
+            <div className="p-6 border-b border-gray-200 flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-gray-900">Tables</h3>
               <button
                 onClick={() => {
                   setSelectedTable(null)
                   setTableModalOpen(true)
                 }}
-                className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700"
+                className="px-4 py-2 bg-primary text-gray-900 rounded-lg hover:bg-primary/90 transition-colors font-medium"
               >
                 Add Table
               </button>
             </div>
-            <div className="bg-white rounded-lg shadow overflow-hidden">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                      Number
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                      QR Code
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                      Status
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                      Actions
-                    </th>
+                    <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Table</th>
+                    <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">QR Code</th>
+                    <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="divide-y divide-gray-200">
                   {tables.map((table) => (
-                    <tr key={table.id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {table.number}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <code className="bg-gray-100 px-2 py-1 rounded">
-                          {table.qrCode}
-                        </code>
+                    <tr key={table.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                            <span className="material-symbols-outlined text-gray-600 text-sm">table_restaurant</span>
+                          </div>
+                          <span className="font-medium text-gray-900">{table.number}</span>
+                        </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className={`px-2 py-1 text-xs rounded ${
-                            table.isActive
-                              ? 'bg-green-100 text-green-700'
-                              : 'bg-gray-100 text-gray-700'
-                          }`}
-                        >
+                        <code className="px-2 py-1 bg-gray-100 rounded text-sm">{table.qrCode}</code>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          table.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
+                        }`}>
                           {table.isActive ? 'Active' : 'Inactive'}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        <div className="flex gap-2">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center gap-2">
                           <a
                             href={`/table/${table.qrCode}`}
                             target="_blank"
-                            className="text-indigo-600 hover:text-indigo-900"
+                            className="text-primary hover:text-primary/80 font-medium text-sm"
                           >
-                            View QR
+                            View
                           </a>
                           <button
                             onClick={() => {
                               setSelectedTable(table)
                               setTableModalOpen(true)
                             }}
-                            className="text-blue-600 hover:text-blue-900"
+                            className="text-gray-600 hover:text-gray-900 font-medium text-sm"
                           >
                             Edit
                           </button>
                           <button
                             onClick={() => handleDeleteTable(table.id)}
-                            className="text-red-600 hover:text-red-900"
+                            className="text-red-600 hover:text-red-900 font-medium text-sm"
                           >
                             Delete
                           </button>
