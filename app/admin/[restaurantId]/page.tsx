@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import TableModal from './components/TableModal'
 import WaiterModal from './components/WaiterModal'
 import PromotionModal from './components/PromotionModal'
@@ -49,6 +49,7 @@ interface Call {
 
 export default function AdminPage() {
   const params = useParams()
+  const router = useRouter()
   const restaurantId = params.restaurantId as string
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null)
   const [tables, setTables] = useState<Table[]>([])
@@ -68,10 +69,36 @@ export default function AdminPage() {
   const [selectedPromotion, setSelectedPromotion] = useState<any | null>(null)
   const [assignmentModalOpen, setAssignmentModalOpen] = useState(false)
   const [selectedWaiterForAssignment, setSelectedWaiterForAssignment] = useState<Waiter | null>(null)
+  const [accountMenuOpen, setAccountMenuOpen] = useState(false)
+
+  async function handleLogout() {
+    try {
+      await fetch('/api/auth/admin/logout', {
+        method: 'POST',
+      })
+      router.push('/auth/admin')
+    } catch (error) {
+      // Even if the API call fails, redirect to login
+      router.push('/auth/admin')
+    }
+  }
 
   useEffect(() => {
     fetchData()
   }, [restaurantId])
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (accountMenuOpen) {
+        setAccountMenuOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [accountMenuOpen])
 
   async function fetchData() {
     try {
@@ -316,7 +343,10 @@ export default function AdminPage() {
                 <span className="material-symbols-outlined text-xl">settings</span>
                 <span>Settings</span>
               </button>
-              <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors">
+              <button 
+                onClick={handleLogout}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+              >
                 <span className="material-symbols-outlined text-xl">logout</span>
                 <span>Log Out</span>
               </button>
@@ -350,9 +380,33 @@ export default function AdminPage() {
                 <span className="material-symbols-outlined text-xl">notifications</span>
                 <span className="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full"></span>
               </button>
-              <button className="p-2 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
-                <span className="material-symbols-outlined text-xl">account_circle</span>
-              </button>
+              <div className="relative">
+                <button 
+                  onClick={() => setAccountMenuOpen(!accountMenuOpen)}
+                  className="p-2 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
+                >
+                  <span className="material-symbols-outlined text-xl">account_circle</span>
+                </button>
+                
+                {accountMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+                    <div className="px-4 py-2 border-b border-gray-100">
+                      <p className="text-sm font-medium text-gray-900">{restaurant?.name || 'Admin'}</p>
+                      <p className="text-xs text-gray-500">Administrator</p>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setAccountMenuOpen(false)
+                        handleLogout()
+                      }}
+                      className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                    >
+                      <span className="material-symbols-outlined text-lg">logout</span>
+                      Log Out
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </header>
