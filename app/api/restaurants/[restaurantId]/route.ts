@@ -38,3 +38,38 @@ export async function GET(
   }
 }
 
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ restaurantId: string }> }
+) {
+  try {
+    const { restaurantId } = await params
+    const body = await request.json()
+
+    const restaurant = await prisma.restaurant.update({
+      where: { id: restaurantId },
+      data: {
+        name: body.name,
+        email: body.email,
+      },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        email: true,
+        phone: true,
+        address: true,
+        logoUrl: true,
+      },
+    })
+
+    return NextResponse.json(restaurant)
+  } catch (error) {
+    console.error('Error updating restaurant:', error)
+    return NextResponse.json(
+      { error: 'Failed to update restaurant' },
+      { status: 500 }
+    )
+  }
+}
+
