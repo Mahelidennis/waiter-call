@@ -290,21 +290,7 @@ export async function POST(request: NextRequest) {
         )
       }
 
-      // Update the user's session with restaurantId metadata
-      await supabase.auth.updateUser({
-        data: {
-          user_metadata: {
-            role: 'admin',
-            restaurantId: restaurant.id,
-          },
-          app_metadata: {
-            role: 'admin',
-            restaurantId: restaurant.id,
-          }
-        }
-      })
-
-      // Create response with session cookie
+      // Create response with session cookie first
       const response = NextResponse.json(
         {
           success: true,
@@ -330,6 +316,26 @@ export async function POST(request: NextRequest) {
         sameSite: 'lax',
         secure: process.env.NODE_ENV === 'production',
       })
+
+      // Update the user's session with restaurantId metadata
+      // This is done after setting cookies to avoid interfering with the session
+      try {
+        await supabase.auth.updateUser({
+          data: {
+            user_metadata: {
+              role: 'admin',
+              restaurantId: restaurant.id,
+            },
+            app_metadata: {
+              role: 'admin',
+              restaurantId: restaurant.id,
+            }
+          }
+        })
+      } catch (updateError) {
+        console.warn('Failed to update user metadata:', updateError)
+        // Don't fail the signup if metadata update fails
+      }
 
       return response
     } catch (autoLoginError) {
