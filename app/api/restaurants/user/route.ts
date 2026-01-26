@@ -27,10 +27,20 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // Find restaurant for this admin user
-    const restaurant = await prisma.restaurant.findFirst({
+    // Extract restaurantId from user metadata
+    const restaurantId = user.user_metadata?.restaurantId || user.app_metadata?.restaurantId
+    
+    if (!restaurantId) {
+      return NextResponse.json(
+        { error: 'No restaurant associated with this account' },
+        { status: 404 }
+      )
+    }
+
+    // Find restaurant by ID from session
+    const restaurant = await prisma.restaurant.findUnique({
       where: {
-        email: user.email
+        id: restaurantId
       },
       select: {
         id: true,
@@ -47,7 +57,6 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(restaurant)
   } catch (error) {
-    console.error('Error fetching restaurant:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

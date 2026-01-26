@@ -35,7 +35,6 @@ export default function AdminSuccessPage() {
         const { data: { user }, error: authError } = await supabase.auth.getUser()
         
         if (authError || !user) {
-          console.error('User not authenticated:', authError)
           router.push('/auth/admin')
           return
         }
@@ -44,7 +43,6 @@ export default function AdminSuccessPage() {
         const response = await fetch('/api/restaurants/user')
 
         if (!response.ok) {
-          console.error('Failed to fetch restaurant')
           router.push('/auth/admin')
           return
         }
@@ -52,7 +50,6 @@ export default function AdminSuccessPage() {
         const restaurantData = await response.json()
         setRestaurant(restaurantData)
       } catch (error) {
-        console.error('Error checking auth:', error)
         router.push('/auth/admin')
       } finally {
         setLoading(false)

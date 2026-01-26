@@ -35,7 +35,6 @@ export default function AdminDashboardPage() {
         const { data: { user }, error: authError } = await supabase.auth.getUser()
         
         if (authError || !user) {
-          console.error('User not authenticated:', authError)
           router.push('/auth/admin')
           return
         }
@@ -44,7 +43,6 @@ export default function AdminDashboardPage() {
         const response = await fetch('/api/restaurants/user')
 
         if (!response.ok) {
-          console.error('Failed to fetch restaurant')
           router.push('/auth/admin')
           return
         }
@@ -54,7 +52,6 @@ export default function AdminDashboardPage() {
         // Redirect to the actual restaurant dashboard
         router.push(`/admin/${restaurant.id}`)
       } catch (error) {
-        console.error('Error checking auth:', error)
         router.push('/auth/admin')
       } finally {
         setLoading(false)

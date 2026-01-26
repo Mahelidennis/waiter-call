@@ -290,6 +290,20 @@ export async function POST(request: NextRequest) {
         )
       }
 
+      // Update the user's session with restaurantId metadata
+      await supabase.auth.updateUser({
+        data: {
+          user_metadata: {
+            role: 'admin',
+            restaurantId: restaurant.id,
+          },
+          app_metadata: {
+            role: 'admin',
+            restaurantId: restaurant.id,
+          }
+        }
+      })
+
       // Create response with session cookie
       const response = NextResponse.json(
         {
@@ -300,7 +314,7 @@ export async function POST(request: NextRequest) {
         { status: 201 }
       )
 
-      // Set the session cookie
+      // Set the session cookies with explicit overwrite
       response.cookies.set('sb-access-token', signInData.session.access_token, {
         path: '/',
         maxAge: 60 * 60 * 24 * 7, // 7 days
