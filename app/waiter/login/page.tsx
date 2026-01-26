@@ -61,10 +61,22 @@ function WaiterLoginInner() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setError(null)
+    
+    // Client-side validation
+    if (!accessCode || accessCode.trim().length < 4) {
+      setError('Please enter a valid access code (4-8 digits)')
+      return
+    }
+    
+    if (!restaurantCode && !selectedRestaurantId) {
+      setError('Please select a restaurant or enter a restaurant code')
+      return
+    }
+    
     setLoading(true)
 
     try {
-      const payload: Record<string, string> = { accessCode }
+      const payload: Record<string, string> = { accessCode: accessCode.trim() }
       if (restaurantCode) {
         payload.restaurantCode = restaurantCode.trim()
       } else if (selectedRestaurantId) {
@@ -175,8 +187,8 @@ function WaiterLoginInner() {
 
           <button
             type="submit"
-            disabled={loading}
-            className="w-full py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+            disabled={loading || (!restaurantCode && !selectedRestaurantId) || !accessCode}
+            className="w-full py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>

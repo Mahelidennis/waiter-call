@@ -11,6 +11,12 @@ const workSans = Work_Sans({
 export const metadata: Metadata = {
   title: 'Waiter Call System',
   description: 'Streamline restaurant service with instant waiter calls',
+  icons: {
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico', sizes: 'any' },
+    ],
+  },
 }
 
 export default function RootLayout({
