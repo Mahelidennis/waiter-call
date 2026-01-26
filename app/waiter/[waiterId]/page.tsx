@@ -1,8 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
-import { supabase } from '@/lib/supabase/client'
+import { useParams, useRouter } from 'next/navigation'
 
 interface Call {
   id: string
@@ -31,68 +30,58 @@ interface Waiter {
 
 export default function WaiterDashboard() {
   const params = useParams()
+  const router = useRouter()
   const waiterId = params.waiterId as string
   const [calls, setCalls] = useState<Call[]>([])
   const [waiter, setWaiter] = useState<Waiter | null>(null)
   const [loading, setLoading] = useState(true)
-  const [filter, setFilter] = useState<'all' | 'my' | 'handled'>('all')
+  const [pollingLoading, setPollingLoading] = useState(false) // Track polling state
+  const [filter, setFilter] = useState<'all' | 'pending' | 'acknowledged' | 'my' | 'handled'>('pending')
   const [newCallNotification, setNewCallNotification] = useState<Call | null>(null)
+  const [previousCalls, setPreviousCalls] = useState<Call[]>([]) // Track previous calls for change detection
+
+  async function handleLogout() {
+    try {
+      await fetch('/api/auth/waiter/logout', { method: 'POST' })
+      router.push('/waiter/login')
+    } catch (error) {
+      console.error('Logout failed:', error)
+      // Still redirect even if logout API fails
+      router.push('/waiter/login')
+    }
+  }
 
   useEffect(() => {
     fetchWaiter()
   }, [waiterId])
 
-  useEffect(() => {
-    if (waiter) {
-      fetchCalls()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter, waiter])
+  // Remove the manual fetchCalls effect since polling handles it
 
+  // Polling for live updates
   useEffect(() => {
     if (!waiter) return
 
-    const channel = supabase
-      .channel(`waiter-calls-${waiterId}`)
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'Call',
-          filter: `status=eq.PENDING`,
-        },
-        (payload) => {
-          fetchCalls()
-          const newCall = payload.new as any
-          setNewCallNotification(newCall)
-          
-          if ('vibrate' in navigator) {
-            navigator.vibrate([200, 100, 200])
-          }
-          
-          setTimeout(() => {
-            setNewCallNotification(null)
-          }, 5000)
-        }
-      )
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'Call',
-        },
-        () => {
-          fetchCalls()
-        }
-      )
-      .subscribe()
+    const POLLING_INTERVAL = 7000 // 7 seconds
+    let intervalId: NodeJS.Timeout | null = null
+
+    const startPolling = () => {
+      // Initial fetch (not polling)
+      fetchCalls(false)
+      
+      // Set up periodic polling
+      intervalId = setInterval(() => {
+        fetchCalls(true) // Mark as polling
+      }, POLLING_INTERVAL)
+    }
+
+    startPolling()
 
     return () => {
-      supabase.removeChannel(channel)
+      if (intervalId) {
+        clearInterval(intervalId)
+      }
     }
-  }, [waiter, waiterId])
+  }, [filter, waiter]) // Re-start polling when filter or waiter changes
 
   async function fetchWaiter() {
     try {
@@ -109,54 +98,103 @@ export default function WaiterDashboard() {
     }
   }
 
-  async function fetchCalls() {
+  async function fetchCalls(isPolling = false) {
     try {
       if (!waiter) return
       
-      // Fetch all calls for the restaurant, not just pending
-      const response = await fetch(`/api/calls?restaurantId=${waiter.restaurantId}`)
+      // Set polling loading state (but not for initial load)
+      if (isPolling) {
+        setPollingLoading(true)
+      }
+      
+      // Use the new waiter-specific API endpoint
+      let statusFilter = filter // Use filter directly as it matches API options
+      
+      const response = await fetch(`/api/waiter/calls?status=${statusFilter}`)
       if (!response.ok) return
       
       const data = await response.json()
-      // Filter based on current filter
-      let filtered = data
-      if (filter === 'my') {
-        filtered = data.filter((call: Call) => call.waiterId === waiterId)
-      } else if (filter === 'handled') {
-        filtered = data.filter((call: Call) => call.status === 'HANDLED')
-      } else {
-        // For 'all' filter, show pending calls first
-        filtered = data.filter((call: Call) => call.status === 'PENDING')
+      
+      // Detect new pending calls for notifications (only during polling)
+      if (isPolling && previousCalls.length > 0) {
+        const previousCallIds = new Set(previousCalls.map(call => call.id))
+        const newPendingCalls = data.filter((call: Call) => 
+          call.status === 'PENDING' && 
+          !call.waiterId && 
+          !previousCallIds.has(call.id)
+        )
+        
+        // Show notification for new pending calls
+        if (newPendingCalls.length > 0) {
+          const latestCall = newPendingCalls[0]
+          setNewCallNotification(latestCall)
+          
+          // Vibrate if supported
+          if ('vibrate' in navigator) {
+            navigator.vibrate([200, 100, 200])
+          }
+          
+          // Clear notification after 5 seconds
+          setTimeout(() => {
+            setNewCallNotification(null)
+          }, 5000)
+        }
       }
-      setCalls(filtered)
+      
+      // Update calls and previous calls
+      setCalls(data)
+      setPreviousCalls(data)
     } catch (error) {
       console.error('Error fetching calls:', error)
     } finally {
       setLoading(false)
+      setPollingLoading(false)
     }
   }
 
-  async function handleCall(callId: string) {
+  async function acknowledgeCall(callId: string) {
     try {
-      const response = await fetch(`/api/calls/${callId}`, {
-        method: 'PATCH',
+      const response = await fetch(`/api/waiter/calls/${callId}/acknowledge`, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          status: 'HANDLED',
-          waiterId,
-        }),
       })
 
       if (!response.ok) {
-        throw new Error('Failed to update call')
+        const error = await response.json()
+        throw new Error(error.error || 'Failed to acknowledge call')
       }
 
-      fetchCalls()
+      // Reset previous calls to prevent false notifications
+      setPreviousCalls(calls)
+      fetchCalls(false) // Refresh the calls list (not polling)
     } catch (error) {
-      console.error('Error handling call:', error)
-      alert('Failed to update call. Please try again.')
+      console.error('Error acknowledging call:', error)
+      alert(error instanceof Error ? error.message : 'Failed to acknowledge call. Please try again.')
+    }
+  }
+
+  async function resolveCall(callId: string) {
+    try {
+      const response = await fetch(`/api/waiter/calls/${callId}/resolve`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Failed to resolve call')
+      }
+
+      // Reset previous calls to prevent false notifications
+      setPreviousCalls(calls)
+      fetchCalls(false) // Refresh the calls list (not polling)
+    } catch (error) {
+      console.error('Error resolving call:', error)
+      alert(error instanceof Error ? error.message : 'Failed to resolve call. Please try again.')
     }
   }
 
@@ -220,11 +258,19 @@ export default function WaiterDashboard() {
                 </span>
                 <h1 className="text-xl font-bold leading-tight tracking-tight">Live Dashboard</h1>
                 <div className="flex items-center gap-2 rounded-full bg-primary/20 px-3 py-1">
-                  <div className="h-2 w-2 rounded-full bg-primary"></div>
+                  <div className={`h-2 w-2 rounded-full bg-primary ${pollingLoading ? 'animate-pulse' : ''}`}></div>
                   <span className="text-xs font-medium text-primary">LIVE</span>
                 </div>
               </div>
-              <div className="flex flex-1 justify-end gap-8">
+              <div className="flex flex-1 justify-end gap-3 items-center">
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+                  title="Sign out"
+                >
+                  <span className="material-symbols-outlined text-lg">logout</span>
+                  <span className="hidden sm:inline">Sign out</span>
+                </button>
                 <div className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 bg-primary/20 flex items-center justify-center">
                   {waiter?.name ? (
                     <span className="text-primary font-bold text-lg">
@@ -244,14 +290,24 @@ export default function WaiterDashboard() {
               </h2>
               <div className="flex gap-3 p-3 overflow-x-auto">
                 <button
-                  onClick={() => setFilter('all')}
+                  onClick={() => setFilter('pending')}
                   className={`flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full px-4 transition-colors ${
-                    filter === 'all'
+                    filter === 'pending'
                       ? 'bg-primary text-background-dark'
                       : 'bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200'
                   }`}
                 >
-                  <p className="text-sm font-semibold leading-normal">All Requests</p>
+                  <p className="text-sm font-semibold leading-normal">Pending</p>
+                </button>
+                <button
+                  onClick={() => setFilter('acknowledged')}
+                  className={`flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full px-4 transition-colors ${
+                    filter === 'acknowledged'
+                      ? 'bg-primary text-background-dark'
+                      : 'bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200'
+                  }`}
+                >
+                  <p className="text-sm font-medium leading-normal">Acknowledged</p>
                 </button>
                 <button
                   onClick={() => setFilter('my')}
@@ -272,6 +328,16 @@ export default function WaiterDashboard() {
                   }`}
                 >
                   <p className="text-sm font-medium leading-normal">Handled</p>
+                </button>
+                <button
+                  onClick={() => setFilter('all')}
+                  className={`flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full px-4 transition-colors ${
+                    filter === 'all'
+                      ? 'bg-primary text-background-dark'
+                      : 'bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200'
+                  }`}
+                >
+                  <p className="text-sm font-semibold leading-normal">All Requests</p>
                 </button>
               </div>
             </div>
@@ -299,6 +365,11 @@ export default function WaiterDashboard() {
                   const waitTime = getWaitTimeInSeconds(call.requestedAt)
                   const borderColor = getCardBorderColor(waitTime)
                   const timeColor = getTimeColor(waitTime)
+                  
+                  // Determine call state
+                  const isPending = call.status === 'PENDING' && !call.waiterId
+                  const isAcknowledged = call.status === 'PENDING' && call.waiterId === waiterId
+                  const isHandled = call.status === 'HANDLED'
 
                   return (
                     <div
@@ -316,14 +387,45 @@ export default function WaiterDashboard() {
                           <p className="text-gray-500 dark:text-gray-400 text-base font-normal leading-normal">
                             Call Waiter
                           </p>
+                          {isAcknowledged && (
+                            <p className="text-blue-600 dark:text-blue-400 text-sm font-medium">
+                              Acknowledged by you
+                            </p>
+                          )}
+                          {isHandled && (
+                            <p className="text-green-600 dark:text-green-400 text-sm font-medium">
+                              Resolved
+                            </p>
+                          )}
                         </div>
-                        <button
-                          onClick={() => handleCall(call.id)}
-                          className="flex w-full sm:w-fit min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-5 gap-2 bg-primary text-background-dark text-sm font-bold leading-normal hover:bg-primary/90 transition-colors"
-                        >
-                          <span className="truncate">Mark as Handled</span>
-                          <span className="material-symbols-outlined text-lg">done</span>
-                        </button>
+                        
+                        {/* Action buttons based on state */}
+                        {isPending && (
+                          <button
+                            onClick={() => acknowledgeCall(call.id)}
+                            className="flex w-full sm:w-fit min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-5 gap-2 bg-blue-600 text-white text-sm font-bold leading-normal hover:bg-blue-700 transition-colors"
+                          >
+                            <span className="truncate">Acknowledge</span>
+                            <span className="material-symbols-outlined text-lg">check</span>
+                          </button>
+                        )}
+                        
+                        {isAcknowledged && (
+                          <button
+                            onClick={() => resolveCall(call.id)}
+                            className="flex w-full sm:w-fit min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-5 gap-2 bg-primary text-background-dark text-sm font-bold leading-normal hover:bg-primary/90 transition-colors"
+                          >
+                            <span className="truncate">Resolve</span>
+                            <span className="material-symbols-outlined text-lg">done</span>
+                          </button>
+                        )}
+                        
+                        {isHandled && (
+                          <div className="flex items-center gap-2 text-green-600 dark:text-green-400">
+                            <span className="material-symbols-outlined">check_circle</span>
+                            <span className="text-sm font-medium">Completed</span>
+                          </div>
+                        )}
                       </div>
                       <div className="w-full sm:w-32 h-32 bg-center bg-no-repeat aspect-square bg-cover rounded-lg flex-shrink-0 bg-primary/10 flex items-center justify-center">
                         <span className="material-symbols-outlined text-primary text-5xl">
