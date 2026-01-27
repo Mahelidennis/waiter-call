@@ -5,16 +5,15 @@ import { useState } from 'react'
 
 interface AdminHeaderProps {
   currentPage?: string
+  restaurantLogo?: string | null
 }
 
 const navItems = [
   { id: 'dashboard', label: 'Dashboard', href: '' },
   { id: 'tables', label: 'Tables', href: '/tables' },
-  { id: 'analytics', label: 'Analytics', href: '/analytics' },
-  { id: 'settings', label: 'Settings', href: '/settings' },
 ]
 
-export default function AdminHeader({ currentPage }: AdminHeaderProps) {
+export default function AdminHeader({ currentPage, restaurantLogo }: AdminHeaderProps) {
   const params = useParams()
   const router = useRouter()
   const pathname = usePathname()
@@ -23,9 +22,7 @@ export default function AdminHeader({ currentPage }: AdminHeaderProps) {
 
   // Determine active nav item
   const getActiveNav = () => {
-    if (pathname.includes('/settings')) return 'settings'
     if (pathname.includes('/tables')) return 'tables'
-    if (pathname.includes('/analytics')) return 'analytics'
     return 'dashboard'
   }
 
@@ -48,8 +45,24 @@ export default function AdminHeader({ currentPage }: AdminHeaderProps) {
               onClick={() => router.push(`/admin/${restaurantId}`)}
               className="flex items-center gap-2 hover:opacity-80 transition-opacity"
             >
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">W</span>
+              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center overflow-hidden">
+                {restaurantLogo ? (
+                  <img 
+                    src={restaurantLogo} 
+                    alt="Restaurant Logo" 
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none'
+                      // Fallback to default icon
+                      const parent = e.currentTarget.parentElement
+                      if (parent) {
+                        parent.innerHTML = '<span class="text-white font-bold text-sm">W</span>'
+                      }
+                    }}
+                  />
+                ) : (
+                  <span className="text-white font-bold text-sm">W</span>
+                )}
               </div>
               <span className="font-semibold text-gray-900">WaiterCall</span>
             </button>
@@ -121,15 +134,6 @@ export default function AdminHeader({ currentPage }: AdminHeaderProps) {
                     className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                   >
                     Account
-                  </button>
-                  <button
-                    onClick={() => {
-                      setProfileMenuOpen(false)
-                      router.push(`/admin/${restaurantId}/settings`)
-                    }}
-                    className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                  >
-                    Settings
                   </button>
                   <div className="border-t border-gray-100 my-1"></div>
                   <button

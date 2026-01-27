@@ -101,7 +101,9 @@ export default function TablePage() {
   }
 
   function handleViewMenu() {
-    if (!data?.table.restaurant.menuUrl) return
+    // For testing, use a demo menu if no menuUrl is set
+    const menuUrl = data?.table.restaurant.menuUrl || 'https://www.mcdonalds.com/us/en-us/full-menu.html'
+    if (!menuUrl) return
     setShowMenu(true)
     setMenuError(null)
   }
@@ -174,7 +176,7 @@ export default function TablePage() {
             </div>
           ) : (
             <iframe
-              src={data.table.restaurant.menuUrl}
+              src={data.table.restaurant.menuUrl || 'https://www.mcdonalds.com/us/en-us/full-menu.html'}
               className="w-full h-full border-0"
               onLoad={() => setMenuError(null)}
               onError={() => setMenuError('Menu unavailable. Please ask your waiter.')}
@@ -238,20 +240,18 @@ export default function TablePage() {
                     </span>
                   </button>
 
-                  {/* View Menu Button - Only show if menuUrl exists */}
-                  {data.table.restaurant.menuUrl && (
-                    <button
-                      onClick={handleViewMenu}
-                      className="flex w-full min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-14 px-5 border-2 border-gray-300 text-gray-700 gap-3 text-lg font-bold leading-normal tracking-[0.015em] hover:border-gray-400 hover:bg-gray-50 active:border-gray-500 transition-colors duration-200"
-                    >
-                      <span className="material-symbols-outlined">
-                        restaurant_menu
-                      </span>
-                      <span className="truncate">
-                        View Menu
-                      </span>
-                    </button>
-                  )}
+                  {/* View Menu Button - Always show for testing */}
+                  <button
+                    onClick={handleViewMenu}
+                    className="flex w-full min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-14 px-5 border-2 border-gray-300 text-gray-700 gap-3 text-lg font-bold leading-normal tracking-[0.015em] hover:border-gray-400 hover:bg-gray-50 active:border-gray-500 transition-colors duration-200"
+                  >
+                    <span className="material-symbols-outlined">
+                      restaurant_menu
+                    </span>
+                    <span className="truncate">
+                      View Menu
+                    </span>
+                  </button>
 
                   {/* BodyText for status */}
                   {statusMessage && (

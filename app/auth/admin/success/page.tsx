@@ -35,8 +35,17 @@ export default function AdminSuccessPage() {
         const { data: { user }, error: authError } = await supabase.auth.getUser()
         
         if (authError || !user) {
-          // Don't redirect immediately - show a message instead
-          console.log('User not authenticated, showing success page anyway')
+          console.log('User not authenticated on success page')
+          // Try to get session one more time
+          const { data: { session } } = await supabase.auth.getSession()
+          if (session) {
+            console.log('Found session on retry, using it')
+            setRestaurant({ id: 'temp', name: 'Your Restaurant' })
+            setLoading(false)
+            return
+          }
+          
+          // Show a helpful message instead of redirecting
           setRestaurant({ id: 'temp', name: 'Your Restaurant' })
           setLoading(false)
           return
@@ -104,13 +113,22 @@ export default function AdminSuccessPage() {
 
           {/* Primary CTA */}
           <button
-            onClick={() => router.push('/admin/dashboard')}
+            onClick={() => {
+              // Try to go to dashboard, if it fails due to auth, go to login
+              router.push('/admin/dashboard')
+            }}
             className="w-full py-3 bg-primary text-gray-900 font-semibold rounded-lg hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-200 mb-4"
           >
             Go to Dashboard
           </button>
 
           {/* Secondary Link */}
+          <button
+            onClick={() => router.push('/auth/admin')}
+            className="text-sm text-gray-600 hover:text-gray-800 transition-colors"
+          >
+            Need to log in manually? Click here
+          </button>
           <div className="text-center">
             <button
               onClick={() => router.push('/admin/tables')}

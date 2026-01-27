@@ -7,12 +7,14 @@ import WaiterModal from './components/WaiterModal'
 import PromotionModal from './components/PromotionModal'
 import WaiterAssignmentModal from './components/WaiterAssignmentModal'
 import AdminHeader from './components/AdminHeader'
+import QRModal from './components/QRModal'
 
 interface Restaurant {
   id: string
   name: string
   slug: string
   email: string
+  logoUrl?: string
 }
 
 interface Table {
@@ -70,6 +72,8 @@ export default function AdminPage() {
   const [selectedPromotion, setSelectedPromotion] = useState<any | null>(null)
   const [assignmentModalOpen, setAssignmentModalOpen] = useState(false)
   const [selectedWaiterForAssignment, setSelectedWaiterForAssignment] = useState<Waiter | null>(null)
+  const [qrModalOpen, setQrModalOpen] = useState(false)
+  const [selectedTableForQR, setSelectedTableForQR] = useState<Table | null>(null)
 
   async function handleLogout() {
     try {
@@ -81,6 +85,22 @@ export default function AdminPage() {
       // Even if the API call fails, redirect to login
       router.push('/auth/admin')
     }
+  }
+
+  function handleViewQR(table: Table) {
+    setSelectedTableForQR(table)
+    setQrModalOpen(true)
+  }
+
+  function handleDownloadQR(table: Table) {
+    const baseUrl = window.location.origin
+    const qrUrl = `${baseUrl}/api/qr/${table.qrCode}`
+    const link = document.createElement('a')
+    link.href = qrUrl
+    link.download = `qr-${table.number.replace(/\s+/g, '-').toLowerCase()}.png`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
   }
 
   useEffect(() => {
@@ -348,7 +368,7 @@ export default function AdminPage() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Admin Header */}
-        <AdminHeader currentPage={activeTab} />
+        <AdminHeader currentPage={activeTab} restaurantLogo={restaurant?.logoUrl} />
 
         {/* Page Header */}
         <div className="bg-white border-b border-gray-200 px-6 py-4">
@@ -494,12 +514,24 @@ export default function AdminPage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => handleViewQR(table)}
+                            className="text-primary hover:text-primary/80 font-medium text-sm"
+                          >
+                            View QR
+                          </button>
+                          <button
+                            onClick={() => handleDownloadQR(table)}
+                            className="text-gray-600 hover:text-gray-900 font-medium text-sm"
+                          >
+                            Download
+                          </button>
                           <a
                             href={`/table/${table.qrCode}`}
                             target="_blank"
-                            className="text-primary hover:text-primary/80 font-medium text-sm"
+                            className="text-gray-600 hover:text-gray-900 font-medium text-sm"
                           >
-                            View
+                            Test
                           </a>
                           <button
                             onClick={() => {
@@ -814,6 +846,19 @@ export default function AdminPage() {
               </div>
             </div>
           </div>
+        )}
+
+        {/* QR Modal */}
+        {selectedTableForQR && (
+          <QRModal
+            isOpen={qrModalOpen}
+            onClose={() => {
+              setQrModalOpen(false)
+              setSelectedTableForQR(null)
+            }}
+            table={selectedTableForQR}
+            restaurantName={restaurant?.name || 'Restaurant'}
+          />
         )}
       </div>
     </div>

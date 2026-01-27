@@ -272,23 +272,57 @@ export async function POST(request: NextRequest) {
 
     // Auto-login the user by creating a session
     try {
+      console.log('Attempting auto-login for:', adminEmail)
       const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
         email: adminEmail,
         password: adminPassword,
       })
 
-      if (signInError || !signInData.session) {
+      if (signInError) {
         console.error('Auto-login failed:', signInError)
-        // Still return success, but user will need to log in manually
+        // Try to get the user session directly as fallback
+        const { data: { session } } = await supabase.auth.getSession()
+        if (session) {
+          console.log('Found existing session, using that instead')
+          // Use existing session
+          const response = NextResponse.json(
+            {
+              success: true,
+              restaurantId: restaurant.id,
+              requiresLogin: false,
+              message: 'Account created successfully'
+            },
+            { status: 201 }
+          )
+          return response
+        } else {
+          console.error('No session found after signup')
+          return NextResponse.json(
+            {
+              success: true,
+              restaurantId: restaurant.id,
+              requiresLogin: true,
+              message: 'Account created but login failed'
+            },
+            { status: 201 }
+          )
+        }
+      }
+
+      if (!signInData.session) {
+        console.error('No session returned from signInWithPassword')
         return NextResponse.json(
           {
             success: true,
             restaurantId: restaurant.id,
             requiresLogin: true,
+            message: 'Account created but no session established'
           },
           { status: 201 }
         )
       }
+
+      console.log('Auto-login successful, session established')
 
       // Create response with session cookie first
       const response = NextResponse.json(
@@ -296,6 +330,7 @@ export async function POST(request: NextRequest) {
           success: true,
           restaurantId: restaurant.id,
           requiresLogin: false,
+          message: 'Account created and logged in successfully'
         },
         { status: 201 }
       )
