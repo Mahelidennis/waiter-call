@@ -87,13 +87,9 @@ export default function AdminSignupPage() {
       }
 
       if (data.success) {
-        if (data.requiresLogin) {
-          // Auto-login failed, redirect to login
-          router.push('/auth/admin')
-        } else {
-          // Auto-login successful, redirect to success page
-          router.push('/auth/admin/success')
-        }
+        // Always redirect to success page for now
+        // The success page will handle authentication check
+        router.push('/auth/admin/success')
       }
     } catch (error) {
       console.error('Signup error:', error)

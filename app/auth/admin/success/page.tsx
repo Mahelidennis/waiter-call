@@ -35,7 +35,10 @@ export default function AdminSuccessPage() {
         const { data: { user }, error: authError } = await supabase.auth.getUser()
         
         if (authError || !user) {
-          router.push('/auth/admin')
+          // Don't redirect immediately - show a message instead
+          console.log('User not authenticated, showing success page anyway')
+          setRestaurant({ id: 'temp', name: 'Your Restaurant' })
+          setLoading(false)
           return
         }
 
@@ -92,11 +95,11 @@ export default function AdminSuccessPage() {
 
           {/* Success Message */}
           <h1 className="text-2xl font-semibold text-gray-900 mb-3">
-            Welcome Aboard, {restaurant.name}!
+            Account Created Successfully! 🎉
           </h1>
           
           <p className="text-gray-600 mb-8 leading-relaxed">
-            You've successfully set up your account. Now it's time to bring your tables online.
+            Your restaurant account has been set up successfully. You can now log in to access your dashboard and start managing your tables.
           </p>
 
           {/* Primary CTA */}
