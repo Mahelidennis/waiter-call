@@ -65,13 +65,13 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
                 href="/auth/admin/signup"
-                className="px-8 py-4 bg-primary text-[#111813] font-semibold rounded-full shadow-lg hover:bg-primary/90 hover:shadow-xl transition-all duration-200 text-center"
+                className="px-8 py-4 bg-green-600 text-white font-semibold rounded-full shadow-lg hover:bg-green-700 hover:shadow-xl transition-all duration-200 text-center"
               >
                 Start Free Trial
               </Link>
               <Link
                 href="/auth/admin"
-                className="px-8 py-4 bg-white border-2 border-gray-200 text-[#111813] font-semibold rounded-full hover:border-primary hover:text-primary transition-all duration-200 text-center"
+                className="px-8 py-4 bg-white border-2 border-gray-200 text-[#111813] font-semibold rounded-full hover:border-green-600 hover:text-green-600 transition-all duration-200 text-center"
               >
                 Schedule Demo
               </Link>
@@ -361,7 +361,7 @@ export default function Home() {
                   href={plan.title === 'Enterprise' ? '/auth/admin' : '/auth/admin/signup'}
                   className={`block w-full text-center px-6 py-3 rounded-full font-semibold transition-all duration-200 ${
                     plan.highlight
-                      ? 'bg-primary text-[#111813] hover:bg-primary/90 shadow-md hover:shadow-lg'
+                      ? 'bg-green-600 text-white hover:bg-green-700 shadow-md hover:shadow-lg'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
@@ -386,13 +386,13 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/auth/admin/signup"
-              className="px-8 py-4 bg-primary text-[#111813] font-semibold rounded-full shadow-lg hover:bg-primary/90 hover:shadow-xl transition-all duration-200"
+              className="px-8 py-4 bg-green-600 text-white font-semibold rounded-full shadow-lg hover:bg-green-700 hover:shadow-xl transition-all duration-200"
             >
               Start Your Free Trial
             </Link>
             <Link
               href="/auth/admin"
-              className="px-8 py-4 bg-white border-2 border-gray-300 text-[#111813] font-semibold rounded-full hover:border-primary hover:text-primary transition-all duration-200"
+              className="px-8 py-4 bg-white border-2 border-gray-300 text-[#111813] font-semibold rounded-full hover:border-green-600 hover:text-green-600 transition-all duration-200"
             >
               Schedule a Consultation
             </Link>
