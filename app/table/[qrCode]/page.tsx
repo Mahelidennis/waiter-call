@@ -152,9 +152,9 @@ export default function TablePage() {
           </button>
           <div className="flex items-center gap-2">
             <img 
-              src="/logo-icon.svg" 
+              src="/logo.png" 
               alt="WaiterCall Logo" 
-              className="w-5 h-5"
+              className="h-5 w-auto"
             />
             <h1 className="text-lg font-semibold text-gray-900">
               {data.table.restaurant.name}
@@ -204,9 +204,9 @@ export default function TablePage() {
             <header className="flex items-center justify-center whitespace-nowrap border-b border-solid border-gray-200 dark:border-gray-700 px-10 py-4">
               <div className="flex items-center gap-4 text-[#111813] dark:text-white">
                 <img 
-                  src="/logo-icon.svg" 
+                  src="/logo.png" 
                   alt="WaiterCall Logo" 
-                  className="w-6 h-6"
+                  className="h-6 w-auto"
                 />
                 <h2 className="text-[#111813] dark:text-white text-xl font-bold leading-tight tracking-[-0.015em]">
                   {data.table.restaurant.name}

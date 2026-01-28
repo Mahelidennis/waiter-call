@@ -47,14 +47,9 @@ export default function AdminHeader({ currentPage, restaurantLogo }: AdminHeader
               className="flex items-center gap-2 hover:opacity-80 transition-opacity"
             >
               <img 
-                src="/logo-icon.svg" 
+                src="/logo.png" 
                 alt="WaiterCall Logo" 
-                className="w-8 h-8"
-              />
-              <img 
-                src="/logo.svg" 
-                alt="WaiterCall" 
-                className="h-6 w-auto"
+                className="h-8 w-auto"
               />
             </button>
 

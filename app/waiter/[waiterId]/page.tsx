@@ -254,9 +254,9 @@ export default function WaiterDashboard() {
             <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 dark:border-gray-700 px-4 py-3">
               <div className="flex items-center gap-3 text-gray-800 dark:text-gray-100">
                 <img 
-                  src="/logo-icon.svg" 
+                  src="/logo.png" 
                   alt="WaiterCall Logo" 
-                  className="w-8 h-8"
+                  className="h-8 w-auto"
                 />
                 <div>
                   <h1 className="text-xl font-bold leading-tight tracking-tight">Live Dashboard</h1>

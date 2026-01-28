@@ -317,9 +317,9 @@ export default function AdminPage() {
         <div className="lg:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img 
-              src="/logo-icon.svg" 
+              src="/logo.png" 
               alt="WaiterCall Logo" 
-              className="w-8 h-8"
+              className="h-8 w-auto"
             />
             <span className="font-semibold text-gray-900">Admin</span>
           </div>
@@ -363,9 +363,9 @@ export default function AdminPage() {
             {/* Logo */}
             <div className="flex items-center gap-3 p-6 border-b border-gray-200">
               <img 
-                src="/logo-icon.svg" 
+                src="/logo.png" 
                 alt="WaiterCall Logo" 
-                className="w-10 h-10"
+                className="h-10 w-auto"
               />
             <div>
               <h1 className="font-semibold text-gray-900">{restaurant?.name || 'Restaurant'}</h1>
