@@ -330,12 +330,12 @@ export default function Home() {
                 key={plan.title}
                 className={`rounded-2xl border p-8 bg-white shadow-sm space-y-6 relative ${
                   plan.highlight
-                    ? 'border-primary ring-2 ring-primary/20 shadow-lg'
+                    ? 'border-primary ring-2 ring-primary/20 shadow-lg pt-12'
                     : 'border-gray-200'
                 }`}
               >
                 {plan.highlight && (
-                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                  <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 z-10">
                     <span className="bg-primary text-[#111813] px-4 py-1 rounded-full text-sm font-semibold">
                       Most Popular
                     </span>
