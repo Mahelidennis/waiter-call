@@ -301,7 +301,10 @@ export default function SettingsPage() {
           <div className="space-y-6">
             {/* Restaurant Logo */}
             <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Restaurant Logo</h3>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-medium text-gray-900">Restaurant Logo</h3>
+                <p className="text-sm font-medium text-gray-900">Upload Restaurant Logo</p>
+              </div>
               <div className="space-y-4">
                 <div className="flex items-center gap-6">
                   {/* Logo Preview/Upload Area */}
@@ -334,7 +337,6 @@ export default function SettingsPage() {
                   <div className="flex-1">
                     <div className="space-y-3">
                       <div>
-                        <p className="text-sm font-medium text-gray-900 mb-2">Upload Restaurant Logo</p>
                         <p className="text-sm text-gray-600 mb-3">Click the upload area or choose file below</p>
                         <input
                           type="file"
