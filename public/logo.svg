@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60">
+  <!-- WaiterCall Logo - Based on the uploaded image -->
+  <defs>
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#16a34a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#15803d;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Green Circular Background for W -->
+  <circle cx="30" cy="30" r="25" fill="url(#logoGradient)"/>
+  
+  <!-- W Letter -->
+  <text x="30" y="40" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="white" text-anchor="middle">W</text>
+  
+  <!-- WaiterCall Text -->
+  <text x="65" y="35" font-family="Arial, sans-serif" font-size="20" font-weight="600" fill="#1f2937">Waiter</text>
+  <text x="65" y="50" font-family="Arial, sans-serif" font-size="20" font-weight="600" fill="#16a34a">Call</text>
+</svg>

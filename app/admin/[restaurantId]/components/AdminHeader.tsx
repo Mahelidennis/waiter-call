@@ -46,26 +46,16 @@ export default function AdminHeader({ currentPage, restaurantLogo }: AdminHeader
               onClick={() => router.push(`/admin/${restaurantId}`)}
               className="flex items-center gap-2 hover:opacity-80 transition-opacity"
             >
-              <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center overflow-hidden">
-                {restaurantLogo ? (
-                  <img 
-                    src={restaurantLogo} 
-                    alt="Restaurant Logo" 
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none'
-                      // Fallback to default icon
-                      const parent = e.currentTarget.parentElement
-                      if (parent) {
-                        parent.innerHTML = '<span class="text-white font-bold text-sm">W</span>'
-                      }
-                    }}
-                  />
-                ) : (
-                  <span className="text-white font-bold text-sm">W</span>
-                )}
-              </div>
-              <span className="font-semibold text-gray-900">WaiterCall</span>
+              <img 
+                src="/logo-icon.svg" 
+                alt="WaiterCall Logo" 
+                className="w-8 h-8"
+              />
+              <img 
+                src="/logo.svg" 
+                alt="WaiterCall" 
+                className="h-6 w-auto"
+              />
             </button>
 
             {/* Primary Navigation */}

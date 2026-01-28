@@ -253,13 +253,18 @@ export default function WaiterDashboard() {
             {/* Header */}
             <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 dark:border-gray-700 px-4 py-3">
               <div className="flex items-center gap-3 text-gray-800 dark:text-gray-100">
-                <span className="material-symbols-outlined text-primary text-3xl">
-                  table_restaurant
-                </span>
-                <h1 className="text-xl font-bold leading-tight tracking-tight">Live Dashboard</h1>
-                <div className="flex items-center gap-2 rounded-full bg-primary/20 px-3 py-1">
-                  <div className={`h-2 w-2 rounded-full bg-primary ${pollingLoading ? 'animate-pulse' : ''}`}></div>
-                  <span className="text-xs font-medium text-primary">LIVE</span>
+                <img 
+                  src="/logo-icon.svg" 
+                  alt="WaiterCall Logo" 
+                  className="w-8 h-8"
+                />
+                <div>
+                  <h1 className="text-xl font-bold leading-tight tracking-tight">Live Dashboard</h1>
+                  <p className="text-xs text-gray-500">WaiterCall System</p>
+                </div>
+                <div className="flex items-center gap-2 rounded-full bg-green-600/20 px-3 py-1">
+                  <div className={`h-2 w-2 rounded-full bg-green-600 ${pollingLoading ? 'animate-pulse' : ''}`}></div>
+                  <span className="text-xs font-medium text-green-600">LIVE</span>
                 </div>
               </div>
               <div className="flex flex-1 justify-end gap-3 items-center">

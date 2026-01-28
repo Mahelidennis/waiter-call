@@ -150,9 +150,16 @@ export default function TablePage() {
             <span className="material-symbols-outlined">arrow_back</span>
             <span>Back to Call Waiter</span>
           </button>
-          <h1 className="text-lg font-semibold text-gray-900">
-            {data.table.restaurant.name}
-          </h1>
+          <div className="flex items-center gap-2">
+            <img 
+              src="/logo-icon.svg" 
+              alt="WaiterCall Logo" 
+              className="w-5 h-5"
+            />
+            <h1 className="text-lg font-semibold text-gray-900">
+              {data.table.restaurant.name}
+            </h1>
+          </div>
           <div className="w-20"></div> {/* Spacer for centering */}
         </header>
 
@@ -196,16 +203,11 @@ export default function TablePage() {
             {/* TopNavBar */}
             <header className="flex items-center justify-center whitespace-nowrap border-b border-solid border-gray-200 dark:border-gray-700 px-10 py-4">
               <div className="flex items-center gap-4 text-[#111813] dark:text-white">
-                <div className="size-6 text-primary">
-                  <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                      clipRule="evenodd"
-                      d="M24 4H42V17.3333V30.6667H24V44H6V30.6667V17.3333H24V4Z"
-                      fill="currentColor"
-                      fillRule="evenodd"
-                    />
-                  </svg>
-                </div>
+                <img 
+                  src="/logo-icon.svg" 
+                  alt="WaiterCall Logo" 
+                  className="w-6 h-6"
+                />
                 <h2 className="text-[#111813] dark:text-white text-xl font-bold leading-tight tracking-[-0.015em]">
                   {data.table.restaurant.name}
                 </h2>
