@@ -45,12 +45,16 @@ function AdminLoginInner() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+    <div className="min-h-screen flex items-center justify-center px-4" style={{backgroundColor: '#BEBDB8'}}>
       <div className="max-w-lg w-full">
         {/* Logo/Brand */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary text-white font-bold text-lg mb-4">
-            ●
+          <div className="flex items-center justify-center mb-4">
+            <img 
+              src="/logo.png" 
+              alt="WaiterCall Logo" 
+              className="h-12 w-auto"
+            />
           </div>
           <h1 className="text-2xl font-semibold text-gray-900 mb-2">
             Welcome back
@@ -114,7 +118,7 @@ function AdminLoginInner() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-primary text-gray-900 font-semibold rounded-lg hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
+              className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
