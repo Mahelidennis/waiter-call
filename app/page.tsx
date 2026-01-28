@@ -39,7 +39,7 @@ export default function Home() {
               href="/auth/admin"
               className="px-5 py-2.5 text-sm font-semibold text-white bg-[#111813] rounded-full hover:bg-black transition-all duration-200 shadow-sm"
             >
-              Request Demo
+              Sign In
             </Link>
           </div>
         </nav>
