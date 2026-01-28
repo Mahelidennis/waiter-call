@@ -11,7 +11,6 @@ interface AdminHeaderProps {
 
 const navItems = [
   { id: 'dashboard', label: 'Dashboard', href: '' },
-  { id: 'tables', label: 'Tables', href: '/tables' },
 ]
 
 export default function AdminHeader({ currentPage, restaurantLogo }: AdminHeaderProps) {
@@ -39,21 +38,8 @@ export default function AdminHeader({ currentPage, restaurantLogo }: AdminHeader
     <header className="bg-white border-b border-gray-200">
       <div className="px-6 py-3">
         <div className="flex items-center justify-between">
-          {/* Left Section - Brand & Navigation */}
+          {/* Left Section - Navigation */}
           <div className="flex items-center gap-8">
-            {/* Logo */}
-            <button
-              onClick={() => router.push(`/admin/${restaurantId}`)}
-              className="flex items-center gap-2 hover:opacity-80 transition-opacity"
-            >
-              <img 
-                src="/logo.png" 
-                alt="WaiterCall Logo" 
-                className="h-8 w-auto"
-              />
-              <span className="font-semibold text-gray-900">WaiterCall</span>
-            </button>
-
             {/* Primary Navigation */}
             <nav className="hidden md:flex items-center gap-6">
               {navItems.map((item) => {
