@@ -916,7 +916,6 @@ export default function AdminPage() {
             </div>
           </div>
         )}
-        </main>
 
         {/* Modals */}
         <TableModal
@@ -1007,7 +1006,7 @@ export default function AdminPage() {
         )}
         </div>
       </main>
+      </div>
     </div>
   )
 }
-
