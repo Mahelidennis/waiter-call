@@ -2,6 +2,7 @@
 
 import { useParams, useRouter, usePathname } from 'next/navigation'
 import { useState } from 'react'
+import { iconClass, sidebarNavClass } from '@/lib/ui/styles'
 
 interface AdminHeaderProps {
   currentPage?: string
@@ -45,7 +46,7 @@ export default function AdminHeader({ currentPage, restaurantLogo }: AdminHeader
               onClick={() => router.push(`/admin/${restaurantId}`)}
               className="flex items-center gap-2 hover:opacity-80 transition-opacity"
             >
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center overflow-hidden">
+              <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center overflow-hidden">
                 {restaurantLogo ? (
                   <img 
                     src={restaurantLogo} 
@@ -79,13 +80,13 @@ export default function AdminHeader({ currentPage, restaurantLogo }: AdminHeader
                     onClick={() => router.push(href)}
                     className={`relative text-sm font-medium transition-all duration-200 ${
                       isActive
-                        ? 'text-primary'
-                        : 'text-gray-600 hover:text-primary'
+                        ? 'text-green-600'
+                        : 'text-gray-600 hover:text-green-600'
                     }`}
                   >
                     {item.label}
                     {isActive && (
-                      <div className="absolute -bottom-3 left-0 right-0 h-0.5 bg-primary rounded-full" />
+                      <div className="absolute -bottom-3 left-0 right-0 h-0.5 bg-green-600 rounded-full" />
                     )}
                   </button>
                 )
@@ -104,15 +105,15 @@ export default function AdminHeader({ currentPage, restaurantLogo }: AdminHeader
                 <input
                   type="text"
                   placeholder="Search settings..."
-                  className="w-64 pl-10 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
+                  className="w-64 pl-10 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent transition-all duration-200"
                 />
               </div>
             </div>
 
             {/* Notifications */}
-            <button className="relative p-2 text-gray-600 hover:text-primary transition-colors duration-200">
+            <button className="relative p-2 text-gray-600 hover:text-green-600 transition-colors duration-200">
               <span className="material-symbols-outlined text-xl">notifications</span>
-              <span className="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full"></span>
+              <span className="absolute top-1 right-1 w-2 h-2 bg-green-600 rounded-full"></span>
             </button>
 
             {/* Profile */}
@@ -154,7 +155,7 @@ export default function AdminHeader({ currentPage, restaurantLogo }: AdminHeader
 
       {/* Mobile menu button */}
       <div className="md:hidden px-6 pb-3">
-        <button className="p-2 text-gray-600 hover:text-primary transition-colors">
+        <button className="p-2 text-gray-600 hover:text-green-600 transition-colors">
           <span className="material-symbols-outlined text-xl">menu</span>
         </button>
       </div>
