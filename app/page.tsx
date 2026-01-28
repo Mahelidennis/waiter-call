@@ -15,6 +15,7 @@ export default function Home() {
               alt="WaiterCall Logo" 
               className="h-10 w-auto"
             />
+            <span className="font-bold text-xl text-[#111813]">WaiterCall</span>
           </div>
           <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600">
             <Link href="#features" className="hover:text-primary transition-colors duration-200">
@@ -410,6 +411,7 @@ export default function Home() {
                 alt="WaiterCall Logo" 
                 className="h-10 w-auto"
               />
+              <span className="font-bold text-xl text-[#111813]">WaiterCall</span>
             </div>
             <div className="flex items-center gap-8 text-sm text-gray-600">
               <Link href="/#about" className="hover:text-primary transition-colors duration-200">

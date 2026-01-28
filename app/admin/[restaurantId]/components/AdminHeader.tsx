@@ -51,6 +51,7 @@ export default function AdminHeader({ currentPage, restaurantLogo }: AdminHeader
                 alt="WaiterCall Logo" 
                 className="h-8 w-auto"
               />
+              <span className="font-semibold text-gray-900">WaiterCall</span>
             </button>
 
             {/* Primary Navigation */}
