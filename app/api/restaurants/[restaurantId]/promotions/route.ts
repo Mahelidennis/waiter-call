@@ -40,12 +40,19 @@ export async function POST(
       )
     }
 
+    if (!imageUrl) {
+      return NextResponse.json(
+        { error: 'Promotion image is required' },
+        { status: 400 }
+      )
+    }
+
     const promotion = await prisma.promotion.create({
       data: {
         restaurantId,
         title,
         description: description || null,
-        imageUrl: imageUrl || null,
+        imageUrl: imageUrl, // Make this required
         linkUrl: linkUrl || null,
         isActive: isActive !== undefined ? isActive : true,
         displayOrder: displayOrder || 0,

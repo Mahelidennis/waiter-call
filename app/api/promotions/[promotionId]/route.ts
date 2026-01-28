@@ -22,6 +22,14 @@ export async function PATCH(
       )
     }
 
+    // For new promotions without existing images, imageUrl is required
+    if (!promotion.imageUrl && !imageUrl) {
+      return NextResponse.json(
+        { error: 'Promotion image is required' },
+        { status: 400 }
+      )
+    }
+
     const updated = await prisma.promotion.update({
       where: { id: promotionId },
       data: {
