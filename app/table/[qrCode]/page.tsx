@@ -140,185 +140,205 @@ export default function TablePage() {
   // Show Menu View
   if (showMenu) {
     return (
-      <div className="min-h-screen bg-white">
-        {/* Menu Header */}
-        <header className="flex items-center justify-between p-4 border-b border-gray-200">
-          <button
-            onClick={handleBackToCallWaiter}
-            className="flex items-center gap-2 text-gray-700 hover:text-gray-900"
-          >
-            <span className="material-symbols-outlined">arrow_back</span>
-            <span>Back to Call Waiter</span>
-          </button>
-          <div className="flex items-center gap-2">
-            <img 
-              src="/logo.png" 
-              alt="WaiterCall Logo" 
-              className="h-5 w-auto"
-            />
-            <h1 className="text-lg font-semibold text-gray-900">
-              {data.table.restaurant.name}
-            </h1>
-          </div>
-          <div className="w-20"></div> {/* Spacer for centering */}
-        </header>
-
-        {/* Menu Content */}
-        <div className="h-[calc(100vh-73px)]">
-          {menuError ? (
-            <div className="flex items-center justify-center h-full">
-              <div className="text-center p-8">
-                <div className="text-red-600 mb-4">
-                  <span className="material-symbols-outlined text-4xl">error</span>
-                </div>
-                <h2 className="text-xl font-semibold text-gray-900 mb-2">Menu Unavailable</h2>
-                <p className="text-gray-600 mb-4">Please ask your waiter for assistance.</p>
-                <button
-                  onClick={handleBackToCallWaiter}
-                  className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
-                >
-                  Back to Call Waiter
-                </button>
+      <div className="min-h-screen bg-gray-100">
+        <div className="max-w-md mx-auto bg-white min-h-screen shadow-xl">
+          {/* Menu Header */}
+          <header className="bg-white border-b border-gray-200 px-6 py-4">
+            <div className="flex items-center justify-between">
+              <button
+                onClick={handleBackToCallWaiter}
+                className="flex items-center gap-2 text-black hover:text-gray-700"
+              >
+                <span className="material-symbols-outlined">arrow_back</span>
+                <span>Back</span>
+              </button>
+              <div className="flex items-center gap-3">
+                {data.table.restaurant.logoUrl ? (
+                  <img 
+                    src={data.table.restaurant.logoUrl} 
+                    alt={data.table.restaurant.name} 
+                    className="h-8 w-auto"
+                  />
+                ) : (
+                  <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
+                    <span className="text-white font-bold text-sm">
+                      {data.table.restaurant.name.charAt(0)}
+                    </span>
+                  </div>
+                )}
+                <h1 className="text-lg font-bold text-black">
+                  {data.table.restaurant.name}
+                </h1>
               </div>
+              <div className="w-16"></div> {/* Spacer for centering */}
             </div>
-          ) : (
-            <iframe
-              src={data.table.restaurant.menuUrl || 'https://www.mcdonalds.com/us/en-us/full-menu.html'}
-              className="w-full h-full border-0"
-              onLoad={() => setMenuError(null)}
-              onError={() => setMenuError('Menu unavailable. Please ask your waiter.')}
-              title="Restaurant Menu"
-            />
-          )}
+          </header>
+
+          {/* Menu Content */}
+          <div className="h-[calc(100vh-73px)]">
+            {menuError ? (
+              <div className="flex items-center justify-center h-full p-6">
+                <div className="text-center">
+                  <div className="text-red-600 mb-4">
+                    <span className="material-symbols-outlined text-4xl">error</span>
+                  </div>
+                  <h2 className="text-xl font-bold text-black mb-2">Menu Unavailable</h2>
+                  <p className="text-gray-600 mb-4">Please ask your waiter for assistance.</p>
+                  <button
+                    onClick={handleBackToCallWaiter}
+                    className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200"
+                  >
+                    Back to Call Waiter
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <iframe
+                src={data.table.restaurant.menuUrl || 'https://www.mcdonalds.com/us/en-us/full-menu.html'}
+                className="w-full h-full border-0"
+                onLoad={() => setMenuError(null)}
+                onError={() => setMenuError('Menu unavailable. Please ask your waiter.')}
+                title="Restaurant Menu"
+              />
+            )}
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
-      <div className="layout-container flex h-full grow flex-col">
-        <div className="flex flex-1 justify-center py-5 sm:px-6 lg:px-8">
-          <div className="layout-content-container flex flex-col w-full max-w-md flex-1">
-            {/* TopNavBar */}
-            <header className="flex items-center justify-center whitespace-nowrap border-b border-solid border-gray-200 dark:border-gray-700 px-10 py-4">
-              <div className="flex items-center gap-4 text-[#111813] dark:text-white">
-                <img 
-                  src="/logo.png" 
-                  alt="WaiterCall Logo" 
-                  className="h-6 w-auto"
-                />
-                <h2 className="text-[#111813] dark:text-white text-xl font-bold leading-tight tracking-[-0.015em]">
-                  {data.table.restaurant.name}
-                </h2>
+    <div className="min-h-screen bg-gray-100">
+      <div className="max-w-md mx-auto bg-white min-h-screen shadow-xl">
+        {/* Restaurant Header */}
+        <header className="bg-white border-b border-gray-200 px-6 py-4">
+          <div className="flex items-center justify-center gap-3">
+            {data.table.restaurant.logoUrl ? (
+              <img 
+                src={data.table.restaurant.logoUrl} 
+                alt={data.table.restaurant.name} 
+                className="h-10 w-auto"
+              />
+            ) : (
+              <div className="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-lg">
+                  {data.table.restaurant.name.charAt(0)}
+                </span>
               </div>
-            </header>
-
-            <main className="flex-grow p-4 md:p-6 space-y-8">
-              {/* Main content card */}
-              <div className="bg-white dark:bg-gray-800/50 rounded-xl shadow-sm p-6 md:p-8 text-center space-y-6">
-                {/* PageHeading */}
-                <div className="flex flex-col gap-2">
-                  <p className="text-[#111813] dark:text-white text-4xl font-black leading-tight tracking-[-0.033em]">
-                    Your Table: {data.table.number}
-                  </p>
-                  <p className="text-gray-500 dark:text-gray-400 text-base font-normal leading-normal">
-                    Press the button below to call for assistance
-                  </p>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex flex-col items-center gap-4">
-                  <button
-                    onClick={handleCallWaiter}
-                    disabled={calling}
-                    className="flex w-full min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-14 px-5 bg-primary text-[#111813] gap-3 text-lg font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 active:bg-primary/80 transition-colors duration-200 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed dark:disabled:bg-gray-600 dark:disabled:text-gray-400"
-                  >
-                    <span className="material-symbols-outlined text-[#111813]">
-                      notifications
-                    </span>
-                    <span className="truncate">
-                      {calling ? 'Calling...' : 'Call Waiter'}
-                    </span>
-                  </button>
-
-                  {/* View Menu Button - Always show for testing */}
-                  <button
-                    onClick={handleViewMenu}
-                    className="flex w-full min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-14 px-5 border-2 border-gray-300 text-gray-700 gap-3 text-lg font-bold leading-normal tracking-[0.015em] hover:border-gray-400 hover:bg-gray-50 active:border-gray-500 transition-colors duration-200"
-                  >
-                    <span className="material-symbols-outlined">
-                      restaurant_menu
-                    </span>
-                    <span className="truncate">
-                      View Menu
-                    </span>
-                  </button>
-
-                  {/* BodyText for status */}
-                  {statusMessage && (
-                    <p className="text-green-600 dark:text-green-400 text-base font-medium leading-normal h-6">
-                      {statusMessage}
-                    </p>
-                  )}
-                  {error && (
-                    <p className="text-red-600 dark:text-red-400 text-base font-medium leading-normal h-6">
-                      {error}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              {/* Promotional Section */}
-              {data.promotions && data.promotions.length > 0 && (
-                <div className="space-y-4">
-                  {/* SectionHeader */}
-                  <h2 className="text-[#111813] dark:text-white text-2xl font-bold leading-tight tracking-[-0.015em] px-4">
-                    Exclusive Offers
-                  </h2>
-
-                  {/* Promotional Carousel */}
-                  <div className="relative w-full">
-                    <div className="flex space-x-4 overflow-x-auto pb-4 px-4 -mx-4 scrollbar-hide">
-                      {data.promotions.map((promo) => (
-                        <div
-                          key={promo.id}
-                          className="flex-shrink-0 w-64 bg-white dark:bg-gray-800/50 rounded-xl shadow-sm overflow-hidden"
-                        >
-                          {promo.imageUrl ? (
-                            <img
-                              alt={promo.title}
-                              className="w-full h-36 object-cover"
-                              src={promo.imageUrl}
-                            />
-                          ) : (
-                            <div className="w-full h-36 bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
-                              <div className="text-center px-4">
-                                <h3 className="font-bold text-[#111813] dark:text-white text-lg">
-                                  {promo.title}
-                                </h3>
-                              </div>
-                            </div>
-                          )}
-                          <div className="p-4">
-                            <h3 className="font-bold text-[#111813] dark:text-white">
-                              {promo.title}
-                            </h3>
-                            {promo.description && (
-                              <p className="text-sm text-gray-500 dark:text-gray-400">
-                                {promo.description}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-            </main>
+            )}
+            <h1 className="text-xl font-bold text-black">
+              {data.table.restaurant.name}
+            </h1>
           </div>
-        </div>
+        </header>
+
+        <main className="p-6 space-y-6">
+          {/* Table Number */}
+          <div className="text-center">
+            <h2 className="text-3xl font-bold text-black mb-2">
+              Table {data.table.number}
+            </h2>
+            <p className="text-gray-600">
+              Press the button below to call for assistance
+            </p>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="space-y-4">
+            <button
+              onClick={handleCallWaiter}
+              disabled={calling}
+              className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-300 text-white font-semibold py-4 px-6 rounded-lg flex items-center justify-center gap-3 transition-colors duration-200 disabled:cursor-not-allowed"
+            >
+              <span className="material-symbols-outlined text-white">
+                notifications
+              </span>
+              <span>
+                {calling ? 'Calling...' : 'Call Waiter'}
+              </span>
+            </button>
+
+            <button
+              onClick={handleViewMenu}
+              className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-6 rounded-lg flex items-center justify-center gap-3 transition-colors duration-200"
+            >
+              <span className="material-symbols-outlined text-white">
+                restaurant_menu
+              </span>
+              <span>
+                View Menu
+              </span>
+            </button>
+
+            {/* Status Messages */}
+            {statusMessage && (
+              <div className="text-center">
+                <p className="text-green-600 font-medium">
+                  {statusMessage}
+                </p>
+              </div>
+            )}
+            {error && (
+              <div className="text-center">
+                <p className="text-red-600 font-medium">
+                  {error}
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* Promotional Section */}
+          {data.promotions && data.promotions.length > 0 && (
+            <div className="space-y-4">
+              <h3 className="text-xl font-bold text-black">
+                Special Offers
+              </h3>
+
+              <div className="space-y-4">
+                {data.promotions.map((promo) => (
+                  <div
+                    key={promo.id}
+                    className="bg-gray-50 rounded-lg p-4 border border-gray-200"
+                  >
+                    {promo.imageUrl ? (
+                      <img
+                        alt={promo.title}
+                        className="w-full h-32 object-cover rounded-lg mb-3"
+                        src={promo.imageUrl}
+                      />
+                    ) : (
+                      <div className="w-full h-32 bg-gradient-to-br from-green-100 to-green-50 rounded-lg mb-3 flex items-center justify-center">
+                        <div className="text-center">
+                          <span className="material-symbols-outlined text-green-600 text-3xl">
+                            local_offer
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                    <h4 className="font-bold text-black mb-2">
+                      {promo.title}
+                    </h4>
+                    {promo.description && (
+                      <p className="text-gray-600 text-sm">
+                        {promo.description}
+                      </p>
+                    )}
+                    {promo.linkUrl && (
+                      <a
+                        href={promo.linkUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-block mt-3 text-green-600 hover:text-green-700 font-medium text-sm"
+                      >
+                        Learn More →
+                      </a>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </main>
       </div>
     </div>
   )
