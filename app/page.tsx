@@ -417,13 +417,13 @@ export default function Home() {
               <Link href="/#about" className="hover:text-primary transition-colors duration-200">
                 About Us
               </Link>
-              <Link href="/#contact" className="hover:text-primary transition-colors duration-200">
+              <Link href="/contact-sales" className="hover:text-primary transition-colors duration-200">
                 Contact
               </Link>
-              <Link href="/#privacy" className="hover:text-primary transition-colors duration-200">
+              <Link href="/privacy" className="hover:text-primary transition-colors duration-200">
                 Privacy Policy
               </Link>
-              <Link href="/#terms" className="hover:text-primary transition-colors duration-200">
+              <Link href="/terms" className="hover:text-primary transition-colors duration-200">
                 Terms of Service
               </Link>
             </div>

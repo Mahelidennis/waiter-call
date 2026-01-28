@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 interface FormData {
   restaurantName: string
@@ -282,7 +283,14 @@ export default function AdminSignupPage() {
                     required
                   />
                   <label htmlFor="acceptTerms" className="text-sm text-gray-600">
-                    I agree to the Terms of Service and Privacy Policy
+                    I agree to the{' '}
+                    <Link href="/terms" className="text-primary hover:text-primary/80 underline">
+                      Terms of Service
+                    </Link>
+                    {' '}and{' '}
+                    <Link href="/privacy" className="text-primary hover:text-primary/80 underline">
+                      Privacy Policy
+                    </Link>
                   </label>
                 </div>
               </div>

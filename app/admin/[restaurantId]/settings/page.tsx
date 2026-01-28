@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { 
   buttonClass, 
   mobileButtonClass, 
@@ -687,6 +688,24 @@ export default function SettingsPage() {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="mt-12 pt-8 border-t border-gray-200">
+          <div className="text-center text-sm text-gray-500 space-y-2">
+            <p>© {new Date().getFullYear()} WaiterCall. All rights reserved.</p>
+            <div className="flex items-center justify-center gap-6">
+              <Link href="/privacy" className="hover:text-green-600 transition-colors">
+                Privacy Policy
+              </Link>
+              <Link href="/terms" className="hover:text-green-600 transition-colors">
+                Terms of Service
+              </Link>
+              <Link href="/contact-sales" className="hover:text-green-600 transition-colors">
+                Contact Support
+              </Link>
+            </div>
           </div>
         </div>
       </div>

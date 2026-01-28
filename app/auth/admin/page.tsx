@@ -3,6 +3,7 @@
 import { Suspense, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { signInWithEmailPassword } from '@/lib/auth/client'
+import Link from 'next/link'
 
 function AdminLoginInner() {
   const router = useRouter()
@@ -129,8 +130,18 @@ function AdminLoginInner() {
                 Create your restaurant
               </button>
             </div>
-            <div className="text-xs text-gray-400">
-              Need access? Contact your restaurant administrator
+            <div className="text-xs text-gray-400 space-y-1">
+              <p>Need access? Contact your restaurant administrator</p>
+              <p>
+                By signing in, you agree to our{' '}
+                <Link href="/terms" className="text-primary hover:text-primary/80 underline">
+                  Terms of Service
+                </Link>
+                {' '}and{' '}
+                <Link href="/privacy" className="text-primary hover:text-primary/80 underline">
+                  Privacy Policy
+                </Link>
+              </p>
             </div>
           </div>
         </div>
