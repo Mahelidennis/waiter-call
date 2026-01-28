@@ -10,10 +10,11 @@ export default function Home() {
         {/* Top navigation */}
         <nav className="flex items-center justify-between bg-white rounded-full px-8 py-4 shadow-sm border border-gray-100">
           <div className="flex items-center gap-3">
-            <div className="inline-flex items-center justify-center h-10 w-10 rounded-full bg-primary text-white font-bold text-sm">
-              ●
-            </div>
-            <span className="font-bold text-xl text-[#111813]">WaiterCall</span>
+            <img 
+              src="/logo.png" 
+              alt="WaiterCall Logo" 
+              className="h-10 w-auto"
+            />
           </div>
           <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600">
             <Link href="#features" className="hover:text-primary transition-colors duration-200">
@@ -404,10 +405,11 @@ export default function Home() {
         <footer className="mt-20 py-12 border-t border-gray-200">
           <div className="flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="flex items-center gap-3">
-              <div className="inline-flex items-center justify-center h-10 w-10 rounded-full bg-primary text-white font-bold text-sm">
-                ●
-              </div>
-              <span className="font-bold text-xl text-[#111813]">WaiterCall</span>
+              <img 
+                src="/logo.png" 
+                alt="WaiterCall Logo" 
+                className="h-10 w-auto"
+              />
             </div>
             <div className="flex items-center gap-8 text-sm text-gray-600">
               <Link href="/#about" className="hover:text-primary transition-colors duration-200">
