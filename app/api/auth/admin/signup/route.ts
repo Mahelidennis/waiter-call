@@ -270,72 +270,86 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Auto-login the user by creating a session
+    // CRITICAL: Auto-login the user by creating a fresh session
+    // This MUST succeed - no fallback to manual login
     try {
-      console.log('Attempting auto-login for:', adminEmail)
+      console.log('Creating fresh session for new admin:', adminEmail)
+      
+      // First, clear any existing sessions to prevent contamination
+      await supabase.auth.signOut()
+      
+      // Create fresh session for the new admin
       const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
         email: adminEmail,
         password: adminPassword,
       })
 
       if (signInError) {
-        console.error('Auto-login failed:', signInError)
-        // Try to get the user session directly as fallback
-        const { data: { session } } = await supabase.auth.getSession()
-        if (session) {
-          console.log('Found existing session, using that instead')
-          // Use existing session
-          const response = NextResponse.json(
-            {
-              success: true,
-              restaurantId: restaurant.id,
-              requiresLogin: false,
-              message: 'Account created successfully'
-            },
-            { status: 201 }
-          )
-          return response
-        } else {
-          console.error('No session found after signup')
-          return NextResponse.json(
-            {
-              success: true,
-              restaurantId: restaurant.id,
-              requiresLogin: true,
-              message: 'Account created but login failed'
-            },
-            { status: 201 }
-          )
-        }
-      }
-
-      if (!signInData.session) {
-        console.error('No session returned from signInWithPassword')
+        console.error('Critical: Auto-login failed for new admin:', signInError)
+        // This should never happen - if it does, we have a serious issue
         return NextResponse.json(
           {
-            success: true,
-            restaurantId: restaurant.id,
+            success: false,
+            error: 'Account created but authentication failed',
             requiresLogin: true,
-            message: 'Account created but no session established'
+            message: 'Please contact support - authentication system error'
           },
-          { status: 201 }
+          { status: 500 }
         )
       }
 
-      console.log('Auto-login successful, session established')
+      if (!signInData.session) {
+        console.error('Critical: No session created for new admin')
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'Account created but no session established',
+            requiresLogin: true,
+            message: 'Please contact support - session creation failed'
+          },
+          { status: 500 }
+        )
+      }
 
-      // Create response with session cookie first
+      console.log('✅ New admin session established:', {
+        userId: signInData.user.id,
+        restaurantId: restaurant.id,
+        restaurantName: restaurant.name
+      })
+
+      // CRITICAL: Update user metadata with restaurantId for session persistence
+      try {
+        await supabase.auth.updateUser({
+          data: {
+            user_metadata: {
+              role: 'admin',
+              restaurantId: restaurant.id,
+              restaurantName: restaurant.name,
+            },
+            app_metadata: {
+              role: 'admin',
+              restaurantId: restaurant.id,
+            }
+          }
+        })
+      } catch (updateError) {
+        console.warn('Failed to update user metadata:', updateError)
+        // Don't fail the signup if metadata update fails
+      }
+
+      // Return success with proper session established
       const response = NextResponse.json(
         {
           success: true,
           restaurantId: restaurant.id,
           requiresLogin: false,
-          message: 'Account created and logged in successfully'
+          message: 'Account created successfully',
+          userId: signInData.user.id
         },
         { status: 201 }
       )
 
-      // Set the session cookies with explicit overwrite
+      // Set the session cookies explicitly
       response.cookies.set('sb-access-token', signInData.session.access_token, {
         path: '/',
         maxAge: 60 * 60 * 24 * 7, // 7 days
@@ -352,37 +366,18 @@ export async function POST(request: NextRequest) {
         secure: process.env.NODE_ENV === 'production',
       })
 
-      // Update the user's session with restaurantId metadata
-      // This is done after setting cookies to avoid interfering with the session
-      try {
-        await supabase.auth.updateUser({
-          data: {
-            user_metadata: {
-              role: 'admin',
-              restaurantId: restaurant.id,
-            },
-            app_metadata: {
-              role: 'admin',
-              restaurantId: restaurant.id,
-            }
-          }
-        })
-      } catch (updateError) {
-        console.warn('Failed to update user metadata:', updateError)
-        // Don't fail the signup if metadata update fails
-      }
-
       return response
-    } catch (autoLoginError) {
-      console.error('Auto-login error:', autoLoginError)
-      // Return success without auto-login
+
+    } catch (error) {
+      console.error('Critical error during auto-login:', error)
       return NextResponse.json(
         {
-          success: true,
-          restaurantId: restaurant.id,
+          success: false,
+          error: 'Account created but login failed',
           requiresLogin: true,
+          message: 'Please contact support - login system error'
         },
-        { status: 201 }
+        { status: 500 }
       )
     }
   } catch (error: any) {
