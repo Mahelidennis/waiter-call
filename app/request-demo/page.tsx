@@ -35,11 +35,44 @@ export default function RequestDemoPage() {
     e.preventDefault()
     setIsSubmitting(true)
     
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    
-    setIsSubmitting(false)
-    setSubmitted(true)
+    try {
+      // Send email with form data
+      const emailContent = `
+        New Demo Request from WaiterCall Landing Page
+        
+        Personal Information:
+        Name: ${formData.firstName} ${formData.lastName}
+        Email: ${formData.email}
+        Phone: ${formData.phone}
+        
+        Restaurant Information:
+        Restaurant Name: ${formData.restaurantName}
+        Restaurant Type: ${formData.restaurantType}
+        Location: ${formData.location}
+        
+        Demo Preferences:
+        Preferred Date: ${formData.preferredDate}
+        Preferred Time: ${formData.preferredTime}
+        Current Challenges: ${formData.currentChallenges}
+        
+        Submitted: ${new Date().toLocaleString()}
+      `
+      
+      // Create mailto link with email content
+      const mailtoLink = `mailto:servicesmart541@gmail.com?subject=New Demo Request - ${formData.restaurantName}&body=${encodeURIComponent(emailContent)}`
+      
+      // Open email client
+      window.open(mailtoLink)
+      
+      // Simulate processing time
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      
+      setSubmitted(true)
+    } catch (error) {
+      console.error('Error submitting form:', error)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   if (submitted) {
@@ -274,7 +307,7 @@ export default function RequestDemoPage() {
               <h3 className="text-xl font-semibold text-[#111813] mb-6">Quick Contact Options</h3>
               <div className="space-y-4">
                 <Link
-                  href="tel:+1234567890"
+                  href="tel:+254741485512"
                   className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-green-600 hover:bg-green-50 transition-all"
                 >
                   <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
@@ -282,12 +315,12 @@ export default function RequestDemoPage() {
                   </div>
                   <div>
                     <p className="font-semibold text-[#111813]">Call Us</p>
-                    <p className="text-sm text-gray-600">+1 (234) 567-890</p>
+                    <p className="text-sm text-gray-600">+254 741 485 512</p>
                   </div>
                 </Link>
 
                 <Link
-                  href="mailto:demo@waitercall.com"
+                  href="mailto:servicesmart541@gmail.com"
                   className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-green-600 hover:bg-green-50 transition-all"
                 >
                   <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
@@ -295,7 +328,7 @@ export default function RequestDemoPage() {
                   </div>
                   <div>
                     <p className="font-semibold text-[#111813]">Email Us</p>
-                    <p className="text-sm text-gray-600">demo@waitercall.com</p>
+                    <p className="text-sm text-gray-600">servicesmart541@gmail.com</p>
                   </div>
                 </Link>
 

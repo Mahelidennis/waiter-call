@@ -32,11 +32,45 @@ export default function ContactSalesPage() {
     e.preventDefault()
     setIsSubmitting(true)
     
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    
-    setIsSubmitting(false)
-    setSubmitted(true)
+    try {
+      // Send email with form data
+      const emailContent = `
+        New Sales Inquiry from WaiterCall Enterprise Page
+        
+        Company Information:
+        Company Name: ${formData.companyName}
+        Number of Locations: ${formData.numberOfLocations}
+        Annual Revenue: ${formData.annualRevenue}
+        
+        Contact Information:
+        Contact Name: ${formData.contactName}
+        Job Title: ${formData.jobTitle}
+        Email: ${formData.email}
+        Phone: ${formData.phone}
+        
+        Requirements:
+        Current System: ${formData.currentSystem}
+        Implementation Timeline: ${formData.timeline}
+        Specific Needs: ${formData.specificNeeds}
+        
+        Submitted: ${new Date().toLocaleString()}
+      `
+      
+      // Create mailto link with email content
+      const mailtoLink = `mailto:servicesmart541@gmail.com?subject=New Sales Inquiry - ${formData.companyName}&body=${encodeURIComponent(emailContent)}`
+      
+      // Open email client
+      window.open(mailtoLink)
+      
+      // Simulate processing time
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      
+      setSubmitted(true)
+    } catch (error) {
+      console.error('Error submitting form:', error)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   if (submitted) {
@@ -313,7 +347,7 @@ export default function ContactSalesPage() {
                   </div>
                   <div>
                     <p className="font-semibold text-[#111813]">Sales Hotline</p>
-                    <p className="text-sm text-gray-600">+1 (888) WAITER-1</p>
+                    <p className="text-sm text-gray-600">+254 741 485 512</p>
                   </div>
                 </div>
 
@@ -323,7 +357,7 @@ export default function ContactSalesPage() {
                   </div>
                   <div>
                     <p className="font-semibold text-[#111813]">Email Sales</p>
-                    <p className="text-sm text-gray-600">sales@waitercall.com</p>
+                    <p className="text-sm text-gray-600">servicesmart541@gmail.com</p>
                   </div>
                 </div>
 
