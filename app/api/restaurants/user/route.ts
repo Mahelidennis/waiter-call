@@ -1,21 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerClient } from '@supabase/ssr'
+import { createServerClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/db'
 
 export async function GET(request: NextRequest) {
   try {
     // Create Supabase client for auth
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          get(name: string) {
-            return request.cookies.get(name)?.value
-          }
-        }
-      }
-    )
+    const supabase = await createServerClient()
 
     // Get authenticated user
     const { data: { user }, error: authError } = await supabase.auth.getUser()

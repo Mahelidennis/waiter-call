@@ -59,10 +59,12 @@ export default function SettingsPage() {
   const restaurantId = params.restaurantId as string
   
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null)
+  const [sessionRestaurantId, setSessionRestaurantId] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [hasChanges, setHasChanges] = useState(false)
   const [saveSuccess, setSaveSuccess] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
   const [activeSection, setActiveSection] = useState<SettingsSection>('general')
   const [uploadingLogo, setUploadingLogo] = useState(false)
   const [logoPreview, setLogoPreview] = useState<string | null>(null)
@@ -79,11 +81,29 @@ export default function SettingsPage() {
   const [originalForm, setOriginalForm] = useState<SettingsForm>(form)
 
   useEffect(() => {
-    fetchRestaurant()
-    loadLocalSettings()
-  }, [restaurantId])
+    // CRITICAL: Get restaurant ID from session, not URL params
+    async function getRestaurantFromSession() {
+      try {
+        const response = await fetch('/api/restaurants/user')
+        if (response.ok) {
+          const data = await response.json()
+          setSessionRestaurantId(data.id)
+          fetchRestaurant(data.id)
+          loadLocalSettings(data.id)
+        } else {
+          console.error('Failed to get restaurant from session')
+          setLoading(false)
+        }
+      } catch (error) {
+        console.error('Error getting restaurant from session:', error)
+        setLoading(false)
+      }
+    }
 
-  function loadLocalSettings() {
+    getRestaurantFromSession()
+  }, [])
+
+  function loadLocalSettings(restaurantId: string) {
     const localKey = `restaurant-settings-${restaurantId}`
     const localSettings = localStorage.getItem(localKey)
     
@@ -103,7 +123,8 @@ export default function SettingsPage() {
   }
 
   function saveLocalSettings() {
-    const localKey = `restaurant-settings-${restaurantId}`
+    if (!sessionRestaurantId) return
+    const localKey = `restaurant-settings-${sessionRestaurantId}`
     const settingsToSave = {
       timezone: form.timezone,
       currency: form.currency,
@@ -117,7 +138,7 @@ export default function SettingsPage() {
     setHasChanges(hasFormChanges)
   }, [form, originalForm])
 
-  async function fetchRestaurant() {
+  async function fetchRestaurant(restaurantId: string) {
     try {
       const response = await fetch(`/api/restaurants/${restaurantId}`)
       if (response.ok) {
@@ -135,9 +156,13 @@ export default function SettingsPage() {
         
         setForm(newForm)
         setOriginalForm(newForm)
+      } else {
+        console.error('Failed to fetch restaurant:', response.statusText)
+        setSaveError('Failed to load restaurant data')
       }
     } catch (error) {
       console.error('Failed to fetch restaurant:', error)
+      setSaveError('Failed to load restaurant data')
     } finally {
       setLoading(false)
     }
@@ -148,12 +173,18 @@ export default function SettingsPage() {
   }
 
   async function handleSave() {
+    if (!sessionRestaurantId) {
+      setSaveError('No restaurant session found')
+      return
+    }
+
     setSaving(true)
     setSaveSuccess(false)
+    setSaveError(null)
     
     try {
-      // Save API data (name, email, and logo)
-      const response = await fetch(`/api/restaurants/${restaurantId}`, {
+      // Save API data (name, email, menuUrl, and logoUrl)
+      const response = await fetch(`/api/restaurants/${sessionRestaurantId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -165,13 +196,28 @@ export default function SettingsPage() {
       })
 
       if (response.ok) {
+        const updatedRestaurant = await response.json()
+        setRestaurant(updatedRestaurant)
         saveLocalSettings()
         setOriginalForm(form)
         setSaveSuccess(true)
+        setSaveError(null)
+        
+        // Clear logo preview after successful save
+        if (logoPreview) {
+          setLogoPreview(null)
+        }
+        
         setTimeout(() => setSaveSuccess(false), 3000)
+      } else {
+        const errorData = await response.json()
+        setSaveError(errorData.error || 'Failed to save settings')
+        setSaveSuccess(false)
       }
     } catch (error) {
       console.error('Failed to save settings:', error)
+      setSaveError('Failed to save settings. Please try again.')
+      setSaveSuccess(false)
     } finally {
       setSaving(false)
     }
@@ -183,29 +229,40 @@ export default function SettingsPage() {
     // Validate file type
     const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml']
     if (!allowedTypes.includes(file.type)) {
-      alert('Please upload a PNG, JPG, or SVG file')
+      setSaveError('Please upload a PNG, JPG, or SVG file')
       return
     }
 
     // Validate file size (2MB)
     if (file.size > 2 * 1024 * 1024) {
-      alert('File size must be less than 2MB')
+      setSaveError('File size must be less than 2MB')
       return
     }
 
     setUploadingLogo(true)
+    setSaveError(null)
 
     try {
-      // Create a temporary URL for preview (in production, this would upload to storage)
-      const tempUrl = URL.createObjectURL(file)
-      setLogoPreview(tempUrl)
-      
-      // In a real implementation, you would upload to a storage service here
-      // For now, we'll use the temporary URL as if it was uploaded
-      console.log('Logo uploaded:', file.name)
+      const formData = new FormData()
+      formData.append('file', file)
+
+      const response = await fetch('/api/upload/logo', {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        console.log('Logo uploaded successfully:', data)
+        setLogoPreview(data.logoUrl)
+        setSaveError(null)
+      } else {
+        const errorData = await response.json()
+        setSaveError(errorData.error || 'Failed to upload logo')
+      }
     } catch (error) {
       console.error('Failed to upload logo:', error)
-      alert('Failed to upload logo. Please try again.')
+      setSaveError('Failed to upload logo. Please try again.')
     } finally {
       setUploadingLogo(false)
     }
@@ -589,22 +646,36 @@ export default function SettingsPage() {
             {/* Save Button (only show for general settings) */}
             {activeSection === 'general' && (
               <div className="mt-6 flex items-center justify-between">
-                <div>
+                <div className="flex-1">
                   {saveSuccess && (
-                    <p className="text-sm text-green-600">Settings saved successfully!</p>
+                    <p className="text-sm text-green-600">✅ Settings saved successfully!</p>
+                  )}
+                  {saveError && (
+                    <p className="text-sm text-red-600">❌ {saveError}</p>
                   )}
                 </div>
-                <button
-                  onClick={handleSave}
-                  disabled={!hasChanges || saving}
-                  className={`px-6 py-2 rounded-lg font-medium transition-colors ${
-                    hasChanges && !saving
-                      ? 'bg-primary text-white hover:bg-primary/90'
-                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  }`}
-                >
-                  {saving ? 'Saving...' : 'Save Changes'}
-                </button>
+                <div className="flex gap-3">
+                  {hasChanges && (
+                    <button
+                      onClick={handleDiscard}
+                      disabled={saving}
+                      className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Discard
+                    </button>
+                  )}
+                  <button
+                    onClick={handleSave}
+                    disabled={!hasChanges || saving}
+                    className={`px-6 py-2 rounded-lg font-medium transition-colors ${
+                      hasChanges && !saving
+                        ? 'bg-primary text-white hover:bg-primary/90'
+                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    }`}
+                  >
+                    {saving ? 'Saving...' : 'Save Changes'}
+                  </button>
+                </div>
               </div>
             )}
           </div>
