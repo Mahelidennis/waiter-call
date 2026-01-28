@@ -304,25 +304,28 @@ export default function SettingsPage() {
               <h3 className="text-lg font-medium text-gray-900 mb-4">Restaurant Logo</h3>
               <div className="space-y-4">
                 <div className="flex items-center gap-6">
-                  {/* Logo Preview */}
-                  <div className="relative">
-                    <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
-                      {(logoPreview || restaurant?.logoUrl) ? (
-                        <img 
-                          src={logoPreview || restaurant?.logoUrl} 
-                          alt="Restaurant Logo" 
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none'
-                          }}
-                        />
-                      ) : (
-                        <span className="material-symbols-outlined text-2xl text-gray-400">restaurant</span>
-                      )}
-                    </div>
+                  {/* Logo Preview/Upload Area */}
+                  <div
+                    onClick={() => !uploadingLogo && document.getElementById('logo-upload')?.click()}
+                    className={`relative w-24 h-24 bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer transition-all duration-200 ${
+                      uploadingLogo ? 'cursor-not-allowed opacity-60' : 'hover:border-green-500 hover:bg-green-50'
+                    }`}
+                  >
+                    {logoPreview || restaurant?.logoUrl ? (
+                      <img
+                        src={logoPreview || restaurant?.logoUrl}
+                        alt="Restaurant Logo"
+                        className="w-full h-full object-cover rounded-lg"
+                      />
+                    ) : (
+                      <div className="text-center">
+                        <span className="material-symbols-outlined text-3xl text-gray-400 mb-1">cloud_upload</span>
+                        <span className="text-xs text-gray-500">Upload</span>
+                      </div>
+                    )}
                     {uploadingLogo && (
                       <div className="absolute inset-0 bg-white/80 rounded-lg flex items-center justify-center">
-                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-600"></div>
                       </div>
                     )}
                   </div>
@@ -331,6 +334,8 @@ export default function SettingsPage() {
                   <div className="flex-1">
                     <div className="space-y-3">
                       <div>
+                        <p className="text-sm font-medium text-gray-900 mb-2">Upload Restaurant Logo</p>
+                        <p className="text-sm text-gray-600 mb-3">Click the upload area or choose file below</p>
                         <input
                           type="file"
                           id="logo-upload"
@@ -341,14 +346,14 @@ export default function SettingsPage() {
                         />
                         <label
                           htmlFor="logo-upload"
-                          className={`inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg cursor-pointer transition-colors ${
+                          className={`inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg cursor-pointer transition-all duration-200 ${
                             uploadingLogo
                               ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                              : 'bg-primary text-white hover:bg-primary/90'
+                              : 'bg-green-600 text-white hover:bg-green-700'
                           }`}
                         >
-                          <span className="material-symbols-outlined text-sm">upload</span>
-                          {uploadingLogo ? 'Uploading...' : 'Upload Logo'}
+                          <span className="material-symbols-outlined text-sm">upload_file</span>
+                          {uploadingLogo ? 'Uploading...' : 'Choose File'}
                         </label>
                         {(logoPreview || restaurant?.logoUrl) && (
                           <button
@@ -359,9 +364,10 @@ export default function SettingsPage() {
                           </button>
                         )}
                       </div>
-                      <div className="text-sm text-gray-500">
-                        <p>Formats: PNG, JPG, SVG (max 2MB)</p>
-                        <p>Recommended: Square image, at least 200x200px</p>
+                      <div className="text-xs text-gray-500 space-y-1">
+                        <p>💡 <strong>Tip:</strong> Click the dashed box above to quickly upload</p>
+                        <p>📁 Formats: PNG, JPG, SVG (max 2MB)</p>
+                        <p>📐 Recommended: Square image, at least 200x200px</p>
                       </div>
                     </div>
                   </div>
