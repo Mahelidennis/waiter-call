@@ -417,9 +417,14 @@ export default function AdminPage() {
         </div>
       </aside>
 
-      {/* Main Content */}
-      <main className="flex-1 overflow-auto p-4 lg:p-6">
-        <div>
+      {/* Desktop Header */}
+        <div className="hidden lg:block">
+          <AdminHeader currentPage={activeTab} restaurantLogo={restaurant?.logoUrl} />
+        </div>
+
+        {/* Main Content */}
+        <main className="flex-1 overflow-auto p-4 lg:p-6">
+          <div>
         {activeTab === 'overview' && (
           <div className="space-y-6">
             {/* Stats Cards */}
