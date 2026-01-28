@@ -70,7 +70,7 @@ export default function Home() {
                 Start Free Trial
               </Link>
               <Link
-                href="/auth/admin"
+                href="/request-demo"
                 className="px-8 py-4 bg-white border-2 border-gray-200 text-[#111813] font-semibold rounded-full hover:border-green-600 hover:text-green-600 transition-all duration-200 text-center"
               >
                 Schedule Demo
@@ -358,7 +358,7 @@ export default function Home() {
                   ))}
                 </ul>
                 <Link
-                  href={plan.title === 'Enterprise' ? '/auth/admin' : '/auth/admin/signup'}
+                  href={plan.title === 'Enterprise' ? '/contact-sales' : '/auth/admin/signup'}
                   className={`block w-full text-center px-6 py-3 rounded-full font-semibold transition-all duration-200 ${
                     plan.highlight
                       ? 'bg-green-600 text-white hover:bg-green-700 shadow-md hover:shadow-lg'
@@ -391,7 +391,7 @@ export default function Home() {
               Start Your Free Trial
             </Link>
             <Link
-              href="/auth/admin"
+              href="/request-demo"
               className="px-8 py-4 bg-white border-2 border-gray-300 text-[#111813] font-semibold rounded-full hover:border-green-600 hover:text-green-600 transition-all duration-200"
             >
               Schedule a Consultation
