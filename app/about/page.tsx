@@ -155,21 +155,21 @@ export default function AboutPage() {
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
-                name: 'Sarah Chen',
+                name: 'Maheli Shavanga',
                 role: 'CEO & Co-Founder',
-                description: 'Former restaurant manager with 15+ years in hospitality industry.',
-                initials: 'SC'
+                description: 'Visionary leader with expertise in restaurant technology and business innovation, driving WaiterCall\'s mission to transform restaurant service.',
+                initials: 'MS'
               },
               {
                 name: 'David Kimani',
                 role: 'CTO & Co-Founder',
-                description: 'Software engineer specializing in restaurant technology solutions.',
+                description: 'Software engineer specializing in restaurant technology solutions and platform architecture.',
                 initials: 'DK'
               },
               {
                 name: 'Amina Hassan',
                 role: 'Head of Customer Success',
-                description: 'Customer experience expert passionate about restaurant operations.',
+                description: 'Customer experience expert passionate about restaurant operations and client satisfaction.',
                 initials: 'AH'
               }
             ].map((member, index) => (
