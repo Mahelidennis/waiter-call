@@ -414,7 +414,7 @@ export default function Home() {
               <span className="font-bold text-xl text-[#111813]">WaiterCall</span>
             </div>
             <div className="flex items-center gap-8 text-sm text-gray-600">
-              <Link href="/#about" className="hover:text-primary transition-colors duration-200">
+              <Link href="/about" className="hover:text-primary transition-colors duration-200">
                 About Us
               </Link>
               <Link href="/contact-sales" className="hover:text-primary transition-colors duration-200">
