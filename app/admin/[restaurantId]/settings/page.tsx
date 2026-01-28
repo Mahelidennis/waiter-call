@@ -2,6 +2,15 @@
 
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
+import { 
+  buttonClass, 
+  mobileButtonClass, 
+  sidebarNavClass, 
+  iconClass,
+  inputClass,
+  mobileInputClass,
+  cardClass 
+} from '@/lib/ui/styles'
 
 interface Restaurant {
   id: string
@@ -361,7 +370,7 @@ export default function SettingsPage() {
             </div>
 
             {/* Restaurant Information */}
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <div className={cardClass + ' p-6'}>
               <h3 className="text-lg font-medium text-gray-900 mb-4">Restaurant Information</h3>
               <div className="space-y-4">
                 <div>
@@ -372,7 +381,7 @@ export default function SettingsPage() {
                     type="text"
                     value={form.restaurantName}
                     onChange={(e) => handleChange('restaurantName', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
+                    className={inputClass}
                   />
                 </div>
                 <div>
@@ -383,7 +392,7 @@ export default function SettingsPage() {
                     type="email"
                     value={form.supportEmail}
                     onChange={(e) => handleChange('supportEmail', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
+                    className={inputClass}
                   />
                 </div>
               </div>
@@ -427,7 +436,7 @@ export default function SettingsPage() {
             </div>
 
             {/* Customer Menu */}
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <div className={cardClass + ' p-6'}>
               <h3 className="text-lg font-medium text-gray-900 mb-4">Customer Menu</h3>
               <div className="space-y-4">
                 <div>
@@ -438,7 +447,7 @@ export default function SettingsPage() {
                     type="url"
                     value={form.menuUrl}
                     onChange={(e) => handleChange('menuUrl', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
+                    className={inputClass}
                     placeholder="https://restaurant.com/menu"
                   />
                   <p className="mt-1 text-sm text-gray-500">Customers can view this menu from the QR code landing page</p>
@@ -619,11 +628,7 @@ export default function SettingsPage() {
                 <button
                   key={section.id}
                   onClick={() => setActiveSection(section.id as SettingsSection)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
-                    activeSection === section.id
-                      ? 'bg-primary text-white'
-                      : 'text-gray-700 hover:bg-gray-100'
-                  }`}
+                  className={sidebarNavClass(activeSection === section.id)}
                 >
                   <span className="material-symbols-outlined text-lg">
                     {section.icon}
@@ -645,7 +650,7 @@ export default function SettingsPage() {
 
             {/* Save Button (only show for general settings) */}
             {activeSection === 'general' && (
-              <div className="mt-6 flex items-center justify-between">
+              <div className="mt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex-1">
                   {saveSuccess && (
                     <p className="text-sm text-green-600">✅ Settings saved successfully!</p>
@@ -654,7 +659,7 @@ export default function SettingsPage() {
                     <p className="text-sm text-red-600">❌ {saveError}</p>
                   )}
                 </div>
-                <div className="flex gap-3">
+                <div className="flex flex-col sm:flex-row gap-3 sm:w-auto w-full">
                   {hasChanges && (
                     <button
                       onClick={handleDiscard}
@@ -667,11 +672,7 @@ export default function SettingsPage() {
                   <button
                     onClick={handleSave}
                     disabled={!hasChanges || saving}
-                    className={`px-6 py-2 rounded-lg font-medium transition-colors ${
-                      hasChanges && !saving
-                        ? 'bg-primary text-white hover:bg-primary/90'
-                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    }`}
+                    className={buttonClass(hasChanges, true)}
                   >
                     {saving ? 'Saving...' : 'Save Changes'}
                   </button>

@@ -8,6 +8,15 @@ import PromotionModal from './components/PromotionModal'
 import WaiterAssignmentModal from './components/WaiterAssignmentModal'
 import AdminHeader from './components/AdminHeader'
 import QRModal from './components/QRModal'
+import { 
+  iconClass, 
+  buttonClass, 
+  mobileButtonClass, 
+  sidebarNavClass, 
+  tableActionClass, 
+  mobileTableActionClass,
+  cardClass 
+} from '@/lib/ui/styles'
 
 interface Restaurant {
   id: string
@@ -302,15 +311,58 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-gray-200">
-        <div className="flex flex-col h-full">
-          {/* Logo */}
-          <div className="flex items-center gap-3 p-6 border-b border-gray-200">
-            <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">●</span>
+    <div className="min-h-screen bg-gray-50">
+      <div className="flex flex-col lg:flex-row h-screen">
+        {/* Mobile Header */}
+        <div className="lg:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-sm">●</span>
             </div>
+            <span className="font-semibold text-gray-900">Admin</span>
+          </div>
+          <button
+            onClick={() => router.push(`/admin/${restaurantId}/settings`)}
+            className="p-2 text-gray-600 hover:text-green-600 transition-colors"
+          >
+            <span className="material-symbols-outlined">settings</span>
+          </button>
+        </div>
+
+        {/* Mobile Navigation Tabs */}
+        <div className="lg:hidden bg-white border-b border-gray-200">
+          <div className="flex overflow-x-auto">
+            {[
+              { id: 'overview', label: 'Dashboard', icon: 'dashboard' },
+              { id: 'tables', label: 'Tables', icon: 'table_restaurant' },
+              { id: 'waiters', label: 'Waiters', icon: 'badge' },
+              { id: 'promotions', label: 'Promos', icon: 'campaign' },
+              { id: 'calls', label: 'Analytics', icon: 'bar_chart' },
+            ].map((item) => (
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.id as any)}
+                className={`flex flex-col items-center gap-1 px-4 py-3 min-w-[80px] transition-colors ${
+                  activeTab === item.id
+                    ? 'text-green-600 border-b-2 border-green-600'
+                    : 'text-gray-600 hover:text-green-600'
+                }`}
+              >
+                <span className="material-symbols-outlined text-lg">{item.icon}</span>
+                <span className="text-xs">{item.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Sidebar */}
+        <aside className="hidden lg:flex w-64 bg-white border-r border-gray-200 flex-shrink-0">
+          <div className="flex flex-col h-full">
+            {/* Logo */}
+            <div className="flex items-center gap-3 p-6 border-b border-gray-200">
+              <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-lg">●</span>
+              </div>
             <div>
               <h1 className="font-semibold text-gray-900">{restaurant?.name || 'Restaurant'}</h1>
               <p className="text-sm text-gray-500">Admin Panel</p>
@@ -330,11 +382,7 @@ export default function AdminPage() {
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id as any)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                    activeTab === item.id
-                      ? 'bg-primary/10 text-primary font-medium'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                  }`}
+                  className={sidebarNavClass(activeTab === item.id)}
                 >
                   <span className="material-symbols-outlined text-xl">{item.icon}</span>
                   <span>{item.label}</span>
@@ -348,14 +396,14 @@ export default function AdminPage() {
             <div className="space-y-1">
               <button 
                 onClick={() => router.push(`/admin/${restaurantId}/settings`)}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+                className={sidebarNavClass(false)}
               >
                 <span className="material-symbols-outlined text-xl">settings</span>
                 <span>Settings</span>
               </button>
               <button 
                 onClick={handleLogout}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all duration-200"
               >
                 <span className="material-symbols-outlined text-xl">logout</span>
                 <span>Log Out</span>
@@ -366,23 +414,8 @@ export default function AdminPage() {
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        {/* Admin Header */}
-        <AdminHeader currentPage={activeTab} restaurantLogo={restaurant?.logoUrl} />
-
-        {/* Page Header */}
-        <div className="bg-white border-b border-gray-200 px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <h2 className="text-xl font-semibold text-gray-900">
-                {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
-              </h2>
-            </div>
-          </div>
-        </div>
-
-        {/* Content */}
-        <main className="flex-1 overflow-auto p-6">
+      <main className="flex-1 overflow-auto p-4 lg:p-6">
+        <div>
         {activeTab === 'overview' && (
           <div className="space-y-6">
             {/* Stats Cards */}
@@ -468,15 +501,15 @@ export default function AdminPage() {
         )}
 
         {activeTab === 'tables' && (
-          <div className="bg-white rounded-xl border border-gray-200">
-            <div className="p-6 border-b border-gray-200 flex items-center justify-between">
+          <div className={cardClass}>
+            <div className="p-6 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <h3 className="text-lg font-semibold text-gray-900">Tables</h3>
               <button
                 onClick={() => {
                   setSelectedTable(null)
                   setTableModalOpen(true)
                 }}
-                className="px-4 py-2 bg-primary text-gray-900 rounded-lg hover:bg-primary/90 transition-colors font-medium"
+                className={buttonClass(true, true)}
               >
                 Add Table
               </button>
@@ -513,24 +546,29 @@ export default function AdminPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center gap-2">
+                        {/* Desktop: Inline actions */}
+                        <div className="hidden sm:flex items-center gap-2">
                           <button
                             onClick={() => handleViewQR(table)}
-                            className="text-primary hover:text-primary/80 font-medium text-sm"
+                            className={tableActionClass(true)}
                           >
+                            <span className="material-symbols-outlined text-sm">qr_code_scanner</span>
                             View QR
                           </button>
                           <button
                             onClick={() => handleDownloadQR(table)}
-                            className="text-gray-600 hover:text-gray-900 font-medium text-sm"
+                            className={tableActionClass(true)}
                           >
+                            <span className="material-symbols-outlined text-sm">download</span>
                             Download
                           </button>
                           <a
                             href={`/table/${table.qrCode}`}
                             target="_blank"
-                            className="text-gray-600 hover:text-gray-900 font-medium text-sm"
+                            rel="noopener noreferrer"
+                            className={tableActionClass(true)}
                           >
+                            <span className="material-symbols-outlined text-sm">open_in_new</span>
                             Test
                           </a>
                           <button
@@ -538,15 +576,52 @@ export default function AdminPage() {
                               setSelectedTable(table)
                               setTableModalOpen(true)
                             }}
-                            className="text-gray-600 hover:text-gray-900 font-medium text-sm"
+                            className={tableActionClass(true)}
                           >
+                            <span className="material-symbols-outlined text-sm">edit</span>
                             Edit
                           </button>
                           <button
                             onClick={() => handleDeleteTable(table.id)}
-                            className="text-red-600 hover:text-red-900 font-medium text-sm"
+                            className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 text-red-600 hover:bg-red-50"
                           >
+                            <span className="material-symbols-outlined text-sm">delete</span>
                             Delete
+                          </button>
+                        </div>
+                        
+                        {/* Mobile: Stacked actions */}
+                        <div className="sm:hidden space-y-2">
+                          <button
+                            onClick={() => handleViewQR(table)}
+                            className={mobileTableActionClass(true)}
+                          >
+                            <span className="material-symbols-outlined">qr_code_scanner</span>
+                            View QR Code
+                          </button>
+                          <button
+                            onClick={() => handleDownloadQR(table)}
+                            className={mobileTableActionClass(true)}
+                          >
+                            <span className="material-symbols-outlined">download</span>
+                            Download QR
+                          </button>
+                          <button
+                            onClick={() => {
+                              setSelectedTable(table)
+                              setTableModalOpen(true)
+                            }}
+                            className={mobileTableActionClass(true)}
+                          >
+                            <span className="material-symbols-outlined">edit</span>
+                            Edit Table
+                          </button>
+                          <button
+                            onClick={() => handleDeleteTable(table.id)}
+                            className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 text-red-600 border border-red-200 hover:bg-red-50"
+                          >
+                            <span className="material-symbols-outlined">delete</span>
+                            Delete Table
                           </button>
                         </div>
                       </td>
@@ -559,15 +634,15 @@ export default function AdminPage() {
         )}
 
         {activeTab === 'waiters' && (
-          <div className="bg-white rounded-xl border border-gray-200">
-            <div className="p-6 border-b border-gray-200 flex items-center justify-between">
+          <div className={cardClass}>
+            <div className="p-6 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <h3 className="text-lg font-semibold text-gray-900">Waiters</h3>
               <button
                 onClick={() => {
                   setSelectedWaiter(null)
                   setWaiterModalOpen(true)
                 }}
-                className="px-4 py-2 bg-primary text-gray-900 rounded-lg hover:bg-primary/90 transition-colors font-medium"
+                className={buttonClass(true, true)}
               >
                 Add Waiter
               </button>
@@ -616,12 +691,15 @@ export default function AdminPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center gap-2">
+                        {/* Desktop: Inline actions */}
+                        <div className="hidden sm:flex items-center gap-2">
                           <a
                             href={`/waiter/${waiter.id}`}
                             target="_blank"
-                            className="text-primary hover:text-primary/80 font-medium text-sm"
+                            rel="noopener noreferrer"
+                            className={tableActionClass(true)}
                           >
+                            <span className="material-symbols-outlined text-sm">person</span>
                             View
                           </a>
                           <button
@@ -629,8 +707,9 @@ export default function AdminPage() {
                               setSelectedWaiterForAssignment(waiter)
                               setAssignmentModalOpen(true)
                             }}
-                            className="text-gray-600 hover:text-gray-900 font-medium text-sm"
+                            className={tableActionClass(true)}
                           >
+                            <span className="material-symbols-outlined text-sm">table_restaurant</span>
                             Assign
                           </button>
                           <button
@@ -638,15 +717,57 @@ export default function AdminPage() {
                               setSelectedWaiter(waiter)
                               setWaiterModalOpen(true)
                             }}
-                            className="text-gray-600 hover:text-gray-900 font-medium text-sm"
+                            className={tableActionClass(true)}
                           >
+                            <span className="material-symbols-outlined text-sm">edit</span>
                             Edit
                           </button>
                           <button
                             onClick={() => handleDeleteWaiter(waiter.id)}
-                            className="text-red-600 hover:text-red-900 font-medium text-sm"
+                            className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 text-red-600 hover:bg-red-50"
                           >
+                            <span className="material-symbols-outlined text-sm">delete</span>
                             Delete
+                          </button>
+                        </div>
+                        
+                        {/* Mobile: Stacked actions */}
+                        <div className="sm:hidden space-y-2">
+                          <a
+                            href={`/waiter/${waiter.id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={mobileTableActionClass(true)}
+                          >
+                            <span className="material-symbols-outlined">person</span>
+                            View Waiter
+                          </a>
+                          <button
+                            onClick={() => {
+                              setSelectedWaiterForAssignment(waiter)
+                              setAssignmentModalOpen(true)
+                            }}
+                            className={mobileTableActionClass(true)}
+                          >
+                            <span className="material-symbols-outlined">table_restaurant</span>
+                            Assign Tables
+                          </button>
+                          <button
+                            onClick={() => {
+                              setSelectedWaiter(waiter)
+                              setWaiterModalOpen(true)
+                            }}
+                            className={mobileTableActionClass(true)}
+                          >
+                            <span className="material-symbols-outlined">edit</span>
+                            Edit Waiter
+                          </button>
+                          <button
+                            onClick={() => handleDeleteWaiter(waiter.id)}
+                            className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 text-red-600 border border-red-200 hover:bg-red-50"
+                          >
+                            <span className="material-symbols-outlined">delete</span>
+                            Delete Waiter
                           </button>
                         </div>
                       </td>
@@ -659,15 +780,15 @@ export default function AdminPage() {
         )}
 
         {activeTab === 'promotions' && (
-          <div className="bg-white rounded-xl border border-gray-200">
-            <div className="p-6 border-b border-gray-200 flex items-center justify-between">
+          <div className={cardClass}>
+            <div className="p-6 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <h3 className="text-lg font-semibold text-gray-900">Promotions</h3>
               <button
                 onClick={() => {
                   setSelectedPromotion(null)
                   setPromotionModalOpen(true)
                 }}
-                className="px-4 py-2 bg-primary text-gray-900 rounded-lg hover:bg-primary/90 transition-colors font-medium"
+                className={buttonClass(true, true)}
               >
                 Add Promotion
               </button>
@@ -695,21 +816,45 @@ export default function AdminPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center gap-2">
+                        {/* Desktop: Inline actions */}
+                        <div className="hidden sm:flex items-center gap-2">
                           <button
                             onClick={() => {
                               setSelectedPromotion(promo)
                               setPromotionModalOpen(true)
                             }}
-                            className="text-gray-600 hover:text-gray-900 font-medium text-sm"
+                            className={tableActionClass(true)}
                           >
+                            <span className="material-symbols-outlined text-sm">edit</span>
                             Edit
                           </button>
                           <button
                             onClick={() => handleDeletePromotion(promo.id)}
-                            className="text-red-600 hover:text-red-900 font-medium text-sm"
+                            className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 text-red-600 hover:bg-red-50"
                           >
+                            <span className="material-symbols-outlined text-sm">delete</span>
                             Delete
+                          </button>
+                        </div>
+                        
+                        {/* Mobile: Stacked actions */}
+                        <div className="sm:hidden space-y-2">
+                          <button
+                            onClick={() => {
+                              setSelectedPromotion(promo)
+                              setPromotionModalOpen(true)
+                            }}
+                            className={mobileTableActionClass(true)}
+                          >
+                            <span className="material-symbols-outlined">edit</span>
+                            Edit Promotion
+                          </button>
+                          <button
+                            onClick={() => handleDeletePromotion(promo.id)}
+                            className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 text-red-600 border border-red-200 hover:bg-red-50"
+                          >
+                            <span className="material-symbols-outlined">delete</span>
+                            Delete Promotion
                           </button>
                         </div>
                       </td>
@@ -860,7 +1005,8 @@ export default function AdminPage() {
             restaurantName={restaurant?.name || 'Restaurant'}
           />
         )}
-      </div>
+        </div>
+      </main>
     </div>
   )
 }
