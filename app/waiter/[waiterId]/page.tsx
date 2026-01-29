@@ -430,27 +430,27 @@ export default function WaiterDashboard() {
             )}
 
             {/* Header */}
-            <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 dark:border-gray-700 px-2 sm:px-4 py-3">
-              <div className="flex items-center gap-2 sm:gap-3 text-gray-800 dark:text-gray-100 min-w-0 flex-1">
+            <header className="flex items-center justify-between whitespace-nowrap border-b-2 border-gray-300 dark:border-gray-700 px-2 sm:px-4 py-3 bg-white dark:bg-gray-900">
+              <div className="flex items-center gap-2 sm:gap-3 text-gray-900 dark:text-gray-100 min-w-0 flex-1">
                 <img 
                   src="/logo.png" 
                   alt="WaiterCall Logo" 
                   className="h-6 sm:h-8 w-auto flex-shrink-0"
                 />
                 <div className="min-w-0">
-                  <h1 className="text-lg sm:text-xl font-bold leading-tight tracking-tight truncate">Live Dashboard</h1>
-                  <p className="text-xs text-gray-500 hidden sm:block">WaiterCall System</p>
+                  <h1 className="text-lg sm:text-xl font-bold leading-tight tracking-tight truncate text-gray-900 dark:text-white">Live Dashboard</h1>
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300 hidden sm:block">WaiterCall System</p>
                 </div>
-                <div className="flex items-center gap-1 sm:gap-2 rounded-full bg-green-600/20 px-2 sm:px-3 py-1 flex-shrink-0">
+                <div className="flex items-center gap-1 sm:gap-2 rounded-full bg-green-600/20 px-2 sm:px-3 py-1 flex-shrink-0 border border-green-300">
                   <div className={`h-1.5 sm:h-2 w-1.5 sm:w-2 rounded-full ${
                     isRealtimeConnected 
                       ? 'bg-green-600 animate-pulse' 
                       : 'bg-yellow-600 animate-pulse'
                   }`}></div>
-                  <span className={`text-xs font-medium ${
+                  <span className={`text-xs font-bold ${
                     isRealtimeConnected 
-                      ? 'text-green-600' 
-                      : 'text-yellow-600'
+                      ? 'text-green-700' 
+                      : 'text-yellow-700'
                   }`}>
                     {isRealtimeConnected ? 'LIVE' : 'POLLING'}
                   </span>
@@ -458,7 +458,7 @@ export default function WaiterDashboard() {
               </div>
               <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
                 {realtimeError && (
-                  <div className="flex items-center gap-1 text-xs text-red-600 hidden sm:flex">
+                  <div className="flex items-center gap-1 text-xs font-semibold text-red-600 hidden sm:flex">
                     <span className="material-symbols-outlined text-sm">error</span>
                     <span>Issues</span>
                   </div>
@@ -469,7 +469,7 @@ export default function WaiterDashboard() {
                       realtimeManager.reconnect()
                     }
                   }}
-                  className="flex items-center justify-center p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="flex items-center justify-center p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
                   title={isRealtimeConnected ? 'Connected' : 'Reconnect'}
                 >
                   <span className="material-symbols-outlined text-lg">
@@ -478,12 +478,12 @@ export default function WaiterDashboard() {
                 </button>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center justify-center p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="flex items-center justify-center p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
                   title="Sign out"
                 >
                   <span className="material-symbols-outlined text-lg">logout</span>
                 </button>
-                <div className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-8 sm:size-10 bg-primary/20 flex items-center justify-center flex-shrink-0">
+                <div className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-8 sm:size-10 bg-primary/20 flex items-center justify-center flex-shrink-0 border-2 border-primary/30">
                   {waiter?.name ? (
                     <span className="text-primary font-bold text-sm sm:text-lg">
                       {waiter.name.charAt(0).toUpperCase()}
@@ -496,98 +496,98 @@ export default function WaiterDashboard() {
             </header>
 
             {/* Filter Tabs */}
-            <div className="p-2 sm:p-4">
-              <h2 className="text-gray-800 dark:text-gray-100 text-xl sm:text-2xl font-bold leading-tight tracking-tight px-2 sm:px-4 pb-3 pt-3 sm:pt-5">
+            <div className="p-2 sm:p-4 bg-white dark:bg-gray-900">
+              <h2 className="text-gray-900 dark:text-white text-xl sm:text-2xl font-bold leading-tight tracking-tight px-2 sm:px-4 pb-3 pt-3 sm:pt-5">
                 Incoming Requests
               </h2>
               <div className="flex gap-2 sm:gap-3 p-2 sm:p-3 overflow-x-auto scrollbar-hide">
                 <button
                   onClick={() => setFilter('pending')}
-                  className={`flex h-10 sm:h-9 shrink-0 items-center justify-center gap-x-2 rounded-full px-3 sm:px-4 transition-colors min-w-[44px] min-h-[44px] ${
+                  className={`flex h-10 sm:h-9 shrink-0 items-center justify-center gap-x-2 rounded-full px-3 sm:px-4 transition-colors min-w-[44px] min-h-[44px] font-semibold text-sm ${
                     filter === 'pending'
                       ? 'bg-primary text-background-dark'
-                      : 'bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200'
+                      : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600'
                   }`}
                 >
-                  <p className="text-sm font-semibold leading-normal">Pending</p>
+                  <span className="truncate">Pending</span>
                 </button>
                 <button
                   onClick={() => setFilter('acknowledged')}
-                  className={`flex h-10 sm:h-9 shrink-0 items-center justify-center gap-x-2 rounded-full px-3 sm:px-4 transition-colors min-w-[44px] min-h-[44px] ${
+                  className={`flex h-10 sm:h-9 shrink-0 items-center justify-center gap-x-2 rounded-full px-3 sm:px-4 transition-colors min-w-[44px] min-h-[44px] font-semibold text-sm ${
                     filter === 'acknowledged'
                       ? 'bg-primary text-background-dark'
-                      : 'bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200'
+                      : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600'
                   }`}
                 >
-                  <p className="text-sm font-medium leading-normal">Acknowledged</p>
+                  <span className="truncate">Acknowledged</span>
                 </button>
                 <button
                   onClick={() => setFilter('in_progress')}
-                  className={`flex h-10 sm:h-9 shrink-0 items-center justify-center gap-x-2 rounded-full px-3 sm:px-4 transition-colors min-w-[44px] min-h-[44px] ${
+                  className={`flex h-10 sm:h-9 shrink-0 items-center justify-center gap-x-2 rounded-full px-3 sm:px-4 transition-colors min-w-[44px] min-h-[44px] font-semibold text-sm ${
                     filter === 'in_progress'
                       ? 'bg-primary text-background-dark'
-                      : 'bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200'
+                      : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600'
                   }`}
                 >
-                  <p className="text-sm font-medium leading-normal">On the way</p>
+                  <span className="truncate">On the way</span>
                 </button>
                 <button
                   onClick={() => setFilter('missed')}
-                  className={`flex h-10 sm:h-9 shrink-0 items-center justify-center gap-x-2 rounded-full px-3 sm:px-4 transition-colors min-w-[44px] min-h-[44px] ${
+                  className={`flex h-10 sm:h-9 shrink-0 items-center justify-center gap-x-2 rounded-full px-3 sm:px-4 transition-colors min-w-[44px] min-h-[44px] font-semibold text-sm ${
                     filter === 'missed'
                       ? 'bg-red-600 text-white'
-                      : 'bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200'
+                      : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600'
                   }`}
                 >
-                  <p className="text-sm font-medium leading-normal">Missed</p>
+                  <span className="truncate">Missed</span>
                 </button>
                 <button
                   onClick={() => setFilter('my')}
-                  className={`flex h-10 sm:h-9 shrink-0 items-center justify-center gap-x-2 rounded-full px-3 sm:px-4 transition-colors min-w-[44px] min-h-[44px] ${
+                  className={`flex h-10 sm:h-9 shrink-0 items-center justify-center gap-x-2 rounded-full px-3 sm:px-4 transition-colors min-w-[44px] min-h-[44px] font-semibold text-sm ${
                     filter === 'my'
                       ? 'bg-primary text-background-dark'
-                      : 'bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200'
+                      : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600'
                   }`}
                 >
-                  <p className="text-sm font-medium leading-normal">My Tables</p>
+                  <span className="truncate">My Tables</span>
                 </button>
                 <button
                   onClick={() => setFilter('handled')}
-                  className={`flex h-10 sm:h-9 shrink-0 items-center justify-center gap-x-2 rounded-full px-3 sm:px-4 transition-colors min-w-[44px] min-h-[44px] ${
+                  className={`flex h-10 sm:h-9 shrink-0 items-center justify-center gap-x-2 rounded-full px-3 sm:px-4 transition-colors min-w-[44px] min-h-[44px] font-semibold text-sm ${
                     filter === 'handled'
                       ? 'bg-primary text-background-dark'
-                      : 'bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200'
+                      : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600'
                   }`}
                 >
-                  <p className="text-sm font-medium leading-normal">Completed</p>
+                  <span className="truncate">Completed</span>
                 </button>
                 <button
                   onClick={() => setFilter('all')}
-                  className={`flex h-10 sm:h-9 shrink-0 items-center justify-center gap-x-2 rounded-full px-3 sm:px-4 transition-colors min-w-[44px] min-h-[44px] ${
+                  className={`flex h-10 sm:h-9 shrink-0 items-center justify-center gap-x-2 rounded-full px-3 sm:px-4 transition-colors min-w-[44px] min-h-[44px] font-semibold text-sm ${
                     filter === 'all'
                       ? 'bg-primary text-background-dark'
-                      : 'bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200'
+                      : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600'
                   }`}
                 >
-                  <p className="text-sm font-semibold leading-normal">All</p>
+                  <span className="truncate">All</span>
                 </button>
               </div>
             </div>
 
             {/* Calls List */}
-            <div className="flex flex-col gap-3 sm:gap-4 px-2 sm:px-4 pb-4 pb-[env(safe-area-inset-bottom)]">
+            <div className="flex flex-col gap-3 sm:gap-4 px-2 sm:px-4 pb-4 pb-[env(safe-area-inset-bottom)] bg-gray-50 dark:bg-gray-800">
               {filteredCalls.length === 0 ? (
-                <div className="mt-4 sm:mt-8 flex flex-col items-center justify-center gap-3 sm:gap-4 rounded-xl border border-dashed border-gray-300 dark:border-gray-700 p-6 sm:p-12 text-center">
-                  <div className="flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-primary/20">
+                <div className="mt-4 sm:mt-8 flex flex-col items-center justify-center gap-3 sm:gap-4 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 p-6 sm:p-12 text-center bg-white dark:bg-gray-900">
+                  <div className="flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-primary/20 border-2 border-primary/30">
                     <span className="material-symbols-outlined text-primary text-3xl sm:text-4xl">
                       notifications_off
                     </span>
                   </div>
                   <div className="flex flex-col gap-1">
-                    <h3 className="text-gray-800 dark:text-gray-100 text-base sm:text-lg font-semibold">
+                    <h3 className="text-gray-900 dark:text-white text-base sm:text-lg font-bold">
                       All tables are happy!
                     </h3>
-                    <p className="text-gray-500 dark:text-gray-400 text-sm">
+                    <p className="text-gray-700 dark:text-gray-300 text-sm font-medium">
                       No active requests at the moment. New calls will appear here.
                     </p>
                   </div>
@@ -609,7 +609,7 @@ export default function WaiterDashboard() {
                   return (
                     <div
                       key={call.id}
-                      className={`flex flex-col items-stretch justify-between gap-3 sm:gap-4 rounded-xl bg-white dark:bg-background-dark dark:border p-3 sm:p-4 shadow-lg border-2 ${borderColor} ${
+                      className={`flex flex-col items-stretch justify-between gap-3 sm:gap-4 rounded-xl bg-white dark:bg-gray-900 dark:border p-3 sm:p-4 shadow-lg border-2 ${borderColor} ${
                         highlightedCallId === call.id 
                           ? 'ring-4 ring-green-400 ring-opacity-50 animate-pulse' 
                           : ''
@@ -619,48 +619,48 @@ export default function WaiterDashboard() {
                         <div className="flex flex-col gap-2">
                           {/* Status badge and time */}
                           <div className="flex items-center justify-between">
-                            <p className={`${timeColor} text-sm font-semibold leading-normal`}>
+                            <p className={`${timeColor} text-sm font-bold leading-normal`}>
                               {getTimeAgo(call.requestedAt)}
                             </p>
-                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusBadge.color}`}>
+                            <span className={`px-2 py-1 rounded-full text-xs font-bold ${statusBadge.color} border border-gray-300 dark:border-gray-600`}>
                               {statusBadge.text}
                             </span>
                           </div>
                           
-                          <p className="text-gray-900 dark:text-gray-50 text-xl sm:text-2xl font-bold leading-tight">
+                          <p className="text-gray-900 dark:text-white text-xl sm:text-2xl font-bold leading-tight">
                             Table {call.table.number}
                           </p>
-                          <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base font-normal leading-normal">
+                          <p className="text-gray-700 dark:text-gray-300 text-sm sm:text-base font-semibold leading-normal">
                             Call Waiter
                           </p>
                           
                           {/* Status-specific messages */}
                           {isOverdue && (
-                            <p className="text-red-600 dark:text-red-400 text-sm font-medium">
+                            <p className="text-red-700 dark:text-red-400 text-sm font-bold">
                               ⚠️ Overdue - SLA exceeded
                             </p>
                           )}
                           
                           {isAcknowledged && (
-                            <p className="text-blue-600 dark:text-blue-400 text-sm font-medium">
+                            <p className="text-blue-700 dark:text-blue-400 text-sm font-bold">
                               Acknowledged by you
                             </p>
                           )}
                           
                           {isInProgress && (
-                            <p className="text-purple-600 dark:text-purple-400 text-sm font-medium">
+                            <p className="text-purple-700 dark:text-purple-400 text-sm font-bold">
                               On the way to table
                             </p>
                           )}
                           
                           {isCompleted && (
-                            <p className="text-green-600 dark:text-green-400 text-sm font-medium">
+                            <p className="text-green-700 dark:text-green-400 text-sm font-bold">
                               Service completed
                             </p>
                           )}
                           
                           {isMissed && (
-                            <p className="text-red-600 dark:text-red-400 text-sm font-medium">
+                            <p className="text-red-700 dark:text-red-400 text-sm font-bold">
                               ❌ Missed - Customer waited too long
                             </p>
                           )}
@@ -670,7 +670,7 @@ export default function WaiterDashboard() {
                         {isPending && (
                           <button
                             onClick={() => acknowledgeCall(call.id)}
-                            className="flex w-full min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 sm:h-10 px-4 sm:px-5 gap-2 bg-blue-600 text-white text-sm font-bold leading-normal hover:bg-blue-700 transition-colors min-h-[44px]"
+                            className="flex w-full min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 sm:h-10 px-4 sm:px-5 gap-2 bg-blue-600 text-white text-sm font-bold leading-normal hover:bg-blue-700 transition-colors min-h-[44px] shadow-md"
                           >
                             <span className="truncate">Acknowledge</span>
                             <span className="material-symbols-outlined text-lg sm:text-base">check</span>
@@ -680,7 +680,7 @@ export default function WaiterDashboard() {
                         {(isAcknowledged || isInProgress) && (
                           <button
                             onClick={() => resolveCall(call.id)}
-                            className="flex w-full min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 sm:h-10 px-4 sm:px-5 gap-2 bg-primary text-background-dark text-sm font-bold leading-normal hover:bg-primary/90 transition-colors min-h-[44px]"
+                            className="flex w-full min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 sm:h-10 px-4 sm:px-5 gap-2 bg-primary text-background-dark text-sm font-bold leading-normal hover:bg-primary/90 transition-colors min-h-[44px] shadow-md"
                           >
                             <span className="truncate">Complete</span>
                             <span className="material-symbols-outlined text-lg sm:text-base">done</span>
@@ -688,16 +688,16 @@ export default function WaiterDashboard() {
                         )}
                         
                         {isCompleted && (
-                          <div className="flex items-center gap-2 text-green-600 dark:text-green-400">
+                          <div className="flex items-center gap-2 text-green-700 dark:text-green-400 font-bold">
                             <span className="material-symbols-outlined">check_circle</span>
-                            <span className="text-sm font-medium">Completed</span>
+                            <span className="text-sm font-bold">Completed</span>
                           </div>
                         )}
                         
                         {isMissed && (
-                          <div className="flex items-center gap-2 text-red-600 dark:text-red-400">
+                          <div className="flex items-center gap-2 text-red-700 dark:text-red-400 font-bold">
                             <span className="material-symbols-outlined">error</span>
-                            <span className="text-sm font-medium">Missed</span>
+                            <span className="text-sm font-bold">Missed</span>
                           </div>
                         )}
                       </div>
