@@ -11,12 +11,17 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { tableId, restaurantId } = body
 
+    console.log('POST /api/calls - Request body:', body)
+
     if (!tableId || !restaurantId) {
+      console.error('Missing required fields:', { tableId, restaurantId })
       return NextResponse.json(
         { error: 'Missing tableId or restaurantId' },
         { status: 400 }
       )
     }
+
+    console.log('Looking up table:', { tableId, restaurantId })
 
     // Verify table exists and belongs to restaurant
     const table = await prisma.table.findFirst({
@@ -27,12 +32,17 @@ export async function POST(request: NextRequest) {
       },
     })
 
+    console.log('Table found:', table)
+
     if (!table) {
+      console.error('Table not found:', { tableId, restaurantId })
       return NextResponse.json(
         { error: 'Table not found' },
         { status: 404 }
       )
     }
+
+    console.log('Looking up waiter assignments for table:', tableId)
 
     // Get assigned waiter for this table (if any)
     const waiterTable = await prisma.waiterTable.findFirst({
@@ -44,9 +54,19 @@ export async function POST(request: NextRequest) {
       },
     })
 
+    console.log('Waiter assignment found:', waiterTable)
+
     // Calculate timeout timestamp for SLA
     const now = new Date()
     const timeoutAt = new Date(now.getTime() + CALL_TIMEOUT_MINUTES * 60 * 1000)
+
+    console.log('Creating call with data:', {
+      restaurantId,
+      tableId,
+      waiterId: waiterTable?.waiterId || null,
+      status: 'PENDING',
+      timeoutAt
+    })
 
     // Create the call with enhanced lifecycle tracking
     const call = await prisma.call.create({
@@ -65,6 +85,8 @@ export async function POST(request: NextRequest) {
       },
     })
 
+    console.log('Call created successfully:', call)
+
     // Send push notification to assigned waiter(s)
     // This is non-blocking - failures won't affect call creation
     sendCallNotification(
@@ -80,6 +102,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(call, { status: 201 })
   } catch (error) {
     console.error('Error creating call:', error)
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace')
     return NextResponse.json(
       { error: 'Failed to create call' },
       { status: 500 }

@@ -89,27 +89,48 @@ export default function TablePage() {
 
     try {
       console.log('Calling waiter for table:', data.table.id)
+      console.log('Restaurant ID:', data.table.restaurant.id)
+      console.log('Table Number:', data.table.number)
+      
+      const payload = {
+        tableId: data.table.id,
+        restaurantId: data.table.restaurant.id,
+      }
+      
+      console.log('Request payload:', payload)
       
       const response = await fetch('/api/calls', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          tableId: data.table.id,
-          restaurantId: data.table.restaurant.id,
-        }),
+        body: JSON.stringify(payload),
       })
 
       console.log('Call API response status:', response.status)
+      console.log('Response headers:', response.headers)
+      
+      const responseText = await response.text()
+      console.log('Response text:', responseText)
       
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
+        let errorData
+        try {
+          errorData = JSON.parse(responseText)
+        } catch {
+          errorData = { error: responseText || 'Unknown error' }
+        }
         console.error('Call API Error:', errorData)
-        throw new Error(errorData.error || 'Failed to call waiter')
+        throw new Error(errorData.error || `Failed to call waiter (${response.status})`)
       }
 
-      const result = await response.json()
+      let result
+      try {
+        result = JSON.parse(responseText)
+      } catch {
+        result = { success: true, rawResponse: responseText }
+      }
+      
       console.log('Call successful:', result)
       
       setStatusMessage('✅ A waiter is on their way!')
