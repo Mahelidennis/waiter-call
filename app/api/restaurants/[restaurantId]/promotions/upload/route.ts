@@ -36,41 +36,72 @@ export async function POST(
       )
     }
 
-    // Validate file type
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+    // Expanded file type validation - accept all common image formats
+    const allowedTypes = [
+      'image/jpeg', 'image/jpg', 'image/png', 'image/webp',
+      'image/gif', 'image/bmp', 'image/tiff', 'image/svg+xml'
+    ]
+    
     if (!allowedTypes.includes(file.type)) {
       return NextResponse.json(
-        { error: 'Invalid file type. Only JPG, JPEG, PNG, and WEBP are allowed.' },
+        { error: `Invalid file type: ${file.type}. Accepted formats: JPG, JPEG, PNG, WEBP, GIF, BMP, TIFF, SVG` },
         { status: 400 }
       )
     }
 
-    // Validate file size (2MB max)
-    const maxSize = 2 * 1024 * 1024 // 2MB in bytes
+    // Increased file size limit (5MB max)
+    const maxSize = 5 * 1024 * 1024 // 5MB in bytes
     if (file.size > maxSize) {
       return NextResponse.json(
-        { error: 'File size must be less than 2MB' },
+        { error: `File size ${(file.size / 1024 / 1024).toFixed(2)}MB exceeds limit of 5MB` },
         { status: 400 }
       )
     }
 
-    // Generate unique file name
-    const fileExt = file.name.split('.').pop()
-    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`
+    // Generate unique file name with proper extension handling
+    const fileExt = file.name.split('.').pop()?.toLowerCase() || 'jpg'
+    const timestamp = Date.now()
+    const random = Math.random().toString(36).substring(2, 8)
+    const fileName = `${timestamp}-${random}.${fileExt}`
     const filePath = `promotions/${restaurantId}/${fileName}`
 
-    // Upload to Supabase Storage
+    console.log('Uploading file:', {
+      fileName: file.name,
+      fileSize: file.size,
+      fileType: file.type,
+      filePath
+    })
+
+    // Upload to Supabase Storage with better error handling
     const { data: uploadData, error: uploadError } = await supabase.storage
       .from('promotions')
       .upload(filePath, file, {
         cacheControl: '3600',
-        upsert: false
+        upsert: false,
+        contentType: file.type
       })
 
     if (uploadError) {
-      console.error('Upload error:', uploadError)
+      console.error('Supabase upload error:', uploadError)
+      
+      // Check if bucket doesn't exist
+      if (uploadError.message?.includes('bucket') || uploadError.message?.includes('not found')) {
+        return NextResponse.json(
+          { error: 'Storage bucket not found. Please contact administrator to set up Supabase storage.' },
+          { status: 500 }
+        )
+      }
+      
+      // Check if it's a permissions issue
+      if (uploadError.message?.includes('permission') || uploadError.message?.includes('unauthorized')) {
+        return NextResponse.json(
+          { error: 'Storage permission denied. Please check Supabase storage policies.' },
+          { status: 500 }
+        )
+      }
+      
       return NextResponse.json(
-        { error: 'Failed to upload image' },
+        { error: `Upload failed: ${uploadError.message}` },
         { status: 500 }
       )
     }
@@ -80,17 +111,23 @@ export async function POST(
       .from('promotions')
       .getPublicUrl(filePath)
 
+    console.log('Upload successful:', {
+      filePath,
+      publicUrl: urlData.publicUrl
+    })
+
     return NextResponse.json({
       success: true,
       imageUrl: urlData.publicUrl,
       fileName: file.name,
-      fileSize: file.size
+      fileSize: file.size,
+      fileType: file.type
     })
 
   } catch (error) {
     console.error('Error uploading promotion image:', error)
     return NextResponse.json(
-      { error: 'Failed to upload image' },
+      { error: `Server error: ${error instanceof Error ? error.message : 'Unknown error'}` },
       { status: 500 }
     )
   }

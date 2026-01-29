@@ -45,6 +45,7 @@ export default function PromotionModal({ isOpen, onClose, onSave, promotion, res
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string>('')
   const [uploadError, setUploadError] = useState('')
+  const [isDragging, setIsDragging] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -78,17 +79,21 @@ export default function PromotionModal({ isOpen, onClose, onSave, promotion, res
   async function handleImageUpload(file: File) {
     if (!file) return
 
-    // Validate file type
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+    // Expanded file type validation - accept all common image formats
+    const allowedTypes = [
+      'image/jpeg', 'image/jpg', 'image/png', 'image/webp',
+      'image/gif', 'image/bmp', 'image/tiff', 'image/svg+xml'
+    ]
+    
     if (!allowedTypes.includes(file.type)) {
-      setUploadError('Invalid file type. Only JPG, JPEG, PNG, and WEBP are allowed.')
+      setUploadError(`Invalid file type: ${file.type}. Accepted formats: JPG, JPEG, PNG, WEBP, GIF, BMP, TIFF, SVG`)
       return
     }
 
-    // Validate file size (2MB max)
-    const maxSize = 2 * 1024 * 1024 // 2MB in bytes
+    // Increased file size limit (5MB max)
+    const maxSize = 5 * 1024 * 1024 // 5MB in bytes
     if (file.size > maxSize) {
-      setUploadError('File size must be less than 2MB')
+      setUploadError(`File size ${(file.size / 1024 / 1024).toFixed(2)}MB exceeds limit of 5MB`)
       return
     }
 
@@ -136,6 +141,31 @@ export default function PromotionModal({ isOpen, onClose, onSave, promotion, res
     setUploadError('')
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
+    }
+  }
+
+  function handleDragOver(event: React.DragEvent) {
+    event.preventDefault()
+    setIsDragging(true)
+  }
+
+  function handleDragLeave(event: React.DragEvent) {
+    event.preventDefault()
+    setIsDragging(false)
+  }
+
+  function handleDrop(event: React.DragEvent) {
+    event.preventDefault()
+    setIsDragging(false)
+    
+    const files = event.dataTransfer.files
+    if (files.length > 0) {
+      const file = files[0]
+      if (file.type.startsWith('image/')) {
+        handleImageUpload(file)
+      } else {
+        setUploadError('Please upload an image file')
+      }
     }
   }
 
@@ -213,56 +243,91 @@ export default function PromotionModal({ isOpen, onClose, onSave, promotion, res
                   <input
                     ref={fileInputRef}
                     type="file"
-                    accept="image/jpeg,image/jpg,image/png,image/webp"
+                    accept="image/*"
                     onChange={handleFileSelect}
                     className="hidden"
                     id="image-upload"
                   />
                   <label
                     htmlFor="image-upload"
-                    className="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-green-600 transition-colors"
+                    className={`flex items-center justify-center w-full px-4 py-8 border-2 border-dashed rounded-lg cursor-pointer transition-all ${
+                      isDragging 
+                        ? 'border-green-600 bg-green-50' 
+                        : 'border-gray-300 bg-gray-50 hover:border-green-600 hover:bg-green-50'
+                    }`}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
                   >
                     <div className="text-center">
-                      <span className="material-symbols-outlined text-green-600 text-2xl mb-2">
-                        cloud_upload
+                      <span className="material-symbols-outlined text-green-600 text-3xl mb-3">
+                        {isDragging ? 'download' : 'cloud_upload'}
                       </span>
-                      <p className="text-sm text-gray-600">
-                        {uploadingImage ? 'Uploading...' : 'Click to upload promotion image'}
+                      <p className="text-sm font-medium text-gray-900 mb-1">
+                        {uploadingImage 
+                          ? 'Uploading...' 
+                          : isDragging 
+                            ? 'Drop image here' 
+                            : 'Click to upload or drag and drop'
+                        }
                       </p>
-                      <p className="text-xs text-gray-500 mt-1">
-                        JPG, JPEG, PNG, WEBP (max 2MB)
+                      <p className="text-xs text-gray-500">
+                        All image formats supported (JPG, PNG, GIF, SVG, etc.)
+                      </p>
+                      <p className="text-xs text-gray-400 mt-1">
+                        Maximum file size: 5MB
                       </p>
                     </div>
                   </label>
                 </div>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-4">
                   <div className="relative">
                     <img
                       src={imagePreview}
                       alt="Promotion preview"
-                      className="w-full h-48 object-cover rounded-lg"
+                      className="w-full h-48 object-cover rounded-lg border-2 border-gray-200"
                     />
                     <button
                       type="button"
                       onClick={handleRemoveImage}
-                      className="absolute top-2 right-2 bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition-colors"
+                      className="absolute top-2 right-2 bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition-colors shadow-lg"
                     >
                       <span className="material-symbols-outlined text-sm">delete</span>
                     </button>
                   </div>
                   {imageFile && (
-                    <div className="text-sm text-gray-600">
-                      <p>File: {imageFile.name}</p>
-                      <p>Size: {(imageFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                    <div className="bg-gray-50 p-3 rounded-lg">
+                      <div className="flex items-center justify-between text-sm">
+                        <div>
+                          <p className="font-medium text-gray-900">File: {imageFile.name}</p>
+                          <p className="text-gray-600">Size: {(imageFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                          <p className="text-gray-600">Type: {imageFile.type}</p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => fileInputRef.current?.click()}
+                          className="text-green-600 hover:text-green-700 font-medium text-sm"
+                        >
+                          Replace
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>
               )}
 
               {uploadError && (
-                <div className="mt-2 text-sm text-red-600">
-                  {uploadError}
+                <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <div className="flex items-start">
+                    <span className="material-symbols-outlined text-red-600 text-sm mr-2 mt-0.5">
+                      error
+                    </span>
+                    <div>
+                      <p className="text-sm font-medium text-red-800">Upload Error</p>
+                      <p className="text-sm text-red-700 mt-1">{uploadError}</p>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
