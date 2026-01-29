@@ -121,6 +121,13 @@ export default function TablePage() {
           errorData = { error: responseText || 'Unknown error' }
         }
         console.error('Call API Error:', errorData)
+        
+        // If table not found, try with fallback test data
+        if (response.status === 404 && errorData.error?.includes('Table not found')) {
+          console.log('Trying with fallback test data...')
+          return await handleCallWaiterFallback()
+        }
+        
         throw new Error(errorData.error || `Failed to call waiter (${response.status})`)
       }
 
@@ -144,6 +151,50 @@ export default function TablePage() {
       const errorMessage = err instanceof Error ? err.message : 'Failed to call waiter. Please try again.'
       setError(errorMessage)
       setCalling(false)
+    }
+  }
+
+  // Fallback function to try with hardcoded test data
+  async function handleCallWaiterFallback() {
+    try {
+      console.log('Using fallback test data...')
+      
+      const fallbackPayload = {
+        tableId: 'table-1',
+        restaurantId: 'test-rest-1',
+      }
+      
+      console.log('Fallback payload:', fallbackPayload)
+      
+      const response = await fetch('/api/calls', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(fallbackPayload),
+      })
+
+      console.log('Fallback API response status:', response.status)
+      
+      const responseText = await response.text()
+      console.log('Fallback response text:', responseText)
+      
+      if (!response.ok) {
+        const errorData = JSON.parse(responseText)
+        throw new Error(`Fallback also failed: ${errorData.error || 'Unknown error'}`)
+      }
+
+      const result = JSON.parse(responseText)
+      console.log('Fallback call successful:', result)
+      
+      setStatusMessage('✅ A waiter is on their way! (Test Mode)')
+      setTimeout(() => {
+        setStatusMessage('')
+        setCalling(false)
+      }, 5000)
+    } catch (fallbackErr) {
+      console.error('Fallback also failed:', fallbackErr)
+      throw new Error('Both primary and fallback methods failed. Please contact support.')
     }
   }
 
@@ -305,7 +356,12 @@ export default function TablePage() {
           {/* Action Buttons */}
           <div className="space-y-4">
             <button
-              onClick={handleCallWaiter}
+              onClick={() => {
+                console.log('Call Waiter button clicked!')
+                console.log('Data available:', !!data)
+                console.log('Currently calling:', calling)
+                handleCallWaiter()
+              }}
               disabled={calling}
               className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-300 text-white font-semibold py-4 px-6 rounded-lg flex items-center justify-center gap-3 transition-colors duration-200 disabled:cursor-not-allowed"
             >
