@@ -115,24 +115,24 @@ export default function QRModal({ isOpen, onClose, table, restaurantName, restau
       pdf.text(restaurantName, dimensions.width / 2, currentY, { align: 'center' })
       currentY += settings.format === 'BusinessCard' ? 8 : 12
 
-      // Table number
-      if (settings.showTableNumber) {
-        pdf.setFontSize(settings.format === 'BusinessCard' ? 10 : 14)
-        pdf.setFont('helvetica', 'normal')
-        pdf.text(`TABLE ${table.number.toUpperCase()}`, dimensions.width / 2, currentY, { align: 'center' })
-        currentY += settings.format === 'BusinessCard' ? 8 : 10
-      }
-
       // QR Code
       if (qrDataUrl) {
         const qrSize = settings.format === 'BusinessCard' ? 25 : 40
         pdf.addImage(qrDataUrl, 'PNG', dimensions.width / 2 - qrSize / 2, currentY, qrSize, qrSize)
-        currentY += qrSize + 8
+        currentY += qrSize + 6
       }
 
-      // Caption
+      // Table number (moved below QR code)
+      if (settings.showTableNumber) {
+        pdf.setFontSize(settings.format === 'BusinessCard' ? 10 : 14)
+        pdf.setFont('helvetica', 'bold')
+        pdf.text(`TABLE ${table.number.toUpperCase()}`, dimensions.width / 2, currentY, { align: 'center' })
+        currentY += settings.format === 'BusinessCard' ? 8 : 10
+      }
+
+      // Caption (bold)
       pdf.setFontSize(settings.format === 'BusinessCard' ? 8 : 10)
-      pdf.setFont('helvetica', 'normal')
+      pdf.setFont('helvetica', 'bold')
       pdf.text('Scan to Call a Waiter', dimensions.width / 2, currentY, { align: 'center' })
 
       // Save PDF
@@ -271,23 +271,28 @@ export default function QRModal({ isOpen, onClose, table, restaurantName, restau
           {/* Right Panel - Live Preview */}
           <div className="flex-1 p-6 overflow-y-auto bg-white">
             <div className="max-w-2xl mx-auto">
-              <h3 className="text-lg font-semibold text-gray-900 mb-6 text-center">Live Print Preview</h3>
+              <h3 className="text-lg font-bold text-gray-900 mb-6 text-center">Print Preview</h3>
               
               {/* Card Preview */}
               <div className="flex justify-center">
                 <div 
                   ref={previewRef}
-                  className="relative bg-white border-2 rounded-lg shadow-lg p-6"
+                  className="relative bg-white border-2 shadow-lg"
                   style={{ 
                     borderColor: settings.accentColor,
                     width: '400px',
-                    height: '280px',
-                    aspectRatio: `${dimensions.width}/${dimensions.height}`
+                    height: '320px',
+                    borderRadius: '12px',
+                    padding: '24px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center'
                   }}
                 >
                   {/* Restaurant Logo */}
                   {settings.showLogo && restaurantLogo && (
-                    <div className="flex justify-center mb-3">
+                    <div className="flex justify-center mb-4">
                       <img 
                         src={restaurantLogo} 
                         alt={restaurantName}
@@ -297,8 +302,24 @@ export default function QRModal({ isOpen, onClose, table, restaurantName, restau
                   )}
 
                   {/* Restaurant Name */}
-                  <div className="text-center mb-2">
+                  <div className="text-center mb-6">
                     <h4 className="font-bold text-gray-900 text-lg">{restaurantName}</h4>
+                  </div>
+
+                  {/* QR Code */}
+                  <div className="flex justify-center mb-4">
+                    {qrDataUrl ? (
+                      <img 
+                        src={qrDataUrl} 
+                        alt="QR Code"
+                        className="border-2 border-gray-300 rounded-lg"
+                        style={{ width: '140px', height: '140px' }}
+                      />
+                    ) : (
+                      <div className="w-[140px] h-[140px] border-2 border-gray-300 rounded-lg flex items-center justify-center bg-gray-100">
+                        <span className="text-gray-500 text-sm">Loading...</span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Table Number */}
@@ -308,33 +329,11 @@ export default function QRModal({ isOpen, onClose, table, restaurantName, restau
                     </div>
                   )}
 
-                  {/* QR Code */}
-                  <div className="flex justify-center mb-4">
-                    {qrDataUrl ? (
-                      <img 
-                        src={qrDataUrl} 
-                        alt="QR Code"
-                        className="border-2 border-gray-300 rounded-lg"
-                        style={{ width: '120px', height: '120px' }}
-                      />
-                    ) : (
-                      <div className="w-[120px] h-[120px] border-2 border-gray-300 rounded-lg flex items-center justify-center bg-gray-100">
-                        <span className="text-gray-500 text-sm">Loading...</span>
-                      </div>
-                    )}
-                  </div>
-
                   {/* Caption */}
                   <div className="text-center">
-                    <p className="text-sm text-gray-600">Scan to Call a Waiter</p>
+                    <p className="text-sm font-bold text-gray-600">Scan to Call a Waiter</p>
                   </div>
                 </div>
-              </div>
-
-              {/* Format Info */}
-              <div className="mt-6 text-center text-sm text-gray-500">
-                <p>Format: {settings.format} ({dimensions.width} × {dimensions.height} mm)</p>
-                <p>Resolution: {settings.highResolution ? 'High (512px)' : 'Standard (256px)'}</p>
               </div>
             </div>
           </div>
