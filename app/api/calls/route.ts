@@ -103,6 +103,14 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error creating call:', error)
     console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace')
+    
+    // Log Prisma-specific error details
+    if (error && typeof error === 'object' && 'code' in error) {
+      console.error('Prisma Error Code:', (error as any).code)
+      console.error('Prisma Error Meta:', (error as any).meta)
+      console.error('Prisma Error Message:', (error as any).message)
+    }
+    
     return NextResponse.json(
       { error: 'Failed to create call' },
       { status: 500 }
