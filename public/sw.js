@@ -6,8 +6,8 @@ const STATIC_ASSETS = [
   '/',
   '/waiter/login',
   '/manifest.json',
-  '/icons/icon-192x192.png',
-  '/icons/icon-512x512.png'
+  '/icons/icon-192x192.svg',
+  '/icons/icon-512x512.svg'
 ]
 
 // Install event - cache static assets
