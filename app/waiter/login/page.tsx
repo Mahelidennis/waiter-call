@@ -116,8 +116,8 @@ function WaiterLoginInner() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-8 space-y-6">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 overflow-y-auto">
+      <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-6 sm:p-8 space-y-6 pb-[env(safe-area-inset-bottom)]">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Waiter Access</h1>
           <p className="text-gray-600 mt-1 text-sm">
@@ -131,8 +131,8 @@ function WaiterLoginInner() {
           </div>
         )}
 
-        <form className="space-y-4" onSubmit={handleSubmit}>
-          <div className="space-y-2">
+        <form className="space-y-5" onSubmit={handleSubmit}>
+          <div className="space-y-3">
             <label className="block text-sm font-medium text-gray-700">
               Restaurant
             </label>
@@ -143,7 +143,7 @@ function WaiterLoginInner() {
                   setSelectedRestaurantId(e.target.value)
                   setRestaurantCode('')
                 }}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-4 py-3 h-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-base"
               >
                 <option value="">Select restaurant</option>
                 {restaurants.map((r) => (
@@ -164,11 +164,11 @@ function WaiterLoginInner() {
                 if (e.target.value) setSelectedRestaurantId('')
               }}
               placeholder="Restaurant code or slug"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-3 h-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-base"
             />
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-3">
             <label className="block text-sm font-medium text-gray-700">
               Access Code
             </label>
@@ -180,7 +180,7 @@ function WaiterLoginInner() {
               value={accessCode}
               onChange={(e) => setAccessCode(e.target.value)}
               placeholder="6-digit PIN"
-              className="w-full px-3 py-2 tracking-widest text-center text-lg border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-3 h-12 tracking-widest text-center text-lg border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-base"
               required
             />
           </div>
@@ -188,7 +188,7 @@ function WaiterLoginInner() {
           <button
             type="submit"
             disabled={loading || (!restaurantCode && !selectedRestaurantId) || !accessCode}
-            className="w-full py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-4 h-14 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-base min-h-[44px]"
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>

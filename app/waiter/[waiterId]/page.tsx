@@ -402,18 +402,18 @@ export default function WaiterDashboard() {
   return (
     <div className="relative flex min-h-screen w-full flex-col bg-background-light dark:bg-background-dark group/design-root overflow-x-hidden">
       <div className="layout-container flex h-full grow flex-col">
-        <div className="flex flex-1 justify-center py-5 sm:px-4 md:px-8 lg:px-10">
+        <div className="flex flex-1 justify-center py-3 sm:py-5 px-2 sm:px-4 md:px-8 lg:px-10">
           <div className="layout-content-container flex flex-col w-full max-w-2xl flex-1">
             {/* Real-time notification banner */}
             {newCallNotification && (
-              <div className="mx-4 mb-4 p-4 bg-green-50 border border-green-200 rounded-lg animate-pulse">
+              <div className="mx-2 sm:mx-4 mb-4 p-3 sm:p-4 bg-green-50 border border-green-200 rounded-lg animate-pulse">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-green-600 text-2xl">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <span className="material-symbols-outlined text-green-600 text-xl sm:text-2xl">
                       notifications_active
                     </span>
-                    <div>
-                      <p className="font-semibold text-green-800">New Table Call</p>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-semibold text-green-800 text-sm sm:text-base">New Table Call</p>
                       <p className="text-sm text-green-700">
                         Table {newCallNotification.table.number} needs assistance
                       </p>
@@ -421,28 +421,28 @@ export default function WaiterDashboard() {
                   </div>
                   <button
                     onClick={() => setNewCallNotification(null)}
-                    className="text-green-600 hover:text-green-800 p-1"
+                    className="text-green-600 hover:text-green-800 p-1 flex-shrink-0"
                   >
-                    <span className="material-symbols-outlined">close</span>
+                    <span className="material-symbols-outlined text-lg sm:text-xl">close</span>
                   </button>
                 </div>
               </div>
             )}
 
             {/* Header */}
-            <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 dark:border-gray-700 px-4 py-3">
-              <div className="flex items-center gap-3 text-gray-800 dark:text-gray-100">
+            <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 dark:border-gray-700 px-2 sm:px-4 py-3">
+              <div className="flex items-center gap-2 sm:gap-3 text-gray-800 dark:text-gray-100 min-w-0 flex-1">
                 <img 
                   src="/logo.png" 
                   alt="WaiterCall Logo" 
-                  className="h-8 w-auto"
+                  className="h-6 sm:h-8 w-auto flex-shrink-0"
                 />
-                <div>
-                  <h1 className="text-xl font-bold leading-tight tracking-tight">Live Dashboard</h1>
-                  <p className="text-xs text-gray-500">WaiterCall System</p>
+                <div className="min-w-0">
+                  <h1 className="text-lg sm:text-xl font-bold leading-tight tracking-tight truncate">Live Dashboard</h1>
+                  <p className="text-xs text-gray-500 hidden sm:block">WaiterCall System</p>
                 </div>
-                <div className="flex items-center gap-2 rounded-full bg-green-600/20 px-3 py-1">
-                  <div className={`h-2 w-2 rounded-full ${
+                <div className="flex items-center gap-1 sm:gap-2 rounded-full bg-green-600/20 px-2 sm:px-3 py-1 flex-shrink-0">
+                  <div className={`h-1.5 sm:h-2 w-1.5 sm:w-2 rounded-full ${
                     isRealtimeConnected 
                       ? 'bg-green-600 animate-pulse' 
                       : 'bg-yellow-600 animate-pulse'
@@ -455,60 +455,55 @@ export default function WaiterDashboard() {
                     {isRealtimeConnected ? 'LIVE' : 'POLLING'}
                   </span>
                 </div>
+              </div>
+              <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
                 {realtimeError && (
-                  <div className="flex items-center gap-1 text-xs text-red-600">
+                  <div className="flex items-center gap-1 text-xs text-red-600 hidden sm:flex">
                     <span className="material-symbols-outlined text-sm">error</span>
-                    <span>Connection issues</span>
+                    <span>Issues</span>
                   </div>
                 )}
-              </div>
-              <div className="flex flex-1 justify-end gap-3 items-center">
-                <PushToggle className="hidden sm:flex" />
                 <button
                   onClick={() => {
                     if (!isRealtimeConnected) {
                       realtimeManager.reconnect()
                     }
                   }}
-                  className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="flex items-center justify-center p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
                   title={isRealtimeConnected ? 'Connected' : 'Reconnect'}
                 >
                   <span className="material-symbols-outlined text-lg">
                     {isRealtimeConnected ? 'refresh' : 'sync'}
                   </span>
-                  <span className="hidden sm:inline">
-                    {isRealtimeConnected ? 'Connected' : 'Reconnect'}
-                  </span>
                 </button>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="flex items-center justify-center p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
                   title="Sign out"
                 >
                   <span className="material-symbols-outlined text-lg">logout</span>
-                  <span className="hidden sm:inline">Sign out</span>
                 </button>
-                <div className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 bg-primary/20 flex items-center justify-center">
+                <div className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-8 sm:size-10 bg-primary/20 flex items-center justify-center flex-shrink-0">
                   {waiter?.name ? (
-                    <span className="text-primary font-bold text-lg">
+                    <span className="text-primary font-bold text-sm sm:text-lg">
                       {waiter.name.charAt(0).toUpperCase()}
                     </span>
                   ) : (
-                    <span className="material-symbols-outlined text-primary">person</span>
+                    <span className="material-symbols-outlined text-primary text-sm sm:text-base">person</span>
                   )}
                 </div>
               </div>
             </header>
 
             {/* Filter Tabs */}
-            <div className="p-4">
-              <h2 className="text-gray-800 dark:text-gray-100 text-2xl font-bold leading-tight tracking-tight px-4 pb-3 pt-5">
+            <div className="p-2 sm:p-4">
+              <h2 className="text-gray-800 dark:text-gray-100 text-xl sm:text-2xl font-bold leading-tight tracking-tight px-2 sm:px-4 pb-3 pt-3 sm:pt-5">
                 Incoming Requests
               </h2>
-              <div className="flex gap-3 p-3 overflow-x-auto">
+              <div className="flex gap-2 sm:gap-3 p-2 sm:p-3 overflow-x-auto scrollbar-hide">
                 <button
                   onClick={() => setFilter('pending')}
-                  className={`flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full px-4 transition-colors ${
+                  className={`flex h-10 sm:h-9 shrink-0 items-center justify-center gap-x-2 rounded-full px-3 sm:px-4 transition-colors min-w-[44px] min-h-[44px] ${
                     filter === 'pending'
                       ? 'bg-primary text-background-dark'
                       : 'bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200'
@@ -518,7 +513,7 @@ export default function WaiterDashboard() {
                 </button>
                 <button
                   onClick={() => setFilter('acknowledged')}
-                  className={`flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full px-4 transition-colors ${
+                  className={`flex h-10 sm:h-9 shrink-0 items-center justify-center gap-x-2 rounded-full px-3 sm:px-4 transition-colors min-w-[44px] min-h-[44px] ${
                     filter === 'acknowledged'
                       ? 'bg-primary text-background-dark'
                       : 'bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200'
@@ -528,7 +523,7 @@ export default function WaiterDashboard() {
                 </button>
                 <button
                   onClick={() => setFilter('in_progress')}
-                  className={`flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full px-4 transition-colors ${
+                  className={`flex h-10 sm:h-9 shrink-0 items-center justify-center gap-x-2 rounded-full px-3 sm:px-4 transition-colors min-w-[44px] min-h-[44px] ${
                     filter === 'in_progress'
                       ? 'bg-primary text-background-dark'
                       : 'bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200'
@@ -538,7 +533,7 @@ export default function WaiterDashboard() {
                 </button>
                 <button
                   onClick={() => setFilter('missed')}
-                  className={`flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full px-4 transition-colors ${
+                  className={`flex h-10 sm:h-9 shrink-0 items-center justify-center gap-x-2 rounded-full px-3 sm:px-4 transition-colors min-w-[44px] min-h-[44px] ${
                     filter === 'missed'
                       ? 'bg-red-600 text-white'
                       : 'bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200'
@@ -548,7 +543,7 @@ export default function WaiterDashboard() {
                 </button>
                 <button
                   onClick={() => setFilter('my')}
-                  className={`flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full px-4 transition-colors ${
+                  className={`flex h-10 sm:h-9 shrink-0 items-center justify-center gap-x-2 rounded-full px-3 sm:px-4 transition-colors min-w-[44px] min-h-[44px] ${
                     filter === 'my'
                       ? 'bg-primary text-background-dark'
                       : 'bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200'
@@ -558,7 +553,7 @@ export default function WaiterDashboard() {
                 </button>
                 <button
                   onClick={() => setFilter('handled')}
-                  className={`flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full px-4 transition-colors ${
+                  className={`flex h-10 sm:h-9 shrink-0 items-center justify-center gap-x-2 rounded-full px-3 sm:px-4 transition-colors min-w-[44px] min-h-[44px] ${
                     filter === 'handled'
                       ? 'bg-primary text-background-dark'
                       : 'bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200'
@@ -568,28 +563,28 @@ export default function WaiterDashboard() {
                 </button>
                 <button
                   onClick={() => setFilter('all')}
-                  className={`flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full px-4 transition-colors ${
+                  className={`flex h-10 sm:h-9 shrink-0 items-center justify-center gap-x-2 rounded-full px-3 sm:px-4 transition-colors min-w-[44px] min-h-[44px] ${
                     filter === 'all'
                       ? 'bg-primary text-background-dark'
                       : 'bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200'
                   }`}
                 >
-                  <p className="text-sm font-semibold leading-normal">All Requests</p>
+                  <p className="text-sm font-semibold leading-normal">All</p>
                 </button>
               </div>
             </div>
 
             {/* Calls List */}
-            <div className="flex flex-col gap-4 px-4 pb-4">
+            <div className="flex flex-col gap-3 sm:gap-4 px-2 sm:px-4 pb-4 pb-[env(safe-area-inset-bottom)]">
               {filteredCalls.length === 0 ? (
-                <div className="mt-8 flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-gray-300 dark:border-gray-700 p-12 text-center">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/20">
-                    <span className="material-symbols-outlined text-primary text-4xl">
+                <div className="mt-4 sm:mt-8 flex flex-col items-center justify-center gap-3 sm:gap-4 rounded-xl border border-dashed border-gray-300 dark:border-gray-700 p-6 sm:p-12 text-center">
+                  <div className="flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-primary/20">
+                    <span className="material-symbols-outlined text-primary text-3xl sm:text-4xl">
                       notifications_off
                     </span>
                   </div>
                   <div className="flex flex-col gap-1">
-                    <h3 className="text-gray-800 dark:text-gray-100 text-lg font-semibold">
+                    <h3 className="text-gray-800 dark:text-gray-100 text-base sm:text-lg font-semibold">
                       All tables are happy!
                     </h3>
                     <p className="text-gray-500 dark:text-gray-400 text-sm">
@@ -614,14 +609,14 @@ export default function WaiterDashboard() {
                   return (
                     <div
                       key={call.id}
-                      className={`flex flex-col sm:flex-row items-stretch justify-between gap-4 rounded-xl bg-white dark:bg-background-dark dark:border p-4 shadow-lg border-2 ${borderColor} ${
+                      className={`flex flex-col items-stretch justify-between gap-3 sm:gap-4 rounded-xl bg-white dark:bg-background-dark dark:border p-3 sm:p-4 shadow-lg border-2 ${borderColor} ${
                         highlightedCallId === call.id 
                           ? 'ring-4 ring-green-400 ring-opacity-50 animate-pulse' 
                           : ''
                       }`}
                     >
-                      <div className="flex flex-1 flex-col justify-between gap-4">
-                        <div className="flex flex-col gap-1">
+                      <div className="flex flex-1 flex-col justify-between gap-3 sm:gap-4">
+                        <div className="flex flex-col gap-2">
                           {/* Status badge and time */}
                           <div className="flex items-center justify-between">
                             <p className={`${timeColor} text-sm font-semibold leading-normal`}>
@@ -632,10 +627,10 @@ export default function WaiterDashboard() {
                             </span>
                           </div>
                           
-                          <p className="text-gray-900 dark:text-gray-50 text-2xl font-bold leading-tight">
+                          <p className="text-gray-900 dark:text-gray-50 text-xl sm:text-2xl font-bold leading-tight">
                             Table {call.table.number}
                           </p>
-                          <p className="text-gray-500 dark:text-gray-400 text-base font-normal leading-normal">
+                          <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base font-normal leading-normal">
                             Call Waiter
                           </p>
                           
@@ -675,20 +670,20 @@ export default function WaiterDashboard() {
                         {isPending && (
                           <button
                             onClick={() => acknowledgeCall(call.id)}
-                            className="flex w-full sm:w-fit min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-5 gap-2 bg-blue-600 text-white text-sm font-bold leading-normal hover:bg-blue-700 transition-colors"
+                            className="flex w-full min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 sm:h-10 px-4 sm:px-5 gap-2 bg-blue-600 text-white text-sm font-bold leading-normal hover:bg-blue-700 transition-colors min-h-[44px]"
                           >
                             <span className="truncate">Acknowledge</span>
-                            <span className="material-symbols-outlined text-lg">check</span>
+                            <span className="material-symbols-outlined text-lg sm:text-base">check</span>
                           </button>
                         )}
                         
                         {(isAcknowledged || isInProgress) && (
                           <button
                             onClick={() => resolveCall(call.id)}
-                            className="flex w-full sm:w-fit min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-5 gap-2 bg-primary text-background-dark text-sm font-bold leading-normal hover:bg-primary/90 transition-colors"
+                            className="flex w-full min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 sm:h-10 px-4 sm:px-5 gap-2 bg-primary text-background-dark text-sm font-bold leading-normal hover:bg-primary/90 transition-colors min-h-[44px]"
                           >
                             <span className="truncate">Complete</span>
-                            <span className="material-symbols-outlined text-lg">done</span>
+                            <span className="material-symbols-outlined text-lg sm:text-base">done</span>
                           </button>
                         )}
                         
