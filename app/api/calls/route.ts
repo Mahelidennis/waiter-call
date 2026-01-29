@@ -69,6 +69,14 @@ export async function POST(request: NextRequest) {
     })
 
     // Create the call with enhanced lifecycle tracking
+    console.log('About to create call with data:', {
+      restaurantId: typeof restaurantId,
+      tableId: typeof tableId,
+      waiterId: typeof (waiterTable?.waiterId || null),
+      status: 'PENDING',
+      timeoutAt: typeof timeoutAt
+    })
+    
     const call = await prisma.call.create({
       data: {
         restaurantId,
