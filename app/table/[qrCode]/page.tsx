@@ -52,14 +52,29 @@ export default function TablePage() {
 
   async function fetchTableData() {
     try {
+      console.log('Fetching table data for QR code:', qrCode)
       const response = await fetch(`/api/tables/${qrCode}`)
+      
+      console.log('API Response status:', response.status)
+      
       if (!response.ok) {
-        throw new Error('Table not found')
+        const errorData = await response.json().catch(() => ({}))
+        console.error('API Error:', errorData)
+        throw new Error(errorData.error || `Table not found (${response.status})`)
       }
+      
       const tableData = await response.json()
+      console.log('Table data received:', tableData)
+      
+      if (!tableData.table) {
+        throw new Error('Invalid table data received')
+      }
+      
       setData(tableData)
     } catch (err) {
-      setError('Table not found')
+      console.error('Error fetching table data:', err)
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load table information'
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }
@@ -73,6 +88,8 @@ export default function TablePage() {
     setStatusMessage('')
 
     try {
+      console.log('Calling waiter for table:', data.table.id)
+      
       const response = await fetch('/api/calls', {
         method: 'POST',
         headers: {
@@ -84,18 +101,27 @@ export default function TablePage() {
         }),
       })
 
+      console.log('Call API response status:', response.status)
+      
       if (!response.ok) {
-        throw new Error('Failed to call waiter')
+        const errorData = await response.json().catch(() => ({}))
+        console.error('Call API Error:', errorData)
+        throw new Error(errorData.error || 'Failed to call waiter')
       }
 
-      setStatusMessage('A waiter is on their way.')
+      const result = await response.json()
+      console.log('Call successful:', result)
+      
+      setStatusMessage('✅ A waiter is on their way!')
       // Reset after 5 seconds
       setTimeout(() => {
         setStatusMessage('')
         setCalling(false)
       }, 5000)
     } catch (err) {
-      setError('Failed to call waiter. Please try again.')
+      console.error('Error calling waiter:', err)
+      const errorMessage = err instanceof Error ? err.message : 'Failed to call waiter. Please try again.'
+      setError(errorMessage)
       setCalling(false)
     }
   }
@@ -126,10 +152,22 @@ export default function TablePage() {
 
   if (error && !data) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background-light">
-        <div className="text-center p-8">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center p-8 max-w-md">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="material-symbols-outlined text-red-600 text-2xl">qr_code_2</span>
+          </div>
           <h1 className="text-2xl font-bold text-red-600 mb-4">Table Not Found</h1>
-          <p className="text-gray-600">{error}</p>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <p className="text-sm text-gray-500 mb-4">
+            QR Code: <code className="bg-gray-100 px-2 py-1 rounded">{qrCode}</code>
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+          >
+            Try Again
+          </button>
         </div>
       </div>
     )
@@ -288,7 +326,7 @@ export default function TablePage() {
           </div>
 
           {/* Promotional Section */}
-          {data.promotions && data.promotions.length > 0 && (
+          {data.promotions && data.promotions.length > 0 ? (
             <div className="space-y-4">
               <h3 className="text-xl font-bold text-black">
                 Special Offers
@@ -352,6 +390,18 @@ export default function TablePage() {
                   </div>
                 ))}
               </div>
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="material-symbols-outlined text-gray-400 text-2xl">restaurant</span>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                Welcome to {data.table.restaurant.name}
+              </h3>
+              <p className="text-gray-500 text-sm">
+                Press the button above to call your waiter
+              </p>
             </div>
           )}
         </main>
