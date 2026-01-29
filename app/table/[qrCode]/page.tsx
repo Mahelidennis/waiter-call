@@ -298,14 +298,31 @@ export default function TablePage() {
                 {data.promotions.map((promo) => (
                   <div
                     key={promo.id}
-                    className="bg-gray-50 rounded-lg p-4 border border-gray-200"
+                    className="bg-gray-50 rounded-lg p-3 sm:p-4 border border-gray-200"
                   >
                     {promo.imageUrl ? (
-                      <img
-                        alt={promo.title}
-                        className="w-full h-32 object-cover rounded-lg mb-3"
-                        src={promo.imageUrl}
-                      />
+                      <div className="w-full mb-3 sm:mb-4 bg-gray-100 rounded-lg overflow-hidden flex justify-center items-center">
+                        <img
+                          alt={promo.title}
+                          className="w-full h-auto object-contain max-w-full"
+                          src={promo.imageUrl}
+                          style={{ 
+                            maxHeight: '200px',
+                            minHeight: '120px'
+                          }}
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none'
+                            e.currentTarget.nextElementSibling?.classList.remove('hidden')
+                          }}
+                        />
+                        <div className="hidden w-full h-32 bg-gradient-to-br from-green-100 to-green-50 rounded-lg flex items-center justify-center">
+                          <div className="text-center">
+                            <span className="material-symbols-outlined text-green-600 text-3xl">
+                              local_offer
+                            </span>
+                          </div>
+                        </div>
+                      </div>
                     ) : (
                       <div className="w-full h-32 bg-gradient-to-br from-green-100 to-green-50 rounded-lg mb-3 flex items-center justify-center">
                         <div className="text-center">
@@ -315,22 +332,21 @@ export default function TablePage() {
                         </div>
                       </div>
                     )}
-                    <h4 className="font-bold text-black mb-2">
+                    <h4 className="font-bold text-black mb-2 text-base sm:text-lg">
                       {promo.title}
                     </h4>
-                    {promo.description && (
-                      <p className="text-gray-600 text-sm">
-                        {promo.description}
-                      </p>
-                    )}
+                    <p className="text-gray-700 text-sm sm:text-base mb-3">
+                      {promo.description}
+                    </p>
                     {promo.linkUrl && (
                       <a
                         href={promo.linkUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-block mt-3 text-green-600 hover:text-green-700 font-medium text-sm"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm sm:text-base"
                       >
-                        Learn More →
+                        <span className="material-symbols-outlined text-sm">open_in_new</span>
+                        View Offer
                       </a>
                     )}
                   </div>

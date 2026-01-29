@@ -283,11 +283,29 @@ export default function PromotionModal({ isOpen, onClose, onSave, promotion, res
               ) : (
                 <div className="space-y-4">
                   <div className="relative">
-                    <img
-                      src={imagePreview}
-                      alt="Promotion preview"
-                      className="w-full h-48 object-cover rounded-lg border-2 border-gray-200"
-                    />
+                    <div className="w-full bg-gray-100 rounded-lg overflow-hidden border-2 border-gray-200 flex justify-center items-center">
+                      <img
+                        src={imagePreview}
+                        alt="Promotion preview"
+                        className="w-full h-auto object-contain max-w-full"
+                        style={{ 
+                          maxHeight: '300px',
+                          minHeight: '200px'
+                        }}
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none'
+                          e.currentTarget.nextElementSibling?.classList.remove('hidden')
+                        }}
+                      />
+                      <div className="hidden w-full h-48 bg-gradient-to-br from-gray-100 to-gray-50 rounded-lg flex items-center justify-center">
+                        <div className="text-center">
+                          <span className="material-symbols-outlined text-gray-400 text-3xl">
+                            image_not_supported
+                          </span>
+                          <p className="text-gray-500 text-sm mt-2">Failed to load image</p>
+                        </div>
+                      </div>
+                    </div>
                     <button
                       type="button"
                       onClick={handleRemoveImage}
