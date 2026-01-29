@@ -117,23 +117,23 @@ function WaiterLoginInner() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 overflow-y-auto">
-      <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-6 sm:p-8 space-y-6 pb-[env(safe-area-inset-bottom)]">
+      <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-6 sm:p-8 space-y-6 pb-[env(safe-area-inset-bottom)] border border-gray-200">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Waiter Access</h1>
-          <p className="text-gray-600 mt-1 text-sm">
+          <p className="text-gray-800 mt-2 text-base font-medium">
             Enter your restaurant code and access PIN to start.
           </p>
         </div>
 
         {error && (
-          <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <div className="rounded-lg border-2 border-red-300 bg-red-50 px-4 py-3 text-sm font-semibold text-red-800">
             {error}
           </div>
         )}
 
         <form className="space-y-5" onSubmit={handleSubmit}>
           <div className="space-y-3">
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-semibold text-gray-900">
               Restaurant
             </label>
             <div className="flex gap-2 items-center">
@@ -143,7 +143,7 @@ function WaiterLoginInner() {
                   setSelectedRestaurantId(e.target.value)
                   setRestaurantCode('')
                 }}
-                className="w-full px-4 py-3 h-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-base"
+                className="w-full px-4 py-3 h-12 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-base text-gray-900 bg-white"
               >
                 <option value="">Select restaurant</option>
                 {restaurants.map((r) => (
@@ -153,7 +153,7 @@ function WaiterLoginInner() {
                 ))}
               </select>
             </div>
-            <p className="text-xs text-gray-500">
+            <p className="text-sm font-medium text-gray-700">
               Or type restaurant code
             </p>
             <input
@@ -164,12 +164,12 @@ function WaiterLoginInner() {
                 if (e.target.value) setSelectedRestaurantId('')
               }}
               placeholder="Restaurant code or slug"
-              className="w-full px-4 py-3 h-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-base"
+              className="w-full px-4 py-3 h-12 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-base text-gray-900 bg-white placeholder-gray-500"
             />
           </div>
 
           <div className="space-y-3">
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-semibold text-gray-900">
               Access Code
             </label>
             <input
@@ -180,7 +180,7 @@ function WaiterLoginInner() {
               value={accessCode}
               onChange={(e) => setAccessCode(e.target.value)}
               placeholder="6-digit PIN"
-              className="w-full px-4 py-3 h-12 tracking-widest text-center text-lg border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-base"
+              className="w-full px-4 py-3 h-12 tracking-widest text-center text-lg border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-base text-gray-900 bg-white placeholder-gray-500"
               required
             />
           </div>
@@ -188,19 +188,19 @@ function WaiterLoginInner() {
           <button
             type="submit"
             disabled={loading || (!restaurantCode && !selectedRestaurantId) || !accessCode}
-            className="w-full py-4 h-14 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-base min-h-[44px]"
+            className="w-full py-4 h-14 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-base min-h-[44px] text-lg shadow-lg"
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
 
         {restaurantDisplay && (
-          <div className="rounded-lg bg-gray-100 px-4 py-3 text-sm text-gray-700">
-            Logging into: <span className="font-semibold">{restaurantDisplay}</span>
+          <div className="rounded-lg bg-green-50 border-2 border-green-200 px-4 py-3 text-sm font-semibold text-green-800">
+            Logging into: <span className="font-bold">{restaurantDisplay}</span>
           </div>
         )}
 
-        <p className="text-xs text-gray-400">
+        <p className="text-xs text-gray-600 font-medium">
           Need help? Ask your manager to reset your access code.
         </p>
       </div>
