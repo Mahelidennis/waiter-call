@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { requireWaiterSession } from '@/lib/auth/waiterSession'
 
-// Resolve a request (only by acknowledging waiter)
+// Complete a request (only by acknowledging waiter)
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ callId: string }> }
@@ -31,21 +31,23 @@ export async function POST(
         throw new Error('Unauthorized: Call not from your restaurant')
       }
       
-      // Verify call is acknowledged by this waiter (has waiterId but still PENDING)
-      if (call.status !== 'PENDING' || call.waiterId !== waiter.id) {
-        throw new Error('Call cannot be resolved - not acknowledged by you or already resolved')
+      // Verify call is acknowledged by this waiter (ACKNOWLEDGED or IN_PROGRESS)
+      if (!['ACKNOWLEDGED', 'IN_PROGRESS'].includes(call.status) || call.waiterId !== waiter.id) {
+        throw new Error('Call cannot be completed - not acknowledged by you or already completed')
       }
       
-      // Calculate response time
-      const responseTime = Math.floor((Date.now() - call.requestedAt.getTime()) / 1000)
+      // Calculate total service time in milliseconds
+      const serviceTimeMs = Math.floor(Date.now() - call.requestedAt.getTime())
       
-      // Atomic update: resolve the call (set status to HANDLED)
+      // Atomic update: complete the call
       const updatedCall = await tx.call.update({
         where: { id: callId },
         data: {
-          status: 'HANDLED',
+          status: 'COMPLETED',
+          completedAt: new Date(),
+          responseTime: serviceTimeMs, // Total service time
+          // Update legacy fields for backward compatibility
           handledAt: new Date(),
-          responseTime
         },
         include: {
           table: {
@@ -68,18 +70,18 @@ export async function POST(
     
     return NextResponse.json(result)
   } catch (error: any) {
-    console.error('Error resolving call:', error)
+    console.error('Error completing call:', error)
     
     if (error.message === 'UNAUTHENTICATED' || error.message === 'INACTIVE_WAITER') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
     
-    if (error.message.includes('not found') || error.message.includes('Unauthorized') || error.message.includes('cannot be resolved')) {
+    if (error.message.includes('not found') || error.message.includes('Unauthorized') || error.message.includes('cannot be completed')) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
     
     return NextResponse.json(
-      { error: 'Failed to resolve call' },
+      { error: 'Failed to complete call' },
       { status: 500 }
     )
   }

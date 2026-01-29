@@ -44,15 +44,26 @@ export async function POST(
       }
       
       // Verify call is in PENDING state and not already acknowledged
-      if (call.status !== 'PENDING' || call.waiterId || call.handledAt) {
-        throw new Error('Call cannot be acknowledged - not in PENDING state or already acknowledged')
+      // Allow acknowledgment of MISSED calls for recovery
+      if (!['PENDING', 'MISSED'].includes(call.status)) {
+        throw new Error('Call cannot be acknowledged - not in PENDING or MISSED state')
       }
       
-      // Atomic update: acknowledge the call (set waiterId but keep PENDING status)
+      // Calculate response time in milliseconds
+      const responseTimeMs = Math.floor(Date.now() - call.requestedAt.getTime())
+      
+      // Atomic update: acknowledge the call
       const updatedCall = await tx.call.update({
         where: { id: callId },
         data: {
-          waiterId: waiter.id
+          status: 'ACKNOWLEDGED',
+          waiterId: waiter.id,
+          acknowledgedAt: new Date(),
+          responseTime: responseTimeMs,
+          // Clear missedAt if this was a missed call being recovered
+          missedAt: call.status === 'MISSED' ? null : call.missedAt,
+          // Update legacy field for backward compatibility
+          handledAt: null, // Not handled yet, just acknowledged
         },
         include: {
           table: {

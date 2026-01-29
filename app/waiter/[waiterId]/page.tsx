@@ -2,13 +2,20 @@
 
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
+import { getRealtimeManager, cleanupRealtimeManager, CallRealtimeEvent } from '@/lib/realtime/calls'
+import PushToggle from '@/components/PushToggle'
 
 interface Call {
   id: string
   tableId: string
   waiterId: string | null
-  status: 'PENDING' | 'HANDLED' | 'CANCELLED'
+  status: 'PENDING' | 'ACKNOWLEDGED' | 'IN_PROGRESS' | 'COMPLETED' | 'MISSED' | 'CANCELLED' | 'HANDLED'
   requestedAt: string
+  acknowledgedAt: string | null
+  completedAt: string | null
+  missedAt: string | null
+  timeoutAt: string | null
+  // Legacy fields for backward compatibility
   handledAt: string | null
   responseTime: number | null
   table: {
@@ -36,9 +43,15 @@ export default function WaiterDashboard() {
   const [waiter, setWaiter] = useState<Waiter | null>(null)
   const [loading, setLoading] = useState(true)
   const [pollingLoading, setPollingLoading] = useState(false) // Track polling state
-  const [filter, setFilter] = useState<'all' | 'pending' | 'acknowledged' | 'my' | 'handled'>('pending')
+  const [filter, setFilter] = useState<'all' | 'pending' | 'acknowledged' | 'in_progress' | 'missed' | 'my' | 'handled'>('pending')
   const [newCallNotification, setNewCallNotification] = useState<Call | null>(null)
   const [previousCalls, setPreviousCalls] = useState<Call[]>([]) // Track previous calls for change detection
+  const [highlightedCallId, setHighlightedCallId] = useState<string | null>(null) // For push notification highlighting
+  
+  // Realtime state management
+  const [isRealtimeConnected, setIsRealtimeConnected] = useState(false)
+  const [realtimeError, setRealtimeError] = useState<string | null>(null)
+  const realtimeManager = getRealtimeManager()
 
   async function handleLogout() {
     try {
@@ -55,13 +68,135 @@ export default function WaiterDashboard() {
     fetchWaiter()
   }, [waiterId])
 
+  // Handle callId from URL parameter (for push notifications)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search)
+      const callId = urlParams.get('callId')
+      if (callId) {
+        setHighlightedCallId(callId)
+        // Clear the parameter from URL after handling
+        const newUrl = window.location.pathname
+        window.history.replaceState({}, '', newUrl)
+        
+        // Clear highlight after 5 seconds
+        setTimeout(() => {
+          setHighlightedCallId(null)
+        }, 5000)
+      }
+    }
+  }, [])
+
   // Remove the manual fetchCalls effect since polling handles it
 
-  // Polling for live updates
+  // Real-time and polling integration
   useEffect(() => {
     if (!waiter) return
 
-    const POLLING_INTERVAL = 7000 // 7 seconds
+    // Set up real-time subscription
+    const setupRealtime = () => {
+      realtimeManager.subscribe({
+        restaurantId: waiter.restaurantId,
+        waiterId: waiter.id,
+        onCallEvent: handleRealtimeEvent,
+        onConnectionChange: (connected) => {
+          setIsRealtimeConnected(connected)
+          setRealtimeError(null)
+          
+          if (process.env.NODE_ENV === 'development') {
+            console.log('Realtime connection status:', connected)
+          }
+        },
+        onError: (error) => {
+          console.error('Realtime error:', error)
+          setRealtimeError(error.message)
+        }
+      })
+    }
+
+    // Handle real-time events
+    const handleRealtimeEvent = (event: CallRealtimeEvent) => {
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Realtime event received:', event.eventType, event.new?.id)
+      }
+
+      setCalls(currentCalls => {
+        let updatedCalls = [...currentCalls]
+
+        switch (event.eventType) {
+          case 'INSERT':
+            // Add new call
+            if (event.new) {
+              updatedCalls.unshift(event.new as Call)
+              
+              // Show notification for new pending calls
+              if (event.new.status === 'PENDING' && !event.new.waiterId) {
+                setNewCallNotification(event.new as Call)
+                
+                // Vibrate if supported
+                if ('vibrate' in navigator) {
+                  navigator.vibrate([200, 100, 200])
+                }
+                
+                // Clear notification after 5 seconds
+                setTimeout(() => {
+                  setNewCallNotification(null)
+                }, 5000)
+              }
+            }
+            break
+
+          case 'UPDATE':
+            // Update existing call
+            if (event.new) {
+              const index = updatedCalls.findIndex(call => call.id === event.new.id)
+              if (index !== -1) {
+                updatedCalls[index] = event.new as Call
+              } else {
+                // Call might be newly assigned to this waiter
+                if (event.new.waiterId === waiter.id) {
+                  updatedCalls.unshift(event.new as Call)
+                }
+              }
+            }
+            break
+
+          case 'DELETE':
+            // Remove call
+            if (event.old) {
+              updatedCalls = updatedCalls.filter(call => call.id !== event.old.id)
+            }
+            break
+        }
+
+        // Maintain sorting: priority (status) + creation time
+        return updatedCalls.sort((a, b) => {
+          // Priority order: PENDING first, then by creation time
+          const statusOrder = {
+            'PENDING': 0,
+            'ACKNOWLEDGED': 1,
+            'IN_PROGRESS': 2,
+            'MISSED': 3,
+            'COMPLETED': 4,
+            'HANDLED': 4,
+            'CANCELLED': 5
+          }
+          
+          const aOrder = statusOrder[a.status as keyof typeof statusOrder] || 999
+          const bOrder = statusOrder[b.status as keyof typeof statusOrder] || 999
+          
+          if (aOrder !== bOrder) {
+            return aOrder - bOrder
+          }
+          
+          // Same priority, sort by creation time (newest first)
+          return new Date(b.requestedAt).getTime() - new Date(a.requestedAt).getTime()
+        })
+      })
+    }
+
+    // Set up polling as fallback (longer interval when realtime is active)
+    const POLLING_INTERVAL = isRealtimeConnected ? 30000 : 15000 // 30s with realtime, 15s fallback
     let intervalId: NodeJS.Timeout | null = null
 
     const startPolling = () => {
@@ -74,14 +209,20 @@ export default function WaiterDashboard() {
       }, POLLING_INTERVAL)
     }
 
+    // Initialize realtime
+    setupRealtime()
+    
+    // Start polling as fallback
     startPolling()
 
     return () => {
+      // Cleanup
       if (intervalId) {
         clearInterval(intervalId)
       }
+      realtimeManager.unsubscribe()
     }
-  }, [filter, waiter]) // Re-start polling when filter or waiter changes
+  }, [filter, waiter, isRealtimeConnected]) // Re-establish when filter or waiter changes
 
   async function fetchWaiter() {
     try {
@@ -107,39 +248,13 @@ export default function WaiterDashboard() {
         setPollingLoading(true)
       }
       
-      // Use the new waiter-specific API endpoint
+      // Use the enhanced waiter-specific API endpoint
       let statusFilter = filter // Use filter directly as it matches API options
       
       const response = await fetch(`/api/waiter/calls?status=${statusFilter}`)
       if (!response.ok) return
       
       const data = await response.json()
-      
-      // Detect new pending calls for notifications (only during polling)
-      if (isPolling && previousCalls.length > 0) {
-        const previousCallIds = new Set(previousCalls.map(call => call.id))
-        const newPendingCalls = data.filter((call: Call) => 
-          call.status === 'PENDING' && 
-          !call.waiterId && 
-          !previousCallIds.has(call.id)
-        )
-        
-        // Show notification for new pending calls
-        if (newPendingCalls.length > 0) {
-          const latestCall = newPendingCalls[0]
-          setNewCallNotification(latestCall)
-          
-          // Vibrate if supported
-          if ('vibrate' in navigator) {
-            navigator.vibrate([200, 100, 200])
-          }
-          
-          // Clear notification after 5 seconds
-          setTimeout(() => {
-            setNewCallNotification(null)
-          }, 5000)
-        }
-      }
       
       // Update calls and previous calls
       setCalls(data)
@@ -186,15 +301,15 @@ export default function WaiterDashboard() {
 
       if (!response.ok) {
         const error = await response.json()
-        throw new Error(error.error || 'Failed to resolve call')
+        throw new Error(error.error || 'Failed to complete call')
       }
 
       // Reset previous calls to prevent false notifications
       setPreviousCalls(calls)
       fetchCalls(false) // Refresh the calls list (not polling)
     } catch (error) {
-      console.error('Error resolving call:', error)
-      alert(error instanceof Error ? error.message : 'Failed to resolve call. Please try again.')
+      console.error('Error completing call:', error)
+      alert(error instanceof Error ? error.message : 'Failed to complete call. Please try again.')
     }
   }
 
@@ -216,16 +331,55 @@ export default function WaiterDashboard() {
     return Math.floor((now.getTime() - date.getTime()) / 1000)
   }
 
-  function getCardBorderColor(waitTimeSeconds: number): string {
-    if (waitTimeSeconds > 300) return 'border-red-500' // > 5 minutes
-    if (waitTimeSeconds > 120) return 'border-yellow-500' // > 2 minutes
+  function getCardBorderColor(call: Call): string {
+    const waitTime = getWaitTimeInSeconds(call.requestedAt)
+    
+    // Enhanced priority logic for different states
+    if (call.status === 'MISSED') return 'border-red-500' // Missed calls are highest priority
+    if (call.status === 'PENDING' && call.timeoutAt) {
+      const timeoutTime = getWaitTimeInSeconds(call.timeoutAt)
+      if (timeoutTime > 0) return 'border-yellow-500' // About to timeout
+      return 'border-red-500' // Already timed out (should be marked missed)
+    }
+    if (waitTime > 300) return 'border-red-500' // > 5 minutes
+    if (waitTime > 120) return 'border-yellow-500' // > 2 minutes
     return 'border-gray-200' // New request
   }
 
-  function getTimeColor(waitTimeSeconds: number): string {
-    if (waitTimeSeconds > 300) return 'text-red-500'
-    if (waitTimeSeconds > 120) return 'text-yellow-600 dark:text-yellow-500'
+  function getTimeColor(call: Call): string {
+    const waitTime = getWaitTimeInSeconds(call.requestedAt)
+    
+    if (call.status === 'MISSED') return 'text-red-500'
+    if (call.status === 'COMPLETED') return 'text-green-600'
+    if (call.status === 'ACKNOWLEDGED' || call.status === 'IN_PROGRESS') return 'text-blue-600'
+    if (waitTime > 300) return 'text-red-500'
+    if (waitTime > 120) return 'text-yellow-600 dark:text-yellow-500'
     return 'text-gray-600 dark:text-gray-300'
+  }
+
+  function getStatusBadge(call: Call): { text: string; color: string } {
+    switch (call.status) {
+      case 'PENDING':
+        return { text: 'New', color: 'bg-green-100 text-green-700' }
+      case 'ACKNOWLEDGED':
+        return { text: 'Acknowledged', color: 'bg-blue-100 text-blue-700' }
+      case 'IN_PROGRESS':
+        return { text: 'On the way', color: 'bg-purple-100 text-purple-700' }
+      case 'COMPLETED':
+      case 'HANDLED':
+        return { text: 'Completed', color: 'bg-gray-100 text-gray-700' }
+      case 'MISSED':
+        return { text: 'MISSED', color: 'bg-red-100 text-red-700' }
+      case 'CANCELLED':
+        return { text: 'Cancelled', color: 'bg-gray-100 text-gray-700' }
+      default:
+        return { text: call.status, color: 'bg-gray-100 text-gray-700' }
+    }
+  }
+
+  function isCallOverdue(call: Call): boolean {
+    if (call.status !== 'PENDING' || !call.timeoutAt) return false
+    return new Date() > new Date(call.timeoutAt)
   }
 
   if (loading) {
@@ -250,6 +404,31 @@ export default function WaiterDashboard() {
       <div className="layout-container flex h-full grow flex-col">
         <div className="flex flex-1 justify-center py-5 sm:px-4 md:px-8 lg:px-10">
           <div className="layout-content-container flex flex-col w-full max-w-2xl flex-1">
+            {/* Real-time notification banner */}
+            {newCallNotification && (
+              <div className="mx-4 mb-4 p-4 bg-green-50 border border-green-200 rounded-lg animate-pulse">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="material-symbols-outlined text-green-600 text-2xl">
+                      notifications_active
+                    </span>
+                    <div>
+                      <p className="font-semibold text-green-800">New Table Call</p>
+                      <p className="text-sm text-green-700">
+                        Table {newCallNotification.table.number} needs assistance
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setNewCallNotification(null)}
+                    className="text-green-600 hover:text-green-800 p-1"
+                  >
+                    <span className="material-symbols-outlined">close</span>
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Header */}
             <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 dark:border-gray-700 px-4 py-3">
               <div className="flex items-center gap-3 text-gray-800 dark:text-gray-100">
@@ -263,11 +442,44 @@ export default function WaiterDashboard() {
                   <p className="text-xs text-gray-500">WaiterCall System</p>
                 </div>
                 <div className="flex items-center gap-2 rounded-full bg-green-600/20 px-3 py-1">
-                  <div className={`h-2 w-2 rounded-full bg-green-600 ${pollingLoading ? 'animate-pulse' : ''}`}></div>
-                  <span className="text-xs font-medium text-green-600">LIVE</span>
+                  <div className={`h-2 w-2 rounded-full ${
+                    isRealtimeConnected 
+                      ? 'bg-green-600 animate-pulse' 
+                      : 'bg-yellow-600 animate-pulse'
+                  }`}></div>
+                  <span className={`text-xs font-medium ${
+                    isRealtimeConnected 
+                      ? 'text-green-600' 
+                      : 'text-yellow-600'
+                  }`}>
+                    {isRealtimeConnected ? 'LIVE' : 'POLLING'}
+                  </span>
                 </div>
+                {realtimeError && (
+                  <div className="flex items-center gap-1 text-xs text-red-600">
+                    <span className="material-symbols-outlined text-sm">error</span>
+                    <span>Connection issues</span>
+                  </div>
+                )}
               </div>
               <div className="flex flex-1 justify-end gap-3 items-center">
+                <PushToggle className="hidden sm:flex" />
+                <button
+                  onClick={() => {
+                    if (!isRealtimeConnected) {
+                      realtimeManager.reconnect()
+                    }
+                  }}
+                  className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+                  title={isRealtimeConnected ? 'Connected' : 'Reconnect'}
+                >
+                  <span className="material-symbols-outlined text-lg">
+                    {isRealtimeConnected ? 'refresh' : 'sync'}
+                  </span>
+                  <span className="hidden sm:inline">
+                    {isRealtimeConnected ? 'Connected' : 'Reconnect'}
+                  </span>
+                </button>
                 <button
                   onClick={handleLogout}
                   className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
@@ -315,6 +527,26 @@ export default function WaiterDashboard() {
                   <p className="text-sm font-medium leading-normal">Acknowledged</p>
                 </button>
                 <button
+                  onClick={() => setFilter('in_progress')}
+                  className={`flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full px-4 transition-colors ${
+                    filter === 'in_progress'
+                      ? 'bg-primary text-background-dark'
+                      : 'bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200'
+                  }`}
+                >
+                  <p className="text-sm font-medium leading-normal">On the way</p>
+                </button>
+                <button
+                  onClick={() => setFilter('missed')}
+                  className={`flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full px-4 transition-colors ${
+                    filter === 'missed'
+                      ? 'bg-red-600 text-white'
+                      : 'bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200'
+                  }`}
+                >
+                  <p className="text-sm font-medium leading-normal">Missed</p>
+                </button>
+                <button
                   onClick={() => setFilter('my')}
                   className={`flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full px-4 transition-colors ${
                     filter === 'my'
@@ -332,7 +564,7 @@ export default function WaiterDashboard() {
                       : 'bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200'
                   }`}
                 >
-                  <p className="text-sm font-medium leading-normal">Handled</p>
+                  <p className="text-sm font-medium leading-normal">Completed</p>
                 </button>
                 <button
                   onClick={() => setFilter('all')}
@@ -367,39 +599,74 @@ export default function WaiterDashboard() {
                 </div>
               ) : (
                 filteredCalls.map((call) => {
-                  const waitTime = getWaitTimeInSeconds(call.requestedAt)
-                  const borderColor = getCardBorderColor(waitTime)
-                  const timeColor = getTimeColor(waitTime)
+                  const borderColor = getCardBorderColor(call)
+                  const timeColor = getTimeColor(call)
+                  const statusBadge = getStatusBadge(call)
+                  const isOverdue = isCallOverdue(call)
                   
-                  // Determine call state
+                  // Determine call state for enhanced lifecycle
                   const isPending = call.status === 'PENDING' && !call.waiterId
-                  const isAcknowledged = call.status === 'PENDING' && call.waiterId === waiterId
-                  const isHandled = call.status === 'HANDLED'
+                  const isAcknowledged = call.status === 'ACKNOWLEDGED' && call.waiterId === waiterId
+                  const isInProgress = call.status === 'IN_PROGRESS' && call.waiterId === waiterId
+                  const isCompleted = ['COMPLETED', 'HANDLED'].includes(call.status) && call.waiterId === waiterId
+                  const isMissed = call.status === 'MISSED' && call.waiterId === waiterId
 
                   return (
                     <div
                       key={call.id}
-                      className={`flex flex-col sm:flex-row items-stretch justify-between gap-4 rounded-xl bg-white dark:bg-background-dark dark:border p-4 shadow-lg border-2 ${borderColor}`}
+                      className={`flex flex-col sm:flex-row items-stretch justify-between gap-4 rounded-xl bg-white dark:bg-background-dark dark:border p-4 shadow-lg border-2 ${borderColor} ${
+                        highlightedCallId === call.id 
+                          ? 'ring-4 ring-green-400 ring-opacity-50 animate-pulse' 
+                          : ''
+                      }`}
                     >
                       <div className="flex flex-1 flex-col justify-between gap-4">
                         <div className="flex flex-col gap-1">
-                          <p className={`${timeColor} text-sm font-semibold leading-normal`}>
-                            {getTimeAgo(call.requestedAt)}
-                          </p>
+                          {/* Status badge and time */}
+                          <div className="flex items-center justify-between">
+                            <p className={`${timeColor} text-sm font-semibold leading-normal`}>
+                              {getTimeAgo(call.requestedAt)}
+                            </p>
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusBadge.color}`}>
+                              {statusBadge.text}
+                            </span>
+                          </div>
+                          
                           <p className="text-gray-900 dark:text-gray-50 text-2xl font-bold leading-tight">
                             Table {call.table.number}
                           </p>
                           <p className="text-gray-500 dark:text-gray-400 text-base font-normal leading-normal">
                             Call Waiter
                           </p>
+                          
+                          {/* Status-specific messages */}
+                          {isOverdue && (
+                            <p className="text-red-600 dark:text-red-400 text-sm font-medium">
+                              ⚠️ Overdue - SLA exceeded
+                            </p>
+                          )}
+                          
                           {isAcknowledged && (
                             <p className="text-blue-600 dark:text-blue-400 text-sm font-medium">
                               Acknowledged by you
                             </p>
                           )}
-                          {isHandled && (
+                          
+                          {isInProgress && (
+                            <p className="text-purple-600 dark:text-purple-400 text-sm font-medium">
+                              On the way to table
+                            </p>
+                          )}
+                          
+                          {isCompleted && (
                             <p className="text-green-600 dark:text-green-400 text-sm font-medium">
-                              Resolved
+                              Service completed
+                            </p>
+                          )}
+                          
+                          {isMissed && (
+                            <p className="text-red-600 dark:text-red-400 text-sm font-medium">
+                              ❌ Missed - Customer waited too long
                             </p>
                           )}
                         </div>
@@ -415,20 +682,27 @@ export default function WaiterDashboard() {
                           </button>
                         )}
                         
-                        {isAcknowledged && (
+                        {(isAcknowledged || isInProgress) && (
                           <button
                             onClick={() => resolveCall(call.id)}
                             className="flex w-full sm:w-fit min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-5 gap-2 bg-primary text-background-dark text-sm font-bold leading-normal hover:bg-primary/90 transition-colors"
                           >
-                            <span className="truncate">Resolve</span>
+                            <span className="truncate">Complete</span>
                             <span className="material-symbols-outlined text-lg">done</span>
                           </button>
                         )}
                         
-                        {isHandled && (
+                        {isCompleted && (
                           <div className="flex items-center gap-2 text-green-600 dark:text-green-400">
                             <span className="material-symbols-outlined">check_circle</span>
                             <span className="text-sm font-medium">Completed</span>
+                          </div>
+                        )}
+                        
+                        {isMissed && (
+                          <div className="flex items-center gap-2 text-red-600 dark:text-red-400">
+                            <span className="material-symbols-outlined">error</span>
+                            <span className="text-sm font-medium">Missed</span>
                           </div>
                         )}
                       </div>

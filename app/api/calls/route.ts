@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
+import { sendCallNotification } from '@/lib/push/sending'
+
+// Configuration for call timeout SLA
+const CALL_TIMEOUT_MINUTES = 2 // Configurable SLA in minutes
 
 // Create a new waiter call
 export async function POST(request: NextRequest) {
@@ -40,18 +44,37 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    // Create the call
+    // Calculate timeout timestamp for SLA
+    const now = new Date()
+    const timeoutAt = new Date(now.getTime() + CALL_TIMEOUT_MINUTES * 60 * 1000)
+
+    // Create the call with enhanced lifecycle tracking
     const call = await prisma.call.create({
       data: {
         restaurantId,
         tableId,
         waiterId: waiterTable?.waiterId || null,
         status: 'PENDING',
+        timeoutAt, // Set SLA timeout
+        // Legacy field for backward compatibility
+        responseTime: null,
       },
       include: {
         table: true,
         waiter: true,
       },
+    })
+
+    // Send push notification to assigned waiter(s)
+    // This is non-blocking - failures won't affect call creation
+    sendCallNotification(
+      call.id,
+      table.number,
+      restaurantId,
+      waiterTable?.waiterId
+    ).catch((error) => {
+      // Log push notification errors but don't fail the request
+      console.error('Push notification failed:', error)
     })
 
     return NextResponse.json(call, { status: 201 })
@@ -78,6 +101,10 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    // First, check for any timed-out calls and mark them as missed
+    // This ensures missed-call detection runs on both read and write operations
+    await checkAndUpdateMissedCalls(restaurantId)
+
     const calls = await prisma.call.findMany({
       where: {
         restaurantId,
@@ -87,9 +114,11 @@ export async function GET(request: NextRequest) {
         table: true,
         waiter: true,
       },
-      orderBy: {
-        requestedAt: 'desc',
-      },
+      orderBy: [
+        // Priority order: PENDING calls first, then by creation time
+        { status: 'asc' }, // PENDING comes before MISSED/COMPLETED
+        { requestedAt: 'desc' }, // Newest first within same status
+      ],
       take: 50,
     })
 
@@ -101,6 +130,45 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     )
   }
+}
+
+/**
+ * Checks for timed-out calls and marks them as MISSED
+ * This function is idempotent and can be called safely on any request
+ */
+async function checkAndUpdateMissedCalls(restaurantId: string) {
+  const now = new Date()
+  
+  // Find all PENDING calls that have exceeded their timeout
+  const timedOutCalls = await prisma.call.findMany({
+    where: {
+      restaurantId,
+      status: 'PENDING',
+      timeoutAt: {
+        lt: now, // timeoutAt is in the past
+      },
+      missedAt: null, // Not already marked as missed
+    },
+    select: {
+      id: true,
+      requestedAt: true,
+    },
+  })
+
+  // Mark each timed-out call as MISSED
+  for (const call of timedOutCalls) {
+    await prisma.call.update({
+      where: { id: call.id },
+      data: {
+        status: 'MISSED',
+        missedAt: now,
+        // Calculate response time for analytics (time until missed)
+        responseTime: Math.floor(now.getTime() - call.requestedAt.getTime()),
+      },
+    })
+  }
+
+  return timedOutCalls.length
 }
 
 

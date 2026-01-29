@@ -30,6 +30,7 @@ model Restaurant {
   promotions    Promotion[]
   subscriptions Subscription[]
   calls         Call[]
+  pushSubscriptions PushSubscription[]
   
   @@index([slug])
 }
@@ -70,6 +71,7 @@ model Waiter {
   restaurant    Restaurant   @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   calls         Call[]
   assignedTables WaiterTable[]
+  pushSubscriptions PushSubscription[]
   
   @@index([restaurantId])
 }
@@ -97,8 +99,16 @@ model Call {
   waiterId      String?      // Assigned waiter (can be null if auto-assigned)
   status        CallStatus   @default(PENDING)
   requestedAt   DateTime     @default(now())
-  handledAt     DateTime?
-  responseTime  Int?         // Response time in seconds
+  
+  // Enhanced lifecycle timestamps
+  acknowledgedAt DateTime?    // When waiter acknowledged the call
+  completedAt    DateTime?    // When service was completed
+  missedAt       DateTime?    // When call was marked as missed
+  timeoutAt      DateTime?    // When call will timeout (SLA)
+  
+  // Legacy fields for backward compatibility
+  handledAt      DateTime?    // @deprecated Use completedAt instead
+  responseTime   Int?         // Response time in milliseconds (more precise)
   
   // Relations
   restaurant    Restaurant   @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
@@ -110,12 +120,18 @@ model Call {
   @@index([waiterId])
   @@index([status])
   @@index([requestedAt])
+  @@index([timeoutAt]) // For timeout detection
+  @@index([missedAt])   // For missed call analytics
 }
 
 enum CallStatus {
-  PENDING
-  HANDLED
-  CANCELLED
+  PENDING       // Customer called, waiting for waiter
+  ACKNOWLEDGED  // Waiter accepted the call
+  IN_PROGRESS   // Waiter is on the way to table
+  COMPLETED     // Service delivered successfully
+  MISSED        // Timeout elapsed with no acknowledgment
+  CANCELLED     // Customer cancelled the call
+  HANDLED       // @deprecated Use COMPLETED instead
 }
 
 // Promotion model - represents ads/promotions shown to customers
@@ -164,4 +180,29 @@ enum SubscriptionStatus {
   ACTIVE
   CANCELLED
   PAST_DUE
+}
+
+// Push Subscription model - tracks waiter device push subscriptions
+model PushSubscription {
+  id            String   @id @default(uuid())
+  waiterId      String
+  restaurantId  String
+  endpoint      String   // Push service endpoint URL
+  p256dh        String   // VAPID public key
+  auth          String   // VAPID auth secret
+  userAgent     String?  // Device/user agent for debugging
+  createdAt     DateTime @default(now())
+  lastUsedAt    DateTime @default(now())
+  
+  // Relations
+  waiter        Waiter   @relation(fields: [waiterId], references: [id], onDelete: Cascade)
+  restaurant    Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  
+  // Indexes for performance
+  @@index([waiterId])
+  @@index([restaurantId])
+  @@index([createdAt])
+  @@index([lastUsedAt])
+  // Unique constraint to prevent duplicate subscriptions for same waiter+endpoint
+  @@unique([waiterId, endpoint])
 }
