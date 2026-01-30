@@ -145,8 +145,9 @@ export default function SettingsPage() {
 
   useEffect(() => {
     const hasFormChanges = JSON.stringify(form) !== JSON.stringify(originalForm)
-    setHasChanges(hasFormChanges)
-  }, [form, originalForm])
+    const hasLogoChange = logoPreview !== null && logoPreview !== restaurant?.logoUrl
+    setHasChanges(hasFormChanges || hasLogoChange)
+  }, [form, originalForm, logoPreview, restaurant?.logoUrl])
 
   async function fetchRestaurant(restaurantId: string) {
     try {
@@ -292,6 +293,7 @@ export default function SettingsPage() {
 
   function handleDiscard() {
     setForm(originalForm)
+    setLogoPreview(null)
     setHasChanges(false)
   }
 
