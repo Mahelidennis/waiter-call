@@ -430,7 +430,7 @@ export class PerformanceLogger {
 
     // Count by level
     const logsByLevel: Record<string, number> = {}
-    for (const level of Object.values(LogLevel)) {
+    for (const level of Object.values(LogLevel).filter(value => typeof value === 'number') as LogLevel[]) {
       logsByLevel[LogLevel[level]] = this.logs.filter(log => log.level === level).length
     }
 
