@@ -118,8 +118,23 @@ function WaiterLoginInner() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 overflow-y-auto">
       <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-6 sm:p-8 space-y-6 pb-[env(safe-area-inset-bottom)] border border-gray-200">
+        {/* Logo and Brand Section */}
+        <div className="flex flex-col items-center space-y-4">
+          <div className="w-20 h-20 flex items-center justify-center">
+            <img 
+              src="/logo.png" 
+              alt="Waitercall Logo" 
+              className="w-full h-full object-contain"
+            />
+          </div>
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-gray-900">Waitercall</h1>
+            <p className="text-gray-600 mt-1 text-sm font-medium">Waiter Access/Login</p>
+          </div>
+        </div>
+
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Waiter Access</h1>
+          <h2 className="text-lg font-semibold text-gray-900">Enter your credentials</h2>
           <p className="text-gray-800 mt-2 text-base font-medium">
             Enter your restaurant code and access PIN to start.
           </p>
