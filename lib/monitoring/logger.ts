@@ -117,7 +117,7 @@ export class PerformanceLogger {
    * Log performance operation
    */
   performance(operation: string, duration: number, category: string = 'PERFORMANCE', metadata?: Record<string, any>): void {
-    this.log(LogLevel.INFO, message, category, {
+    this.log(LogLevel.INFO, operation, category, {
       ...metadata,
       operation,
       duration,
