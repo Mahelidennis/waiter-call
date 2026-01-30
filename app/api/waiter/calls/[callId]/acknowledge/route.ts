@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { requireWaiterSession } from '@/lib/auth/waiterSession'
+import { CallStatus } from '@/lib/constants/callStatus'
 
 // Acknowledge a request (atomic operation)
 export async function POST(
@@ -45,7 +46,7 @@ export async function POST(
       
       // Verify call is in PENDING state and not already acknowledged
       // Allow acknowledgment of MISSED calls for recovery
-      if (!['PENDING', 'MISSED'].includes(call.status)) {
+      if (![CallStatus.PENDING, CallStatus.MISSED].includes(call.status as CallStatus)) {
         throw new Error('Call cannot be acknowledged - not in PENDING or MISSED state')
       }
       
@@ -56,12 +57,12 @@ export async function POST(
       const updatedCall = await tx.call.update({
         where: { id: callId },
         data: {
-          status: 'ACKNOWLEDGED',
+          status: CallStatus.ACKNOWLEDGED,
           waiterId: waiter.id,
           acknowledgedAt: new Date(),
           responseTime: responseTimeMs,
           // Clear missedAt if this was a missed call being recovered
-          missedAt: call.status === 'MISSED' ? null : call.missedAt,
+          missedAt: call.status === CallStatus.MISSED ? null : call.missedAt,
           // Update legacy field for backward compatibility
           handledAt: null, // Not handled yet, just acknowledged
         },

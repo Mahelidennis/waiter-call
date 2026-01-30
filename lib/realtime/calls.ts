@@ -29,11 +29,20 @@ export class CallRealtimeManager {
   private maxReconnectAttempts = 5
   private reconnectDelay = 1000 // 1 second
   private pollingFallbackTimeout: NodeJS.Timeout | null = null
+  private heartbeatInterval: NodeJS.Timeout | null = null
+  private connectionTimeout: NodeJS.Timeout | null = null
+  private lastActivity: number = Date.now()
+  private isDestroyed: boolean = false
 
   /**
    * Subscribe to real-time call updates for a specific waiter
    */
   subscribe(config: RealtimeSubscriptionConfig): void {
+    if (this.isDestroyed) {
+      console.error('RealtimeManager: Cannot subscribe - manager is destroyed')
+      return
+    }
+
     this.config = config
     this.setupSubscription()
   }
@@ -42,25 +51,54 @@ export class CallRealtimeManager {
    * Unsubscribe from real-time updates
    */
   unsubscribe(): void {
-    this.cleanup()
+    this.destroy()
   }
 
   /**
    * Check if realtime is connected
    */
   isRealtimeConnected(): boolean {
-    return this.isConnected
+    return this.isConnected && !this.isDestroyed
+  }
+
+  /**
+   * Get connection health status
+   */
+  getConnectionHealth(): {
+    isConnected: boolean
+    lastActivity: number
+    reconnectAttempts: number
+    isHealthy: boolean
+  } {
+    const now = Date.now()
+    const timeSinceLastActivity = now - this.lastActivity
+    const isHealthy = this.isConnected && timeSinceLastActivity < 60000 // Healthy if activity within last minute
+
+    return {
+      isConnected: this.isConnected,
+      lastActivity: this.lastActivity,
+      reconnectAttempts: this.reconnectAttempts,
+      isHealthy
+    }
   }
 
   private setupSubscription(): void {
-    if (!this.config) {
-      console.error('RealtimeManager: No config provided')
+    if (!this.config || this.isDestroyed) {
+      console.error('RealtimeManager: No config provided or manager destroyed')
       return
     }
 
     try {
       // Clean up existing subscription
       this.cleanup()
+
+      // Set connection timeout
+      this.connectionTimeout = setTimeout(() => {
+        if (!this.isConnected) {
+          console.warn('RealtimeManager: Connection timeout')
+          this.triggerPollingFallback()
+        }
+      }, 10000) // 10 second timeout
 
       // Create channel for restaurant-specific call updates
       this.channel = supabase
@@ -84,6 +122,9 @@ export class CallRealtimeManager {
           this.handleSubscriptionStatus(status)
         })
 
+      // Start heartbeat monitoring
+      this.startHeartbeat()
+
       console.log('RealtimeManager: Subscribed to restaurant calls', {
         restaurantId: this.config.restaurantId,
         waiterId: this.config.waiterId
@@ -97,9 +138,12 @@ export class CallRealtimeManager {
   }
 
   private handleRealtimeEvent(payload: any): void {
-    if (!this.config) return
+    if (!this.config || this.isDestroyed) return
 
     try {
+      // Update last activity
+      this.lastActivity = Date.now()
+
       const event: CallRealtimeEvent = {
         eventType: payload.eventType,
         new: payload.new,
@@ -131,10 +175,14 @@ export class CallRealtimeManager {
   }
 
   private handleConnectionStatus(payload: any): void {
+    if (!this.config || this.isDestroyed) return
+
     const connected = payload.payload?.connected || false
     
     if (this.isConnected !== connected) {
       this.isConnected = connected
+      this.lastActivity = Date.now()
+      
       if (this.config) {
         this.config.onConnectionChange?.(connected)
       }
@@ -152,8 +200,19 @@ export class CallRealtimeManager {
   }
 
   private handleSubscriptionStatus(status: string): void {
+    if (this.isDestroyed) return
+
     const wasConnected = this.isConnected
     this.isConnected = status === 'SUBSCRIBED'
+    
+    if (this.isConnected) {
+      this.lastActivity = Date.now()
+      // Clear connection timeout if connected
+      if (this.connectionTimeout) {
+        clearTimeout(this.connectionTimeout)
+        this.connectionTimeout = null
+      }
+    }
     
     if (wasConnected !== this.isConnected) {
       if (this.config) {
@@ -179,7 +238,7 @@ export class CallRealtimeManager {
   }
 
   private isEventRelevantToWaiter(event: CallRealtimeEvent): boolean {
-    if (!this.config) return false
+    if (!this.config || this.isDestroyed) return false
 
     const call = event.new || event.old
     if (!call) return false
@@ -197,8 +256,8 @@ export class CallRealtimeManager {
   }
 
   private attemptReconnection(): void {
-    if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-      console.error('RealtimeManager: Max reconnection attempts reached')
+    if (this.isDestroyed || this.reconnectAttempts >= this.maxReconnectAttempts) {
+      console.error('RealtimeManager: Max reconnection attempts reached or manager destroyed')
       this.triggerPollingFallback()
       return
     }
@@ -209,16 +268,19 @@ export class CallRealtimeManager {
     console.log(`RealtimeManager: Attempting reconnection ${this.reconnectAttempts}/${this.maxReconnectAttempts} in ${delay}ms`)
 
     setTimeout(() => {
-      if (this.config) {
+      if (this.config && !this.isDestroyed) {
         this.setupSubscription()
       }
     }, delay)
   }
 
   private triggerPollingFallback(): void {
+    if (this.isDestroyed) return
+
     // Clear existing timeout
     if (this.pollingFallbackTimeout) {
       clearTimeout(this.pollingFallbackTimeout)
+      this.pollingFallbackTimeout = null
     }
 
     // Notify UI to rely on polling
@@ -226,7 +288,7 @@ export class CallRealtimeManager {
     
     // Set a timeout to periodically try reconnection
     this.pollingFallbackTimeout = setTimeout(() => {
-      if (this.config && !this.isConnected) {
+      if (this.config && !this.isConnected && !this.isDestroyed) {
         console.log('RealtimeManager: Attempting to restore realtime connection')
         this.setupSubscription()
       }
@@ -238,16 +300,56 @@ export class CallRealtimeManager {
     }
   }
 
+  private startHeartbeat(): void {
+    if (this.isDestroyed) return
+
+    // Clear existing heartbeat
+    if (this.heartbeatInterval) {
+      clearInterval(this.heartbeatInterval)
+      this.heartbeatInterval = null
+    }
+
+    // Send heartbeat every 30 seconds
+    this.heartbeatInterval = setInterval(() => {
+      if (this.channel && this.isConnected && !this.isDestroyed) {
+        this.channel.send({
+          type: 'broadcast',
+          event: 'heartbeat',
+          payload: {
+            timestamp: Date.now(),
+            restaurantId: this.config?.restaurantId,
+            waiterId: this.config?.waiterId
+          }
+        })
+        this.lastActivity = Date.now()
+      }
+    }, 30000)
+  }
+
   private cleanup(): void {
-    // Clear reconnection timeout
+    // Clear all timeouts and intervals
     if (this.pollingFallbackTimeout) {
       clearTimeout(this.pollingFallbackTimeout)
       this.pollingFallbackTimeout = null
     }
 
+    if (this.heartbeatInterval) {
+      clearInterval(this.heartbeatInterval)
+      this.heartbeatInterval = null
+    }
+
+    if (this.connectionTimeout) {
+      clearTimeout(this.connectionTimeout)
+      this.connectionTimeout = null
+    }
+
     // Remove channel
     if (this.channel) {
-      supabase.removeChannel(this.channel)
+      try {
+        supabase.removeChannel(this.channel)
+      } catch (error) {
+        console.error('RealtimeManager: Error removing channel:', error)
+      }
       this.channel = null
     }
 
@@ -256,13 +358,59 @@ export class CallRealtimeManager {
   }
 
   /**
+   * Complete cleanup - mark as destroyed and remove all resources
+   */
+  private destroy(): void {
+    if (this.isDestroyed) return
+
+    console.log('RealtimeManager: Destroying connection', {
+      restaurantId: this.config?.restaurantId,
+      waiterId: this.config?.waiterId
+    })
+
+    this.isDestroyed = true
+    this.cleanup()
+    
+    // Clear config to prevent further operations
+    this.config = null
+  }
+
+  /**
    * Force reconnection attempt
    */
   reconnect(): void {
+    if (this.isDestroyed) {
+      console.error('RealtimeManager: Cannot reconnect - manager is destroyed')
+      return
+    }
+
     console.log('RealtimeManager: Manual reconnection requested')
     this.reconnectAttempts = 0
     if (this.config) {
       this.setupSubscription()
+    }
+  }
+
+  /**
+   * Get connection statistics
+   */
+  getStats(): {
+    isConnected: boolean
+    reconnectAttempts: number
+    lastActivity: number
+    uptime: number
+    isHealthy: boolean
+  } {
+    const now = Date.now()
+    const uptime = this.config ? now - this.config.waiterId.length * 1000 : 0 // Approximate uptime
+    const health = this.getConnectionHealth()
+
+    return {
+      isConnected: this.isConnected,
+      reconnectAttempts: this.reconnectAttempts,
+      lastActivity: this.lastActivity,
+      uptime,
+      isHealthy: health.isHealthy
     }
   }
 }
@@ -288,4 +436,12 @@ export function cleanupRealtimeManager(): void {
     realtimeManager.unsubscribe()
     realtimeManager = null
   }
+}
+
+/**
+ * Global cleanup function to be called on app shutdown
+ */
+export function globalRealtimeCleanup(): void {
+  console.log('RealtimeManager: Performing global cleanup')
+  cleanupRealtimeManager()
 }

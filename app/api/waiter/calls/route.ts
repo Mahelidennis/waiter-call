@@ -1,12 +1,46 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { requireWaiterSession } from '@/lib/auth/waiterSession'
+import { getAuthenticatedUser } from '@/lib/auth/server'
+import { CallStatus, normalizeStatus, getStatusForFilter } from '@/lib/constants/callStatus'
 
 // Get calls for the authenticated waiter
 export async function GET(request: NextRequest) {
   try {
-    // Authenticate and get waiter info
-    const waiter = await requireWaiterSession()
+    // Try session-based authentication first (for waiters)
+    let waiter = null
+    try {
+      waiter = await requireWaiterSession()
+    } catch (sessionError: any) {
+      // Session auth failed, try JWT auth (for admins or alternative auth)
+      console.log('Session auth failed, trying JWT auth:', sessionError?.message || 'Unknown error')
+    }
+    
+    // If session auth failed, try JWT authentication
+    if (!waiter) {
+      const authUser = await getAuthenticatedUser()
+      if (!authUser) {
+        console.error('No authentication found - neither session nor JWT')
+        return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
+      }
+      
+      // For JWT auth, verify it's a waiter with proper permissions
+      if (authUser.role !== 'waiter') {
+        console.error('JWT auth failed - not a waiter role:', authUser.role)
+        return NextResponse.json({ error: 'Waiter access required' }, { status: 403 })
+      }
+      
+      // Convert JWT user to waiter format
+      waiter = {
+        id: authUser.waiterId!,
+        restaurantId: authUser.restaurantId!,
+        name: authUser.user.user_metadata?.name || 'Waiter',
+      }
+      
+      console.log('JWT authentication successful for waiter:', waiter.id)
+    } else {
+      console.log('Session authentication successful for waiter:', waiter.id)
+    }
     
     const { searchParams } = new URL(request.url)
     const status = searchParams.get('status') // 'pending', 'acknowledged', 'in_progress', 'missed', 'completed', 'all'
@@ -30,33 +64,43 @@ export async function GET(request: NextRequest) {
     }
     
     // Handle different status filters based on enhanced lifecycle
-    if (status === 'pending') {
-      // PENDING calls (not yet acknowledged)
-      whereClause.status = 'PENDING'
-      whereClause.waiterId = null
-    } else if (status === 'acknowledged') {
-      // ACKNOWLEDGED calls (waiter accepted but not in progress)
-      whereClause.status = 'ACKNOWLEDGED'
+    const statusFilters = getStatusForFilter(status)
+    
+    if (statusFilters.length === 1) {
+      // Single status filter
+      const filterStatus = statusFilters[0]
+      
+      if (filterStatus === CallStatus.PENDING) {
+        whereClause.status = CallStatus.PENDING
+        whereClause.waiterId = null
+      } else if (filterStatus === CallStatus.ACKNOWLEDGED) {
+        whereClause.status = CallStatus.ACKNOWLEDGED
+        whereClause.waiterId = waiter.id
+      } else if (filterStatus === CallStatus.IN_PROGRESS) {
+        whereClause.status = CallStatus.IN_PROGRESS
+        whereClause.waiterId = waiter.id
+      } else if (filterStatus === CallStatus.MISSED) {
+        whereClause.status = CallStatus.MISSED
+        whereClause.waiterId = waiter.id
+      } else if (filterStatus === CallStatus.COMPLETED || filterStatus === CallStatus.HANDLED) {
+        // Include both COMPLETED and legacy HANDLED
+        whereClause.status = { in: [CallStatus.COMPLETED, CallStatus.HANDLED] }
+        whereClause.waiterId = waiter.id
+      } else {
+        whereClause.status = filterStatus
+        whereClause.waiterId = waiter.id
+      }
+    } else if (statusFilters.includes(CallStatus.ACKNOWLEDGED) && statusFilters.includes(CallStatus.IN_PROGRESS)) {
+      // 'my' filter - active calls for this waiter
+      whereClause.status = { in: [CallStatus.ACKNOWLEDGED, CallStatus.IN_PROGRESS] }
       whereClause.waiterId = waiter.id
-    } else if (status === 'in_progress') {
-      // IN_PROGRESS calls (waiter is on the way)
-      whereClause.status = 'IN_PROGRESS'
+    } else if (statusFilters.length > 1) {
+      // Multiple status filter
+      whereClause.status = { in: statusFilters }
       whereClause.waiterId = waiter.id
-    } else if (status === 'missed') {
-      // MISSED calls (timeout elapsed)
-      whereClause.status = 'MISSED'
-      whereClause.waiterId = waiter.id
-    } else if (status === 'completed') {
-      // COMPLETED calls (service delivered)
-      whereClause.status = { in: ['COMPLETED', 'HANDLED'] } // Include legacy HANDLED for backward compatibility
-      whereClause.waiterId = waiter.id
-    } else if (status === 'my') {
-      // All active calls for this waiter (acknowledged + in_progress)
-      whereClause.status = { in: ['ACKNOWLEDGED', 'IN_PROGRESS'] }
-      whereClause.waiterId = waiter.id
-    } else if (status !== 'all') {
+    } else {
       // Default to pending if invalid status
-      whereClause.status = 'PENDING'
+      whereClause.status = CallStatus.PENDING
       whereClause.waiterId = null
     }
     
@@ -84,7 +128,15 @@ export async function GET(request: NextRequest) {
       take: 50
     })
     
-    return NextResponse.json(calls)
+    // Standardize the response
+    const standardizedCalls = calls.map(call => ({
+      ...call,
+      normalizedStatus: normalizeStatus(call.status),
+      isActive: [CallStatus.PENDING, CallStatus.ACKNOWLEDGED, CallStatus.IN_PROGRESS].includes(normalizeStatus(call.status) as CallStatus),
+      isTerminal: [CallStatus.COMPLETED, CallStatus.MISSED, CallStatus.CANCELLED, CallStatus.HANDLED].includes(normalizeStatus(call.status) as CallStatus)
+    }))
+    
+    return NextResponse.json(standardizedCalls)
   } catch (error: any) {
     console.error('Error fetching waiter calls:', error)
     

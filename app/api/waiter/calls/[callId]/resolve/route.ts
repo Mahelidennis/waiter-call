@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { requireWaiterSession } from '@/lib/auth/waiterSession'
+import { CallStatus } from '@/lib/constants/callStatus'
 
 // Complete a request (only by acknowledging waiter)
 export async function POST(
@@ -32,7 +33,7 @@ export async function POST(
       }
       
       // Verify call is acknowledged by this waiter (ACKNOWLEDGED or IN_PROGRESS)
-      if (!['ACKNOWLEDGED', 'IN_PROGRESS'].includes(call.status) || call.waiterId !== waiter.id) {
+      if (![CallStatus.ACKNOWLEDGED, CallStatus.IN_PROGRESS].includes(call.status as CallStatus) || call.waiterId !== waiter.id) {
         throw new Error('Call cannot be completed - not acknowledged by you or already completed')
       }
       
@@ -43,7 +44,7 @@ export async function POST(
       const updatedCall = await tx.call.update({
         where: { id: callId },
         data: {
-          status: 'COMPLETED',
+          status: CallStatus.COMPLETED,
           completedAt: new Date(),
           responseTime: serviceTimeMs, // Total service time
           // Update legacy fields for backward compatibility
