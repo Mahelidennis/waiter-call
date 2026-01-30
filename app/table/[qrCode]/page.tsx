@@ -349,7 +349,7 @@ export default function TablePage() {
               Table {data.table.number}
             </h2>
             <p className="text-gray-600">
-              Press the button below to call for assistance
+              welcome back! how can we help you today?
             </p>
           </div>
 
