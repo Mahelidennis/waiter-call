@@ -615,4 +615,4 @@ export class PerformanceTimer {
 /**
  * Global performance monitor instance
  */
-export const performanceMonitor = PerformanceMonitor.getInstance()
+export const globalPerformanceMonitor = PerformanceMonitor.getInstance()

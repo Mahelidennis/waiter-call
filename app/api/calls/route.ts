@@ -4,7 +4,7 @@ import { sendCallNotification } from '@/lib/push/sending'
 import { requireAdmin, requireWaiter, getAuthenticatedUser } from '@/lib/auth/server'
 import { CallStatus, normalizeStatus, isValidStatusTransition, getStatusForFilter } from '@/lib/constants/callStatus'
 import { validateRequestBody, SCHEMAS, ValidationException, RATE_LIMITERS, getClientKey } from '@/lib/validation/inputValidation'
-import { performanceMonitor, PerformanceTimer } from '@/lib/monitoring/performanceMonitor'
+import { performanceMonitor as performanceMonitorDecorator, globalPerformanceMonitor, PerformanceTimer } from '@/lib/monitoring/performanceMonitor'
 import { logPerformance, logError, logWarn, logInfo } from '@/lib/monitoring/logger'
 
 // Configuration for call timeout SLA
@@ -14,11 +14,7 @@ const NOTIFICATION_RETRY_ATTEMPTS = 2 // Number of retry attempts for failed not
 
 // Create a new waiter call
 export async function POST(request: NextRequest) {
-  const timer = performanceMonitor.startTimer('api_call_create', {
-    method: 'POST',
-    userAgent: request.headers.get('user-agent'),
-    ip: getClientKey(request)
-  })
+  const timer = new PerformanceTimer('api_call_create')
 
   try {
     // Rate limiting check
