@@ -6,7 +6,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { performanceMonitor, PerformanceTimer } from './performanceMonitor'
+import { performanceMonitor, PerformanceTimer, globalPerformanceMonitor } from './performanceMonitor'
 
 export interface ApiMetrics {
   method: string
@@ -153,7 +153,7 @@ export class ApiMonitor {
   /**
    * Estimate request size
    */
-  private getRequestSize(request: NextRequest): number {
+  public getRequestSize(request: NextRequest): number {
     try {
       const contentLength = request.headers.get('content-length')
       if (contentLength) {
@@ -179,7 +179,6 @@ export class ApiMonitor {
     return (
       request.headers.get('x-forwarded-for') ||
       request.headers.get('x-real-ip') ||
-      request.ip ||
       'unknown'
     )
   }
@@ -258,7 +257,7 @@ export class ApiMonitor {
   /**
    * Record metrics
    */
-  private recordMetrics(metrics: ApiMetrics): void {
+  public recordMetrics(metrics: ApiMetrics): void {
     this.metrics.push(metrics)
     
     // Keep only last 1000 metrics
@@ -287,7 +286,7 @@ export class ApiMonitor {
       })
 
       // Create performance alert
-      performanceMonitor.recordError('api_error_rate', new Error(`High error rate: ${(errorRate * 100).toFixed(2)}%`), {
+      globalPerformanceMonitor.recordError('api_error_rate', new Error(`High error rate: ${(errorRate * 100).toFixed(2)}%`), {
         errorCount,
         totalRequests: recentMetrics.length,
         errorRate
@@ -366,6 +365,11 @@ export class ApiMonitor {
    * Get endpoint-specific metrics
    */
   getEndpointMetrics(endpoint: string, timeRange?: number): {
+    totalRequests: number
+    averageResponseTime: number
+    errorRate: number
+    slowRequestsCount: number
+  } {
     const now = Date.now()
     const cutoff = timeRange ? now - timeRange : 0
     
@@ -445,7 +449,7 @@ export function monitorApi(options?: Partial<ApiMonitoringOptions>) {
           url: request.url,
           statusCode: result.status || 200,
           duration,
-          requestSize: monitor['getRequestSize'](request),
+          requestSize: monitor.getRequestSize(request),
           responseSize: 0, // Would need to measure response size
           timestamp: Date.now()
         }
@@ -461,7 +465,7 @@ export function monitorApi(options?: Partial<ApiMonitoringOptions>) {
           url: request.url,
           statusCode: 500,
           duration,
-          requestSize: monitor['getRequestSize'](request),
+          requestSize: monitor.getRequestSize(request),
           responseSize: 0,
           timestamp: Date.now(),
           error: error instanceof Error ? error.message : 'Unknown error'
