@@ -382,7 +382,7 @@ export function validateObject(obj: any, schema: ValidationSchema): ValidationRe
 /**
  * Common validation schemas
  */
-export const SCHEMAS: Record<string, ValidationRule[]> = {
+export const SCHEMAS: Record<string, ValidationSchema> = {
   createCall: {
     tableId: [
       (value: any) => validate.required(value, 'tableId'),
