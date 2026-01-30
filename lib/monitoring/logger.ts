@@ -158,6 +158,7 @@ export class PerformanceLogger {
   ): T {
     const context = this.startPerformanceTimer({
       operation,
+      startTime: performance.now(),
       metadata
     })
     
