@@ -204,13 +204,6 @@ function WaiterLoginInner() {
           </div>
         </div>
 
-        <div>
-          <h2 className="text-lg font-semibold text-gray-900">Enter your credentials</h2>
-          <p className="text-gray-800 mt-2 text-base font-medium">
-            Enter your restaurant code and access PIN to start.
-          </p>
-        </div>
-
         {error && (
           <div className="rounded-lg border-2 border-red-300 bg-red-50 px-4 py-3 text-sm font-semibold text-red-800">
             {error}

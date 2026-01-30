@@ -32,7 +32,7 @@ export default function NotFound() {
               <Link href="/" className="text-gray-600 hover:text-gray-900 font-medium">
                 Homepage
               </Link>
-              <Link href="/admin" className="text-gray-600 hover:text-gray-900 font-medium">
+              <Link href="/admin/dashboard" className="text-gray-600 hover:text-gray-900 font-medium">
                 Dashboard
               </Link>
               <Link href="/help" className="text-gray-600 hover:text-gray-900 font-medium">
@@ -42,7 +42,7 @@ export default function NotFound() {
 
             {/* Contact Support Button */}
             <Link
-              href="/contact"
+              href="/contact-sales"
               className="bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-lg transition-colors"
             >
               Contact Support
@@ -91,7 +91,7 @@ export default function NotFound() {
 
           {/* Primary CTA Button */}
           <Link
-            href="/admin"
+            href="/admin/dashboard"
             className="inline-block bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg transition-colors text-lg mb-6"
           >
             Go to Admin Dashboard
@@ -100,7 +100,7 @@ export default function NotFound() {
           {/* Secondary Help Link */}
           <p className="text-gray-600">
             Need help?{' '}
-            <Link href="/contact" className="text-green-600 hover:text-green-700 font-medium underline">
+            <Link href="/contact-sales" className="text-green-600 hover:text-green-700 font-medium underline">
               Contact Support
             </Link>
           </p>
