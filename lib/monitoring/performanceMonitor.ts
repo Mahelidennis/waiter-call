@@ -500,11 +500,11 @@ export class PerformanceMonitor {
   /**
    * Get memory usage information
    */
-  private getMemoryUsage(): MemoryUsage | null {
+  public getMemoryUsage(): MemoryUsage | undefined {
     if (typeof performance !== 'undefined' && (performance as any).memory) {
       return (performance as any).memory
     }
-    return null
+    return undefined
   }
 
   /**
