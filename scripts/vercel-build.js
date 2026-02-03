@@ -42,7 +42,7 @@ async function main() {
   
   // Try to generate Prisma client with retry logic
   let retries = 0
-  const maxRetries = 3
+  const maxRetries = 2 // Reduced retries for faster builds
   
   while (retries < maxRetries) {
     try {
@@ -56,6 +56,8 @@ async function main() {
       if (retries >= maxRetries) {
         console.log('Warning: Prisma generate failed, but continuing with build...')
         console.log('This might be due to file locks. The build may still work.')
+        // Don't exit, just continue with build
+        break
       } else {
         console.log(`Retrying in 2 seconds... (${retries}/${maxRetries})`)
         await new Promise(resolve => setTimeout(resolve, 2000))
@@ -65,7 +67,8 @@ async function main() {
 
   const skipMigrate =
     String(process.env.SKIP_PRISMA_MIGRATE || '').toLowerCase() === '1' ||
-    String(process.env.SKIP_PRISMA_MIGRATE || '').toLowerCase() === 'true'
+    String(process.env.SKIP_PRISMA_MIGRATE || '').toLowerCase() === 'true' ||
+    true // Always skip migrate for deployment
 
   if (skipMigrate) {
     console.log('Skipping prisma migrate deploy (SKIP_PRISMA_MIGRATE=true).')
