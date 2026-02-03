@@ -400,10 +400,14 @@ export class AutoCleanupScheduler {
    * Get scheduler status
    */
   static getStatus(): {
+    isRunning: boolean
+    lastCleanup: Date | null
+    nextCleanup: Date | null
+  } {
     return {
       isRunning: this.cleanupInterval !== null,
       lastCleanup: this.lastCleanup,
-      nextCleanup: this.cleanupInterval ? Date.now() + 300000 : null
+      nextCleanup: this.cleanupInterval ? new Date(Date.now() + 300000) : null
     }
   }
 }
