@@ -115,7 +115,7 @@ export async function createTestCall(
       restaurantId,
       tableId,
       waiterId,
-      status: status.valueOf(),
+      status: status as any,
       requestedAt: new Date(),
       timeoutAt: new Date(Date.now() + 2 * 60 * 1000), // 2 minutes from now
       ...overrides
