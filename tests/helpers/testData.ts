@@ -10,14 +10,12 @@ import { CallStatus } from '@/lib/constants/callStatus'
 export interface TestRestaurant {
   id: string
   name: string
-  code: string
   slug: string
   email: string
   phone: string | null
   address: string | null
   logoUrl: string | null
   menuUrl: string | null
-  isActive: boolean
   createdAt: Date
   updatedAt: Date
 }
@@ -58,10 +56,8 @@ export async function createTestRestaurant(overrides: Partial<TestRestaurant> = 
   const restaurant = await prisma.restaurant.create({
     data: {
       name: `Test Restaurant ${Date.now()}`,
-      code: `TEST${Date.now()}`,
       slug: `test-restaurant-${Date.now()}`,
       email: `test-${Date.now()}@example.com`,
-      isActive: true,
       ...overrides
     }
   })
