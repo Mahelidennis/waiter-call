@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
       where: { id: call.id },
       data: {
         status: 'ACKNOWLEDGED',
-        acknowledgedAt: new Date(),
+        // acknowledgedAt removed - database doesn't have this column yet
         responseTime: Math.floor(Date.now() - call.requestedAt.getTime())
       },
       include: {
@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
       where: { id: call.id },
       data: {
         status: 'COMPLETED',
-        completedAt: new Date()
+        // completedAt removed - database doesn't have this column yet
       },
       include: {
         table: true,

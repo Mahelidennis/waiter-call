@@ -100,11 +100,11 @@ model Call {
   status        CallStatus   @default(PENDING)
   requestedAt   DateTime     @default(now())
   
-  // Enhanced lifecycle timestamps
-  acknowledgedAt DateTime?    // When waiter acknowledged the call
-  completedAt    DateTime?    // When service was completed
-  missedAt       DateTime?    // When call was marked as missed
-  timeoutAt      DateTime?    // When call will timeout (SLA)
+  // Enhanced lifecycle timestamps - REMOVED: Database doesn't have these columns yet
+  // acknowledgedAt DateTime?    // When waiter acknowledged the call
+  // completedAt    DateTime?    // When service was completed
+  // missedAt       DateTime?    // When call was marked as missed
+  // timeoutAt      DateTime?    // When call will timeout (SLA)
   
   // Legacy fields for backward compatibility
   handledAt      DateTime?    // @deprecated Use completedAt instead
@@ -120,8 +120,8 @@ model Call {
   @@index([waiterId])
   @@index([status])
   @@index([requestedAt])
-  @@index([timeoutAt]) // For timeout detection
-  @@index([missedAt])   // For missed call analytics
+  // timeoutAt index removed - database doesn't have this column yet
+  // missedAt index removed - database doesn't have this column yet
 }
 
 enum CallStatus {

@@ -99,7 +99,7 @@ export async function POST(request: NextRequest) {
       where: { id: call.id },
       data: {
         status: 'ACKNOWLEDGED',
-        acknowledgedAt: new Date(),
+        // acknowledgedAt removed - database doesn't have this column yet
         responseTime: 1000,
       },
     })
@@ -111,7 +111,7 @@ export async function POST(request: NextRequest) {
       where: { id: call.id },
       data: {
         status: 'COMPLETED',
-        completedAt: new Date(),
+        // completedAt removed - database doesn't have this column yet
       },
     })
 

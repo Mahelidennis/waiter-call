@@ -84,12 +84,12 @@ export async function POST(request: NextRequest) {
           // Test status flow
           await prisma.call.update({
             where: { id: call.id },
-            data: { status: 'ACKNOWLEDGED', acknowledgedAt: new Date() }
+            data: { status: 'ACKNOWLEDGED' } // acknowledgedAt removed - database doesn't have this column yet
           })
 
           await prisma.call.update({
             where: { id: call.id },
-            data: { status: 'COMPLETED', completedAt: new Date() }
+            data: { status: 'COMPLETED' } // completedAt removed - database doesn't have this column yet
           })
 
           results.callStatusFlow = true

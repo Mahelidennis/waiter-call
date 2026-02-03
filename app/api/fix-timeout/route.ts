@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
         where: { id: call.id },
         data: {
           status: 'MISSED',
-          missedAt: now,
+          // missedAt removed - database doesn't have this column yet
           // Calculate response time for analytics
           responseTime: Math.floor(now.getTime() - call.requestedAt.getTime()),
         },
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
         tableName: call.table?.number,
         tableQrCode: call.table?.qrCode,
         status: call.status,
-        missedAt: call.missedAt,
+        // missedAt removed - database doesn't have this column yet
         wasPendingFor: Math.floor((now.getTime() - call.requestedAt.getTime()) / 1000 / 60) + ' minutes'
       }))
     })

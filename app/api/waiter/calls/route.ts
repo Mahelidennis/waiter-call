@@ -186,7 +186,7 @@ async function checkAndUpdateMissedCalls(restaurantId: string) {
       where: { id: call.id },
       data: {
         status: 'MISSED',
-        missedAt: now,
+        // missedAt removed - database doesn't have this column yet
         // Calculate response time for analytics (time until missed)
         responseTime: Math.floor(now.getTime() - call.requestedAt.getTime()),
       },
