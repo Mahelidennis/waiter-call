@@ -173,7 +173,9 @@ export async function POST(request: NextRequest) {
       tableId,
       waiterId: waiterTable?.waiterId || null,
       status: 'PENDING',
-      timeoutAt
+      timeoutAt,
+      callStatusEnum: CallStatus.PENDING,
+      callStatusType: typeof CallStatus.PENDING
     })
 
     // Create the call within a transaction for atomicity
@@ -185,60 +187,86 @@ export async function POST(request: NextRequest) {
     // - The call is still valuable (can be seen via polling/realtime)
     // - Push notifications are best-effort (devices might be offline)
     // - Rolling back would lose the customer's request entirely
+    
+    logInfo('Starting Prisma transaction', 'DATABASE', {
+      timeout: TRANSACTION_TIMEOUT
+    })
+    
     const call = await prisma.$transaction(async (tx) => {
-      // Create the call with enhanced lifecycle tracking
-      const newCall = await tx.call.create({
-        data: {
-          restaurantId,
-          tableId,
-          waiterId: waiterTable?.waiterId || null,
-          status: CallStatus.PENDING, // Use standardized status
-          timeoutAt, // Set SLA timeout
-          // Legacy field for backward compatibility
-          responseTime: null,
-        },
-        include: {
-          table: true,
-          waiter: true,
-        },
+      logInfo('Inside transaction - creating call', 'DATABASE', {
+        restaurantId,
+        tableId,
+        waiterId: waiterTable?.waiterId || null,
+        status: CallStatus.PENDING,
+        timeoutAt
       })
-
-      logInfo('Call created successfully within transaction', 'DATABASE', {
-        callId: newCall.id
-      })
-
-      // Send push notification to assigned waiter(s)
-      // This is now within the transaction context for better error handling
+      
       try {
-        const notificationResult = await sendCallNotification(
-          newCall.id,
-          table.number,
-          restaurantId,
-          waiterTable?.waiterId
-        )
-        
-        logInfo('Push notification result', 'NOTIFICATION', {
-          callId: newCall.id,
-          success: notificationResult.success,
-          sent: notificationResult.sent,
-          failed: notificationResult.failed,
-          invalidSubscriptions: notificationResult.invalidSubscriptions?.length || 0
+        // Create the call with enhanced lifecycle tracking
+        const newCall = await tx.call.create({
+          data: {
+            restaurantId,
+            tableId,
+            waiterId: waiterTable?.waiterId || null,
+            status: CallStatus.PENDING, // Use standardized status
+            timeoutAt, // Set SLA timeout
+            // Legacy field for backward compatibility
+            responseTime: null,
+          },
+          include: {
+            table: true,
+            waiter: true,
+          },
         })
         
-        // If push notifications are completely disabled, that's acceptable
-        // If they're enabled but all failed, we still consider the call successful
-        // (the call exists in the system and can be seen via polling)
-        
-      } catch (notificationError) {
-        // Log notification error but don't fail the transaction
-        // The call is still created and can be seen via polling/realtime
-        logError('Push notification failed (non-critical)', 'NOTIFICATION', {
+        logInfo('Call created successfully within transaction', 'DATABASE', {
           callId: newCall.id,
-          error: notificationError instanceof Error ? notificationError.message : 'Unknown error'
+          callStatus: newCall.status,
+          callRestaurantId: newCall.restaurantId,
+          callTableId: newCall.tableId
         })
-      }
 
-      return newCall
+        // Send push notification to assigned waiter(s)
+        // This is now within the transaction context for better error handling
+        try {
+          const notificationResult = await sendCallNotification(
+            newCall.id,
+            table.number,
+            restaurantId,
+            waiterTable?.waiterId
+          )
+          
+          logInfo('Push notification result', 'NOTIFICATION', {
+            callId: newCall.id,
+            success: notificationResult.success,
+            sent: notificationResult.sent,
+            failed: notificationResult.failed,
+            invalidSubscriptions: notificationResult.invalidSubscriptions?.length || 0
+          })
+          
+          // If push notifications are completely disabled, that's acceptable
+          // If they're enabled but all failed, we still consider the call successful
+          // (the call exists in the system and can be seen via polling)
+          
+        } catch (notificationError) {
+          // Log notification error but don't fail the transaction
+          // The call is still created and can be seen via polling/realtime
+          logError('Push notification failed (non-critical)', 'NOTIFICATION', {
+            callId: newCall.id,
+            error: notificationError instanceof Error ? notificationError.message : 'Unknown error'
+          })
+        }
+
+        return newCall
+      } catch (createError) {
+        logError('Call creation failed inside transaction', 'DATABASE', {
+          errorMessage: createError instanceof Error ? createError.message : 'Unknown error',
+          errorStack: createError instanceof Error ? createError.stack : undefined,
+          errorCode: (createError as any)?.code,
+          errorMeta: (createError as any)?.meta
+        })
+        throw createError // Re-throw to fail the transaction
+      }
     }, {
       timeout: TRANSACTION_TIMEOUT,
     })
@@ -258,6 +286,19 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(call, { status: 201 })
   } catch (error) {
     timer.end({ success: false, reason: 'error', error: error instanceof Error ? error.message : 'Unknown error' })
+    
+    // Enhanced error logging - log the FULL error object first
+    logError('=== DATABASE ERROR DETAILS ===', 'DATABASE', {
+      errorType: typeof error,
+      errorConstructor: error?.constructor?.name,
+      errorMessage: error instanceof Error ? error.message : 'Unknown error',
+      errorStack: error instanceof Error ? error.stack : undefined,
+      errorCode: (error as any)?.code,
+      errorMeta: (error as any)?.meta,
+      errorTarget: (error as any)?.target,
+      fullErrorObject: error
+    })
+    logError('===============================', 'DATABASE', {})
     
     logError('Error creating call', 'API', {
       error: error instanceof Error ? error.message : 'Unknown error',
