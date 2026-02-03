@@ -99,7 +99,7 @@ export async function POST(request: NextRequest) {
           await prisma.call.delete({ where: { id: call.id } })
         }
       } catch (error) {
-        console.log('❌ Call creation/flow: FAILED', error.message)
+        console.log('❌ Call creation/flow: FAILED', error instanceof Error ? error.message : 'Unknown error')
       }
     }
 
