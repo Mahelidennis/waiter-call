@@ -59,10 +59,9 @@ export async function POST(
         data: {
           status: CallStatus.ACKNOWLEDGED,
           waiterId: waiter.id,
-          acknowledgedAt: new Date(),
+          // acknowledgedAt removed - database doesn't have this column yet
           responseTime: responseTimeMs,
-          // Clear missedAt if this was a missed call being recovered
-          missedAt: call.status === CallStatus.MISSED ? null : call.missedAt,
+          // missedAt clearing removed - database doesn't have this column yet
           // Update legacy field for backward compatibility
           handledAt: null, // Not handled yet, just acknowledged
         },
