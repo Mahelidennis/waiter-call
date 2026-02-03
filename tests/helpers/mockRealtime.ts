@@ -288,6 +288,10 @@ export class MockRealtimeChannel {
     this.channelName = channelName
   }
   
+  get name(): string {
+    return this.channelName
+  }
+  
   on(event: string, filter: any, callback: (payload: any) => void): MockRealtimeChannel {
     const key = `${event}-${JSON.stringify(filter)}`
     this.callbacks.set(key, callback)
@@ -330,7 +334,7 @@ export class MockSupabaseClient {
   }
   
   removeChannel(channel: MockRealtimeChannel): void {
-    const channelName = channel.channelName
+    const channelName = channel.name
     if (this.channels.has(channelName)) {
       this.channels.delete(channelName)
       console.log(`🔌 Removed channel: ${channelName}`)
