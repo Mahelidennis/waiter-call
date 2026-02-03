@@ -11,17 +11,27 @@ export interface TestRestaurant {
   id: string
   name: string
   code: string
+  slug: string
+  email: string
+  phone: string | null
+  address: string | null
+  logoUrl: string | null
+  menuUrl: string | null
   isActive: boolean
+  createdAt: Date
+  updatedAt: Date
 }
 
 export interface TestWaiter {
   id: string
   name: string
-  email?: string
-  phone?: string
-  accessCode: string
+  email: string | null
+  phone: string | null
+  accessCodeHash: string | null
   isActive: boolean
   restaurantId: string
+  createdAt: Date
+  updatedAt: Date
 }
 
 export interface TestTable {
@@ -56,7 +66,7 @@ export async function createTestRestaurant(overrides: Partial<TestRestaurant> = 
     }
   })
   
-  return restaurant as TestRestaurant
+  return restaurant
 }
 
 /**
@@ -68,14 +78,13 @@ export async function createTestWaiter(restaurantId: string, overrides: Partial<
       name: `Test Waiter ${Date.now()}`,
       email: `waiter${Date.now()}@test.com`,
       phone: `+1234567890${Date.now()}`,
-      accessCode: `1234`,
       isActive: true,
       restaurantId,
       ...overrides
     }
   })
   
-  return waiter as TestWaiter
+  return waiter
 }
 
 /**
