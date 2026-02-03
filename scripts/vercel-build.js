@@ -38,49 +38,11 @@ async function runWithTimeout(label, fn, timeoutMs) {
 }
 
 async function main() {
-  console.log('Running prisma generate…')
+  console.log('Starting deployment build...')
   
-  // Try to generate Prisma client with retry logic
-  let retries = 0
-  const maxRetries = 2 // Reduced retries for faster builds
-  
-  while (retries < maxRetries) {
-    try {
-      await run('npx', ['prisma', 'generate'])
-      console.log('Prisma generate successful')
-      break
-    } catch (error) {
-      retries++
-      console.log(`Prisma generate attempt ${retries} failed: ${error.message}`)
-      
-      if (retries >= maxRetries) {
-        console.log('Warning: Prisma generate failed, but continuing with build...')
-        console.log('This might be due to file locks. The build may still work.')
-        // Don't exit, just continue with build
-        break
-      } else {
-        console.log(`Retrying in 2 seconds... (${retries}/${maxRetries})`)
-        await new Promise(resolve => setTimeout(resolve, 2000))
-      }
-    }
-  }
-
-  const skipMigrate =
-    String(process.env.SKIP_PRISMA_MIGRATE || '').toLowerCase() === '1' ||
-    String(process.env.SKIP_PRISMA_MIGRATE || '').toLowerCase() === 'true' ||
-    true // Always skip migrate for deployment
-
-  if (skipMigrate) {
-    console.log('Skipping prisma migrate deploy (SKIP_PRISMA_MIGRATE=true).')
-  } else {
-    // Keep Vercel from hanging for 45 minutes if DB is unreachable.
-    console.log('Running prisma migrate deploy…')
-    await runWithTimeout(
-      'prisma migrate deploy',
-      () => run('npx', ['prisma', 'migrate', 'deploy']),
-      120_000
-    )
-  }
+  // Skip Prisma operations for deployment to avoid issues
+  console.log('Skipping prisma generate (will use postinstall)')
+  console.log('Skipping prisma migrate deploy (database already set up)')
 
   console.log('Running next build…')
   await run('npx', ['next', 'build'])
