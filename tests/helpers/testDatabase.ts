@@ -25,7 +25,7 @@ export async function setupTestDatabase(): Promise<void> {
       AND table_name IN ('Restaurant', 'Waiter', 'Table', 'Call', 'WaiterTable')
     `
     
-    const tableNames = tables.map((t: any) => t.table_name)
+    const tableNames = tables.map((t: { table_name: string }) => t.table_name)
     const requiredTables = ['Restaurant', 'Waiter', 'Table', 'Call', 'WaiterTable']
     
     for (const table of requiredTables) {

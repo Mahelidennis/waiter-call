@@ -107,7 +107,7 @@ export async function createTestCall(
   restaurantId: string,
   tableId: string,
   waiterId?: string,
-  status: string = CallStatus.PENDING,
+  status: CallStatus = CallStatus.PENDING,
   overrides: Partial<TestCall> = {}
 ): Promise<TestCall> {
   const call = await prisma.call.create({
@@ -248,7 +248,7 @@ export async function createRealisticTestScenario(): Promise<{
   for (let i = 0; i < 3; i++) {
     const waiter = await createTestWaiter(restaurant.id, {
       name: `${data.waiterName} ${i + 1}`,
-      email: `waiter${i + 1}${random}@test.com`,
+      email: `waiter${i + 1}${Math.random().toString(36).substr(2, 9)}@test.com`,
       phone: `${data.waiterPhone}${i + 1}`
     })
     waiters.push(waiter)
