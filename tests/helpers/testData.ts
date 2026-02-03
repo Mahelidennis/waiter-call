@@ -49,6 +49,8 @@ export async function createTestRestaurant(overrides: Partial<TestRestaurant> = 
     data: {
       name: `Test Restaurant ${Date.now()}`,
       code: `TEST${Date.now()}`,
+      slug: `test-restaurant-${Date.now()}`,
+      email: `test-${Date.now()}@example.com`,
       isActive: true,
       ...overrides
     }
