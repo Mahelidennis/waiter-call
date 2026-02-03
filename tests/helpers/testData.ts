@@ -5,7 +5,7 @@
  */
 
 import { prisma } from '@/lib/db'
-import { CallStatus } from '@/lib/constants/callStatus'
+import { CallStatus } from '@prisma/client'
 
 export interface TestRestaurant {
   id: string
@@ -115,7 +115,7 @@ export async function createTestCall(
       restaurantId,
       tableId,
       waiterId,
-      status: status as string,
+      status: status.valueOf(),
       requestedAt: new Date(),
       timeoutAt: new Date(Date.now() + 2 * 60 * 1000), // 2 minutes from now
       ...overrides

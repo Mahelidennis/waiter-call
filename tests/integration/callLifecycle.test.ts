@@ -6,7 +6,14 @@
  * and push notifications.
  */
 
-import { describe, test, expect, beforeAll, afterAll, beforeEach, afterEach } from 'jest'
+// Test framework globals (assuming Jest is configured globally)
+declare const describe: any
+declare const test: any
+declare const expect: any
+declare const beforeAll: any
+declare const afterAll: any
+declare const beforeEach: any
+declare const afterEach: any
 import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/db'
 import { CallStatus } from '@/lib/constants/callStatus'
