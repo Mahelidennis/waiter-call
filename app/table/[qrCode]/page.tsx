@@ -88,6 +88,13 @@ export default function TablePage() {
     setStatusMessage('')
 
     try {
+      console.log('=== CALL WAITER DEBUG - DATA SOURCE ===')
+      console.log('QR Code from route params:', qrCode)
+      console.log('Full data object:', data)
+      console.log('Table object:', data.table)
+      console.log('Restaurant object:', data.table.restaurant)
+      console.log('========================================')
+      
       console.log('Calling waiter for table:', data.table.id)
       console.log('Restaurant ID:', data.table.restaurant.id)
       console.log('Table Number:', data.table.number)
@@ -98,6 +105,14 @@ export default function TablePage() {
       }
       
       console.log('Request payload:', payload)
+      
+      // Explicit logging for debugging - show exact values being sent
+      console.log('=== CALL WAITER REQUEST DEBUG ===')
+      console.log('tableId:', data.table.id)
+      console.log('restaurantId:', data.table.restaurant.id)
+      console.log('Full request body object:', payload)
+      console.log('Request body JSON string:', JSON.stringify(payload))
+      console.log('================================')
       
       const response = await fetch('/api/calls', {
         method: 'POST',
