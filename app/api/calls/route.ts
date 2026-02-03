@@ -41,7 +41,21 @@ export async function POST(request: NextRequest) {
     }
 
     // Input validation
-    const validationResult = validateRequestBody(request, SCHEMAS.createCall)
+    logInfo('=== API CALLS DEBUG ===', 'API', {})
+    logInfo('Request headers:', 'API', {
+      contentType: request.headers.get('content-type'),
+      method: request.method
+    })
+    
+    const validationResult = await validateRequestBody(request, SCHEMAS.createCall)
+    
+    logInfo('Validation result:', 'API', {
+      isValid: validationResult.isValid,
+      data: validationResult.data,
+      errors: validationResult.errors
+    })
+    logInfo('========================', 'API', {})
+    
     if (!validationResult.isValid) {
       timer.end({ success: false, reason: 'validation_failed', errors: validationResult.errors })
       

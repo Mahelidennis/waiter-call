@@ -299,10 +299,10 @@ export const validate = {
 /**
  * Request body validation
  */
-export function validateRequestBody(request: NextRequest, schema: ValidationSchema): ValidationResult {
+export async function validateRequestBody(request: NextRequest, schema: ValidationSchema): Promise<ValidationResult> {
   try {
     const body = request.headers.get('content-type')?.includes('application/json') 
-      ? request.json() 
+      ? await request.json() 
       : {}
     
     return validateObject(body, schema)
@@ -352,7 +352,7 @@ export function validateObject(obj: any, schema: ValidationSchema): ValidationRe
     
     // Sanitize and store valid value
     if (errors.length === 0 || !errors.some(e => e.field === fieldName)) {
-      if (fieldName.includes('id') && fieldName !== 'waiterId' && fieldName !== 'tableId' && fieldName !== 'restaurantId') {
+      if (fieldName.includes('id') && fieldName !== 'waiterId') {
         sanitizedData[fieldName] = sanitize.uuid(value)
       } else if (fieldName.includes('email')) {
         sanitizedData[fieldName] = sanitize.email(value)
@@ -386,31 +386,11 @@ export const SCHEMAS: Record<string, ValidationSchema> = {
   createCall: {
     tableId: [
       (value: any) => validate.required(value, 'tableId'),
-      (value: any) => {
-        const sanitized = sanitize.string(value)
-        if (!sanitized) {
-          return {
-            field: 'tableId',
-            message: 'tableId is required',
-            code: 'REQUIRED'
-          }
-        }
-        return null // Accept any non-empty string for production
-      }
+      (value: any) => validate.uuid(value, 'tableId')
     ],
     restaurantId: [
       (value: any) => validate.required(value, 'restaurantId'),
-      (value: any) => {
-        const sanitized = sanitize.string(value)
-        if (!sanitized) {
-          return {
-            field: 'restaurantId',
-            message: 'restaurantId is required',
-            code: 'REQUIRED'
-          }
-        }
-        return null // Accept any non-empty string for production
-      }
+      (value: any) => validate.uuid(value, 'restaurantId')
     ]
   },
 
@@ -499,8 +479,8 @@ export const SCHEMAS: Record<string, ValidationSchema> = {
  * Middleware function for validation
  */
 export function validateRequest(schema: ValidationSchema) {
-  return (request: NextRequest) => {
-    const result = validateRequestBody(request, schema)
+  return async (request: NextRequest) => {
+    const result = await validateRequestBody(request, schema)
     
     if (!result.isValid) {
       throw new ValidationException(result.errors)
