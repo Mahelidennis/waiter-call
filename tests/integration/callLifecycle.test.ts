@@ -10,7 +10,7 @@ import { describe, test, expect, beforeAll, afterAll, beforeEach, afterEach } fr
 import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/db'
 import { CallStatus } from '@/lib/constants/callStatus'
-import { performanceMonitor } from '@/lib/monitoring/performanceMonitor'
+import { performanceMonitor, globalPerformanceMonitor, PerformanceTimer } from '@/lib/monitoring/performanceMonitor'
 import { logger } from '@/lib/monitoring/logger'
 
 // Test utilities
@@ -26,17 +26,19 @@ describe('Call Lifecycle Integration Tests', () => {
   let testCall: any
   let authToken: string
   let waiterAuthToken: string
+  let pushMock: any
+  let realtimeMock: any
 
   beforeAll(async () => {
     // Setup test database
     await setupTestDatabase()
     
     // Start performance monitoring for tests
-    performanceMonitor.startMonitoring(1000)
+    globalPerformanceMonitor.startMonitoring(1000)
     
     // Setup mocks
-    mockPushNotifications()
-    mockRealtimeConnection()
+    pushMock = mockPushNotifications()
+    realtimeMock = mockRealtimeConnection()
     
     console.log('🧪 Setting up integration test environment')
   })
@@ -46,7 +48,7 @@ describe('Call Lifecycle Integration Tests', () => {
     await cleanupTestDatabase()
     
     // Stop monitoring
-    performanceMonitor.stopMonitoring()
+    globalPerformanceMonitor.stopMonitoring()
     
     // Clear mocks
     clearPushNotificationMocks()
@@ -92,14 +94,14 @@ describe('Call Lifecycle Integration Tests', () => {
     })
     
     // Clear performance metrics between tests
-    performanceMonitor.reset()
+    globalPerformanceMonitor.reset()
     
     logger.info('Test cleanup complete', 'TEST')
   })
 
   describe('1. Call Creation', () => {
     test('should create a new call successfully', async () => {
-      const timer = performanceMonitor.startTimer('test_call_creation')
+      const timer = new PerformanceTimer('test_call_creation')
       
       const requestBody = {
         tableId: testTable.id,
@@ -143,7 +145,7 @@ describe('Call Lifecycle Integration Tests', () => {
       expect(dbCall!.waiter!.id).toBe(testWaiter.id)
       
       // Verify push notification was sent
-      expect(mockPushNotifications.sentNotifications).toContainEqual(
+      expect(pushMock.sentNotifications).toContainEqual(
         expect.objectContaining({
           callId: call.id,
           tableNumber: testTable.number,
@@ -561,7 +563,7 @@ describe('Call Lifecycle Integration Tests', () => {
 
   describe('6. Full Lifecycle Integration', () => {
     test('should complete full call lifecycle from creation to resolution', async () => {
-      const lifecycleTimer = performanceMonitor.startTimer('full_call_lifecycle')
+      const lifecycleTimer = new PerformanceTimer('full_call_lifecycle')
       
       // Step 1: Create call
       const createRequest = new NextRequest('http://localhost:3000/api/calls', {
@@ -652,7 +654,7 @@ describe('Call Lifecycle Integration Tests', () => {
         totalEvents: realtimeEvents.length
       })
       
-      const performanceReport = performanceMonitor.getPerformanceReport()
+      const performanceReport = globalPerformanceMonitor.getPerformanceReport()
       expect(performanceReport.summary.totalOperations).toBeGreaterThan(0)
       expect(performanceReport.summary.averageDuration).toBeLessThan(1000) // Should be fast
       
@@ -669,7 +671,7 @@ describe('Call Lifecycle Integration Tests', () => {
       const concurrentCalls = 10
       const promises: Promise<any>[] = []
       
-      const loadTestTimer = performanceMonitor.startTimer('concurrent_calls_test')
+      const loadTestTimer = new PerformanceTimer('concurrent_calls_test')
       
       // Create multiple calls concurrently
       for (let i = 0; i < concurrentCalls; i++) {
@@ -704,7 +706,7 @@ describe('Call Lifecycle Integration Tests', () => {
         concurrentCalls
       })
       
-      const performanceSummary = performanceMonitor.getPerformanceSummary()
+      const performanceSummary = globalPerformanceMonitor.getPerformanceSummary()
       expect(performanceSummary.totalOperations).toBeGreaterThan(concurrentCalls)
       expect(performanceSummary.averageDuration).toBeLessThan(2000) // Should handle load well
       
