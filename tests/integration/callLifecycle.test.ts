@@ -19,6 +19,10 @@ import { setupTestDatabase, cleanupTestDatabase } from '../helpers/testDatabase'
 import { mockPushNotifications, clearPushNotificationMocks } from '../helpers/mockPushNotifications'
 import { mockRealtimeConnection, clearRealtimeMocks } from '../helpers/mockRealtime'
 
+// Global mock instances for simulateApiCall function
+let pushMock: any
+let realtimeMock: any
+
 describe('Call Lifecycle Integration Tests', () => {
   let testRestaurant: any
   let testWaiter: any
@@ -26,8 +30,6 @@ describe('Call Lifecycle Integration Tests', () => {
   let testCall: any
   let authToken: string
   let waiterAuthToken: string
-  let pushMock: any
-  let realtimeMock: any
 
   beforeAll(async () => {
     // Setup test database
@@ -155,7 +157,7 @@ describe('Call Lifecycle Integration Tests', () => {
       )
       
       // Verify realtime event was sent
-      expect(mockRealtimeConnection.events).toContainEqual(
+      expect(realtimeMock.events).toContainEqual(
         expect.objectContaining({
           eventType: 'INSERT',
           new: expect.objectContaining({
@@ -341,7 +343,7 @@ describe('Call Lifecycle Integration Tests', () => {
       expect(dbCall!.acknowledgedAt).toBeTruthy()
       
       // Verify realtime event
-      expect(mockRealtimeConnection.events).toContainEqual(
+      expect(realtimeMock.events).toContainEqual(
         expect.objectContaining({
           eventType: 'UPDATE',
           new: expect.objectContaining({
@@ -438,7 +440,7 @@ describe('Call Lifecycle Integration Tests', () => {
       expect(dbCall!.handledAt).toBeTruthy() // Legacy field
       
       // Verify realtime event
-      expect(mockRealtimeConnection.events).toContainEqual(
+      expect(realtimeMock.events).toContainEqual(
         expect.objectContaining({
           eventType: 'UPDATE',
           new: expect.objectContaining({
@@ -512,7 +514,7 @@ describe('Call Lifecycle Integration Tests', () => {
       expect(updatedCall!.responseTime).toBeGreaterThan(0)
       
       // Verify realtime event for missed call
-      expect(mockRealtimeConnection.events).toContainEqual(
+      expect(realtimeMock.events).toContainEqual(
         expect.objectContaining({
           eventType: 'UPDATE',
           new: expect.objectContaining({
@@ -581,7 +583,7 @@ describe('Call Lifecycle Integration Tests', () => {
       
       // Verify initial state
       expect(call.status).toBe(CallStatus.PENDING)
-      expect(mockPushNotifications.sentNotifications).toHaveLength(1)
+      expect(pushMock.sentNotifications).toHaveLength(1)
       
       // Step 2: Acknowledge call
       await new Promise(resolve => setTimeout(resolve, 10)) // Simulate small delay
@@ -638,7 +640,7 @@ describe('Call Lifecycle Integration Tests', () => {
       expect(finalCall!.responseTime).toBeGreaterThan(0)
       
       // Verify all realtime events were sent
-      const realtimeEvents = mockRealtimeConnection.events.filter(
+      const realtimeEvents = realtimeMock.events.filter(
         event => event.new?.id === call.id
       )
       
@@ -767,7 +769,7 @@ async function simulateApiCall(endpoint: string, request: NextRequest): Promise<
     })
     
     // Simulate push notification
-    mockPushNotifications.sentNotifications.push({
+    pushMock.sentNotifications.push({
       callId: call.id,
       tableNumber: table.number,
       restaurantId: body.restaurantId,
@@ -775,7 +777,7 @@ async function simulateApiCall(endpoint: string, request: NextRequest): Promise<
     })
     
     // Simulate realtime event
-    mockRealtimeConnection.events.push({
+    realtimeMock.events.push({
       eventType: 'INSERT',
       new: call,
       timestamp: Date.now()
@@ -859,7 +861,7 @@ async function simulateApiCall(endpoint: string, request: NextRequest): Promise<
     })
     
     // Simulate realtime event
-    mockRealtimeConnection.events.push({
+    realtimeMock.events.push({
       eventType: 'UPDATE',
       old: call,
       new: updatedCall,
@@ -907,7 +909,7 @@ async function simulateApiCall(endpoint: string, request: NextRequest): Promise<
     })
     
     // Simulate realtime event
-    mockRealtimeConnection.events.push({
+    realtimeMock.events.push({
       eventType: 'UPDATE',
       old: call,
       new: updatedCall,
@@ -947,7 +949,7 @@ async function checkAndUpdateMissedCalls(restaurantId: string): Promise<void> {
     })
     
     // Simulate realtime event
-    mockRealtimeConnection.events.push({
+    realtimeMock.events.push({
       eventType: 'UPDATE',
       old: call,
       new: { ...call, status: CallStatus.MISSED, missedAt: now },
