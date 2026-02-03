@@ -6,7 +6,8 @@
  */
 
 import { supabase } from '@/lib/supabase/client'
-import { RealtimeChannel } from '@supabase/supababase-js'
+// @ts-ignore - RealtimeChannel type is available but might not be properly exported
+type RealtimeChannel = ReturnType<typeof supabase.channel>
 
 export interface ConnectionMetrics {
   totalConnections: number
