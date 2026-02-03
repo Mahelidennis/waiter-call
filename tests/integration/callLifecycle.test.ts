@@ -6,7 +6,7 @@
  * and push notifications.
  */
 
-import { describe, test, expect, beforeAll, afterAll, beforeEach, afterEach } from '@jest/globals'
+import { describe, test, expect, beforeAll, afterAll, beforeEach, afterEach } from 'jest'
 import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/db'
 import { CallStatus } from '@/lib/constants/callStatus'
