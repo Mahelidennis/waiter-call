@@ -22,6 +22,7 @@ export interface MockPushNotificationService {
     reason: string
   }>
   isOnline: boolean
+  failureRate: number
   sendNotification: (callId: string, tableNumber: string, restaurantId: string, waiterId?: string) => Promise<{
     success: boolean
     sent: number
