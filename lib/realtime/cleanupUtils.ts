@@ -406,7 +406,7 @@ export class AutoCleanupScheduler {
   } {
     return {
       isRunning: this.cleanupInterval !== null,
-      lastCleanup: this.lastCleanup,
+      lastCleanup: this.lastCleanup ? new Date(this.lastCleanup) : null,
       nextCleanup: this.cleanupInterval ? new Date(Date.now() + 300000) : null
     }
   }
