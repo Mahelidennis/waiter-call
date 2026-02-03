@@ -352,7 +352,7 @@ export function validateObject(obj: any, schema: ValidationSchema): ValidationRe
     
     // Sanitize and store valid value
     if (errors.length === 0 || !errors.some(e => e.field === fieldName)) {
-      if (fieldName.includes('id') && fieldName !== 'waiterId') {
+      if (fieldName.includes('id') && fieldName !== 'waiterId' && fieldName !== 'tableId' && fieldName !== 'restaurantId') {
         sanitizedData[fieldName] = sanitize.uuid(value)
       } else if (fieldName.includes('email')) {
         sanitizedData[fieldName] = sanitize.email(value)
@@ -386,11 +386,31 @@ export const SCHEMAS: Record<string, ValidationSchema> = {
   createCall: {
     tableId: [
       (value: any) => validate.required(value, 'tableId'),
-      (value: any) => validate.uuid(value, 'tableId')
+      (value: any) => {
+        const sanitized = sanitize.string(value)
+        if (!sanitized) {
+          return {
+            field: 'tableId',
+            message: 'tableId is required',
+            code: 'REQUIRED'
+          }
+        }
+        return null // Accept any non-empty string for production
+      }
     ],
     restaurantId: [
       (value: any) => validate.required(value, 'restaurantId'),
-      (value: any) => validate.uuid(value, 'restaurantId')
+      (value: any) => {
+        const sanitized = sanitize.string(value)
+        if (!sanitized) {
+          return {
+            field: 'restaurantId',
+            message: 'restaurantId is required',
+            code: 'REQUIRED'
+          }
+        }
+        return null // Accept any non-empty string for production
+      }
     ]
   },
 
