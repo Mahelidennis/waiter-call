@@ -18,14 +18,14 @@ export async function setupTestDatabase(): Promise<void> {
     console.log('✅ Database connection successful')
     
     // Verify required tables exist
-    const tables = await prisma.$queryRaw`
+    const tables = await prisma.$queryRaw<Array<{ table_name: string }>>`
       SELECT table_name 
       FROM information_schema.tables 
       WHERE table_schema = 'public'
       AND table_name IN ('Restaurant', 'Waiter', 'Table', 'Call', 'WaiterTable')
     `
     
-    const tableNames = tables.map((t: { table_name: string }) => t.table_name)
+    const tableNames = tables.map(t => t.table_name)
     const requiredTables = ['Restaurant', 'Waiter', 'Table', 'Call', 'WaiterTable']
     
     for (const table of requiredTables) {
@@ -65,7 +65,7 @@ export async function cleanupTestDatabase(): Promise<void> {
     
     for (const { table, model } of deleteOrder) {
       try {
-        const result = await model.deleteMany()
+        const result = await (model as any).deleteMany()
         console.log(`🗑️ Deleted ${result.count} records from ${table}`)
       } catch (error) {
         console.warn(`⚠️ Could not delete from ${table}:`, error)
@@ -137,8 +137,8 @@ export async function seedTestDatabase(): Promise<void> {
     const restaurant = await prisma.restaurant.create({
       data: {
         name: 'Sample Test Restaurant',
-        code: 'SAMPLE',
-        isActive: true
+        slug: 'sample-test-restaurant',
+        email: 'sample@test.com'
       }
     })
     
@@ -149,8 +149,6 @@ export async function seedTestDatabase(): Promise<void> {
           name: 'John Waiter',
           email: 'john@test.com',
           phone: '+1234567890',
-          accessCode: '1234',
-          isActive: true,
           restaurantId: restaurant.id
         }
       }),
@@ -159,8 +157,6 @@ export async function seedTestDatabase(): Promise<void> {
           name: 'Jane Waiter',
           email: 'jane@test.com',
           phone: '+1234567891',
-          accessCode: '5678',
-          isActive: true,
           restaurantId: restaurant.id
         }
       })
