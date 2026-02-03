@@ -164,7 +164,7 @@ export async function POST(request: NextRequest) {
       waiterId: waiterTable?.waiterId || 'unassigned'
     })
 
-    // Calculate timeout timestamp for SLA
+    // Calculate timeout timestamp for SLA (stored in memory, not DB until schema is updated)
     const now = new Date()
     const timeoutAt = new Date(now.getTime() + CALL_TIMEOUT_MINUTES * 60 * 1000)
 
@@ -173,7 +173,7 @@ export async function POST(request: NextRequest) {
       tableId,
       waiterId: waiterTable?.waiterId || null,
       status: 'PENDING',
-      timeoutAt,
+      timeoutAt: 'CALCULATED_BUT_NOT_STORED', // Database doesn't have this column yet
       callStatusEnum: CallStatus.PENDING,
       callStatusType: typeof CallStatus.PENDING
     })
@@ -198,7 +198,7 @@ export async function POST(request: NextRequest) {
         tableId,
         waiterId: waiterTable?.waiterId || null,
         status: CallStatus.PENDING,
-        timeoutAt
+        timeoutAt: 'NOT_STORED_IN_DB' // Database doesn't have this column yet
       })
       
       try {
@@ -209,7 +209,7 @@ export async function POST(request: NextRequest) {
             tableId,
             waiterId: waiterTable?.waiterId || null,
             status: CallStatus.PENDING, // Use standardized status
-            timeoutAt, // Set SLA timeout
+            // timeoutAt removed - database doesn't have this column yet
             // Legacy field for backward compatibility
             responseTime: null,
           },
@@ -446,8 +446,18 @@ export async function GET(request: NextRequest) {
 /**
  * Checks for timed-out calls and marks them as MISSED
  * This function is idempotent and can be called safely on any request
+ * NOTE: Timeout checking disabled until database schema is updated with timeoutAt column
  */
 async function checkAndUpdateMissedCalls(restaurantId: string) {
+  // TODO: Re-enable timeout checking once database schema includes timeoutAt column
+  // For now, we'll skip timeout checking to avoid database errors
+  
+  console.log('Timeout checking disabled - database schema missing timeoutAt column')
+  
+  return 0 // Return 0 timed-out calls found
+  
+  /*
+  // Original timeout logic (disabled until schema update):
   const now = new Date()
   
   // Find all PENDING calls that have exceeded their timeout
@@ -480,6 +490,7 @@ async function checkAndUpdateMissedCalls(restaurantId: string) {
   }
 
   return timedOutCalls.length
+  */
 }
 
 
