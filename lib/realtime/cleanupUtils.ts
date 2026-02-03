@@ -25,7 +25,17 @@ export interface CleanupResult {
 }
 
 /**
- * Comprehensive cleanup utility for realtime resources
+ * Safe error message extraction
+ */
+function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message
+  }
+  return String(error)
+}
+
+/**
+ * Comprehensive cleanup utility for all application resources
  */
 export class RealtimeCleanup {
   private static cleanupTasks: Array<() => Promise<void> | void> = []
@@ -68,7 +78,7 @@ export class RealtimeCleanup {
           cleanedResources.push('realtimeManager')
         }
       } catch (error) {
-        errors.push(`Realtime manager cleanup failed: ${error.message}`)
+        errors.push(`Realtime manager cleanup failed: ${getErrorMessage(error)}`)
       }
 
       // 2. Cleanup visibility handler
@@ -76,7 +86,7 @@ export class RealtimeCleanup {
         cleanupVisibilityHandler()
         cleanedResources.push('visibilityHandler')
       } catch (error) {
-        errors.push(`Visibility handler cleanup failed: ${error.message}`)
+        errors.push(`Visibility handler cleanup failed: ${getErrorMessage(error)}`)
       }
 
       // 3. Cleanup registered tasks
@@ -85,7 +95,7 @@ export class RealtimeCleanup {
           await Promise.resolve(task())
           cleanedResources.push('registeredTask')
         } catch (error) {
-          errors.push(`Registered task cleanup failed: ${error.message}`)
+          errors.push(`Registered task cleanup failed: ${getErrorMessage(error)}`)
         }
       }
 
@@ -132,23 +142,23 @@ export class RealtimeCleanup {
     try {
       // Clear any remaining timeouts
       const highestTimeoutId = setTimeout(() => {}, 0)
-      for (let i = 0; i < highestTimeoutId; i++) {
+      for (let i = 0; i < (highestTimeoutId as unknown as number); i++) {
         clearTimeout(i)
       }
       cleanedResources.push('timeouts')
     } catch (error) {
-      errors.push(`Timeout cleanup failed: ${error.message}`)
+      errors.push(`Timeout cleanup failed: ${getErrorMessage(error)}`)
     }
 
     try {
       // Clear any remaining intervals
       const highestIntervalId = setInterval(() => {}, 0)
-      for (let i = 0; i < highestIntervalId; i++) {
+      for (let i = 0; i < (highestIntervalId as unknown as number); i++) {
         clearInterval(i)
       }
       cleanedResources.push('intervals')
     } catch (error) {
-      errors.push(`Interval cleanup failed: ${error.message}`)
+      errors.push(`Interval cleanup failed: ${getErrorMessage(error)}`)
     }
 
     try {
@@ -159,7 +169,7 @@ export class RealtimeCleanup {
       }
       cleanedResources.push('animationFrames')
     } catch (error) {
-      errors.push(`Animation frame cleanup failed: ${error.message}`)
+      errors.push(`Animation frame cleanup failed: ${getErrorMessage(error)}`)
     }
   }
 
