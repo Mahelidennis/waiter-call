@@ -115,7 +115,7 @@ export async function createTestCall(
       restaurantId,
       tableId,
       waiterId,
-      status,
+      status: status as CallStatus,
       requestedAt: new Date(),
       timeoutAt: new Date(Date.now() + 2 * 60 * 1000), // 2 minutes from now
       ...overrides
@@ -239,8 +239,7 @@ export async function createRealisticTestScenario(): Promise<{
   
   // Create restaurant
   const restaurant = await createTestRestaurant({
-    name: data.restaurantName,
-    code: data.restaurantCode
+    name: data.restaurantName
   })
   
   // Create waiters
@@ -324,8 +323,7 @@ export async function createPerformanceTestData(
   // Create restaurants
   for (let r = 0; r < restaurantCount; r++) {
     const restaurant = await createTestRestaurant({
-      name: `Performance Test Restaurant ${r + 1}`,
-      code: `PERF${r + 1}`
+      name: `Performance Test Restaurant ${r + 1}`
     })
     restaurants.push(restaurant)
     

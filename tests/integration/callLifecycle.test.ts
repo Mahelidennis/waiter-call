@@ -641,7 +641,7 @@ describe('Call Lifecycle Integration Tests', () => {
       
       // Verify all realtime events were sent
       const realtimeEvents = realtimeMock.events.filter(
-        event => event.new?.id === call.id
+        (event: any) => event.new?.id === call.id
       )
       
       expect(realtimeEvents).toHaveLength(3) // INSERT, UPDATE (acknowledge), UPDATE (resolve)
