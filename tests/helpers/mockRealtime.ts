@@ -221,6 +221,12 @@ export class RealtimeEventTestUtils {
    * Get event statistics
    */
   static getEventStatistics(): {
+    total: number
+    insert: number
+    update: number
+    delete: number
+    byTable: Record<string, number>
+  } {
     const events = mockRealtimeService.events
     const insertCount = events.filter(e => e.eventType === 'INSERT').length
     const updateCount = events.filter(e => e.eventType === 'UPDATE').length
