@@ -14,7 +14,7 @@ interface Call {
   acknowledgedAt: string | null
   completedAt: string | null
   missedAt: string | null
-  timeoutAt: string | null
+  // timeoutAt removed - database doesn't have this column yet
   // Legacy fields for backward compatibility
   handledAt: string | null
   responseTime: number | null
@@ -336,11 +336,7 @@ export default function WaiterDashboard() {
     
     // Enhanced priority logic for different states
     if (call.status === 'MISSED') return 'border-red-500' // Missed calls are highest priority
-    if (call.status === 'PENDING' && call.timeoutAt) {
-      const timeoutTime = getWaitTimeInSeconds(call.timeoutAt)
-      if (timeoutTime > 0) return 'border-yellow-500' // About to timeout
-      return 'border-red-500' // Already timed out (should be marked missed)
-    }
+    if (call.status === 'PENDING') return 'border-yellow-500' // PENDING calls need attention
     if (waitTime > 300) return 'border-red-500' // > 5 minutes
     if (waitTime > 120) return 'border-yellow-500' // > 2 minutes
     return 'border-gray-200' // New request
@@ -378,8 +374,8 @@ export default function WaiterDashboard() {
   }
 
   function isCallOverdue(call: Call): boolean {
-    if (call.status !== 'PENDING' || !call.timeoutAt) return false
-    return new Date() > new Date(call.timeoutAt)
+    // timeoutAt removed - always return false until database schema is updated
+    return false
   }
 
   if (loading) {

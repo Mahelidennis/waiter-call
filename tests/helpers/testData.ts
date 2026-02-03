@@ -117,7 +117,7 @@ export async function createTestCall(
       waiterId,
       status: status as any,
       requestedAt: new Date(),
-      timeoutAt: new Date(Date.now() + 2 * 60 * 1000), // 2 minutes from now
+      // timeoutAt removed - database doesn't have this column yet
       ...overrides
     }
   })

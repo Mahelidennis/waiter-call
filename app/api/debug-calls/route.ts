@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
         restaurantName: call.restaurant?.name,
         waiterId: call.waiterId,
         waiterName: call.waiter?.name,
-        timeoutAt: call.timeoutAt,
+        // timeoutAt removed - database doesn't have this column yet
         acknowledgedAt: call.acknowledgedAt,
         completedAt: call.completedAt,
         missedAt: call.missedAt

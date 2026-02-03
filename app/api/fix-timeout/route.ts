@@ -17,9 +17,7 @@ export async function POST(request: NextRequest) {
         ...(restaurantId && { restaurantId }),
         ...(tableId && { tableId }),
         status: 'PENDING',
-        timeoutAt: {
-          lt: now, // timeoutAt is in the past
-        },
+        // timeoutAt removed - database doesn't have this column yet
       },
     })
     

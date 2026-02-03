@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
         waiterId: waiterTable.waiterId,
         status: 'PENDING',
         requestedAt: new Date(),
-        timeoutAt: new Date(Date.now() + 2 * 60 * 1000), // 2 minutes
+        // timeoutAt removed - database doesn't have this column yet
       },
       include: {
         table: true,

@@ -310,9 +310,9 @@ export async function validateRequestBody(request: NextRequest, schema: Validati
     return {
       isValid: false,
       errors: [{
-        field: 'body',
-        message: 'Invalid JSON format',
-        code: 'INVALID_JSON'
+        field: 'request',
+        code: 'PARSE_ERROR',
+        message: error instanceof Error ? error.message : 'Failed to parse request body'
       }]
     }
   }

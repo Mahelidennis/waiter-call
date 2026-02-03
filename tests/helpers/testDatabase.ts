@@ -102,7 +102,7 @@ export async function createTestIndexes(): Promise<void> {
       'CREATE INDEX IF NOT EXISTS idx_call_waiter_id ON "Call" (waiterId)',
       'CREATE INDEX IF NOT EXISTS idx_call_status ON "Call" (status)',
       'CREATE INDEX IF NOT EXISTS idx_call_requested_at ON "Call" (requestedAt)',
-      'CREATE INDEX IF NOT EXISTS idx_call_timeout_at ON "Call" (timeoutAt)',
+      // timeoutAt index removed - database doesn't have this column yet
       'CREATE INDEX IF NOT EXISTS idx_waiter_restaurant_id ON "Waiter" (restaurantId)',
       'CREATE INDEX IF NOT EXISTS idx_table_restaurant_id ON "Table" (restaurantId)',
       'CREATE INDEX IF NOT EXISTS idx_waiter_table_waiter_id ON "WaiterTable" (waiterId)',
@@ -220,8 +220,7 @@ export async function seedTestDatabase(): Promise<void> {
           tableId: tables[0].id,
           waiterId: waiters[0].id,
           status: 'PENDING',
-          requestedAt: new Date(Date.now() - 5 * 60 * 1000), // 5 minutes ago
-          timeoutAt: new Date(Date.now() + 2 * 60 * 1000) // 2 minutes from now
+          requestedAt: new Date(),
         }
       }),
       prisma.call.create({
@@ -231,8 +230,8 @@ export async function seedTestDatabase(): Promise<void> {
           waiterId: waiters[0].id,
           status: 'ACKNOWLEDGED',
           requestedAt: new Date(Date.now() - 10 * 60 * 1000), // 10 minutes ago
-          acknowledgedAt: new Date(Date.now() - 8 * 60 * 1000), // 8 minutes ago
-          timeoutAt: new Date(Date.now() - 3 * 60 * 1000) // 3 minutes ago
+          // acknowledgedAt removed - database doesn't have this column yet
+          // timeoutAt removed - database doesn't have this column yet
         }
       }),
       prisma.call.create({
@@ -242,9 +241,9 @@ export async function seedTestDatabase(): Promise<void> {
           waiterId: waiters[1].id,
           status: 'COMPLETED',
           requestedAt: new Date(Date.now() - 20 * 60 * 1000), // 20 minutes ago
-          acknowledgedAt: new Date(Date.now() - 18 * 60 * 1000), // 18 minutes ago
-          completedAt: new Date(Date.now() - 15 * 60 * 1000), // 15 minutes ago
-          timeoutAt: new Date(Date.now() - 13 * 60 * 1000) // 13 minutes ago
+          // acknowledgedAt removed - database doesn't have this column yet
+          // completedAt removed - database doesn't have this column yet
+          // timeoutAt removed - database doesn't have this column yet
         }
       })
     ])
@@ -305,7 +304,7 @@ export async function validateTestDatabaseSchema(): Promise<boolean> {
       Restaurant: ['id', 'name', 'code', 'isActive', 'createdAt', 'updatedAt'],
       Waiter: ['id', 'name', 'email', 'phone', 'accessCode', 'isActive', 'restaurantId', 'createdAt', 'updatedAt'],
       Table: ['id', 'number', 'qrCode', 'isActive', 'restaurantId', 'createdAt', 'updatedAt'],
-      Call: ['id', 'restaurantId', 'tableId', 'waiterId', 'status', 'requestedAt', 'timeoutAt', 'acknowledgedAt', 'completedAt', 'handledAt', 'missedAt', 'responseTime', 'createdAt', 'updatedAt'],
+      Call: ['id', 'restaurantId', 'tableId', 'waiterId', 'status', 'requestedAt', 'handledAt', 'responseTime', 'createdAt', 'updatedAt'], // Removed timeoutAt, acknowledgedAt, completedAt, missedAt
       WaiterTable: ['waiterId', 'tableId', 'createdAt', 'updatedAt']
     }
     

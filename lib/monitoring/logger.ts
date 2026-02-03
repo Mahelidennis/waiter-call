@@ -167,10 +167,17 @@ export class PerformanceLogger {
       this.endPerformanceTimer(context, { success: true })
       return result
     } catch (error) {
-      this.endPerformanceTimer(context, { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Unknown error'
-      })
+      if (error instanceof Error) {
+        this.endPerformanceTimer(context, { 
+          success: false, 
+          error: error.message
+        })
+      } else {
+        this.endPerformanceTimer(context, { 
+          success: false, 
+          error: 'Unknown error'
+        })
+      }
       throw error
     }
   }
@@ -270,7 +277,7 @@ export class PerformanceLogger {
         console.error('Failed to send log to remote endpoint:', response.status)
       }
     } catch (error) {
-      console.error('Error sending log to remote endpoint:', error)
+      console.error('Error sending log to remote endpoint:', error instanceof Error ? error.message : 'Unknown error')
     }
   }
 

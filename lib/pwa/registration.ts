@@ -54,7 +54,7 @@ export class PWAManager {
 
       return true
     } catch (error) {
-      console.error('PWA: Service Worker registration failed:', error)
+      console.error('PWA: Service Worker registration failed:', error instanceof Error ? error.message : 'Unknown error')
       return false
     }
   }
@@ -137,7 +137,7 @@ export class PWAManager {
       
       return outcome === 'accepted'
     } catch (error) {
-      console.error('PWA: Install prompt failed:', error)
+      console.error('PWA: Install prompt failed:', error instanceof Error ? error.message : 'Unknown error')
       return false
     }
   }
@@ -169,7 +169,7 @@ export class PWAManager {
         return true
       }
     } catch (error) {
-      console.error('PWA: Update check failed:', error)
+      console.error('PWA: Update check failed:', error instanceof Error ? error.message : 'Unknown error')
     }
     
     return false

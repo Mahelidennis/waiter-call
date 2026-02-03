@@ -159,6 +159,11 @@ async function checkAndUpdateMissedCalls(restaurantId: string) {
   const now = new Date()
   
   // Find all PENDING calls that have exceeded their timeout
+  // TODO: Re-enable timeout checking once database schema includes timeoutAt column
+  const timedOutCalls: any[] = [] // Empty array until schema is updated
+  
+  /*
+  // Original timeout logic (disabled until schema update):
   const timedOutCalls = await prisma.call.findMany({
     where: {
       restaurantId,
@@ -173,6 +178,7 @@ async function checkAndUpdateMissedCalls(restaurantId: string) {
       requestedAt: true,
     },
   })
+  */
 
   // Mark each timed-out call as MISSED
   for (const call of timedOutCalls) {
