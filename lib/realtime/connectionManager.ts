@@ -21,9 +21,7 @@ export interface ConnectionMetrics {
 export interface ConnectionConfig {
   restaurantId: string
   waiterId?: string
-  maxReconnectAttempts?: number
-  reconnectDelay?: number
-  connectionTimeout?: number
+  tableId?: string
   heartbeatInterval?: number
 }
 
@@ -32,7 +30,6 @@ export interface ConnectionCallbacks {
   onDisconnect?: (connectionId: string, reason: string) => void
   onError?: (connectionId: string, error: Error) => void
   onEvent?: (connectionId: string, event: any) => void
-  onMetricsUpdate?: (metrics: ConnectionMetrics) => void
 }
 
 export interface ManagedConnection {
@@ -44,14 +41,10 @@ export interface ManagedConnection {
   lastActivity: number
   reconnectAttempts: number
   isHealthy: boolean
-  heartbeatInterval?: NodeJS.Timeout
 }
 
-/**
- * Enhanced Realtime Connection Manager
- */
 export class RealtimeConnectionManager {
-  private connections = new Map<string, ManagedConnection>()
+  private connections: Map<string, ManagedConnection> = new Map()
   private metrics: ConnectionMetrics = {
     totalConnections: 0,
     activeConnections: 0,
@@ -109,7 +102,6 @@ export class RealtimeConnectionManager {
       console.log(`RealtimeConnectionManager: Connection created`, {
         connectionId,
         restaurantId: config.restaurantId,
-        waiterId: config.waiterId,
         totalConnections: this.connections.size
       })
 
@@ -123,10 +115,10 @@ export class RealtimeConnectionManager {
       console.error(`RealtimeConnectionManager: Failed to create connection`, {
         connectionId,
         restaurantId: config.restaurantId,
-        error: error.message
+        error: error instanceof Error ? error.message : 'Unknown error'
       })
-      
-      callbacks.onError?.(connectionId, error as Error)
+
+      callbacks.onError?.(connectionId, error instanceof Error ? error : new Error('Unknown error'))
       throw error
     }
   }
@@ -154,11 +146,11 @@ export class RealtimeConnectionManager {
         remainingConnections: this.connections.size
       })
 
-      callbacks.onDisconnect?.(connectionId, reason)
+      connection.callbacks.onDisconnect?.(connectionId, reason)
     } catch (error) {
       console.error(`RealtimeConnectionManager: Error removing connection`, {
         connectionId,
-        error: error.message
+        error: error instanceof Error ? error.message : 'Unknown error'
       })
     }
   }
@@ -216,7 +208,7 @@ export class RealtimeConnectionManager {
   }
 
   /**
-   * Force cleanup of unhealthy connections
+   * Cleanup unhealthy connections
    */
   async cleanupUnhealthyConnections(): Promise<number> {
     const unhealthyConnections: string[] = []
@@ -242,7 +234,7 @@ export class RealtimeConnectionManager {
   }
 
   /**
-   * Setup Supabase channel with enhanced error handling
+   * Setup Supabase channel with event handlers
    */
   private async setupChannel(
     config: ConnectionConfig,
@@ -282,7 +274,7 @@ export class RealtimeConnectionManager {
   }
 
   /**
-   * Handle real-time events with error recovery
+   * Handle realtime database events
    */
   private handleRealtimeEvent(
     connectionId: string,
@@ -296,20 +288,8 @@ export class RealtimeConnectionManager {
       return
     }
 
-    try {
-      connection.lastActivity = Date.now()
-      connection.isHealthy = true
-      
-      callbacks.onEvent?.(connectionId, payload)
-    } catch (error) {
-      console.error(`RealtimeConnectionManager: Error handling event`, {
-        connectionId,
-        error: error.message
-      })
-      
-      connection.isHealthy = false
-      callbacks.onError?.(connectionId, error as Error)
-    }
+    connection.lastActivity = Date.now()
+    callbacks.onEvent?.(connectionId, payload)
   }
 
   /**
@@ -324,24 +304,18 @@ export class RealtimeConnectionManager {
     
     if (!connection) return
 
-    try {
-      if (payload.payload?.event === 'connection_status') {
-        const connected = payload.payload.connected
-        
-        if (connected && !connection.isHealthy) {
-          connection.isHealthy = true
-          connection.lastActivity = Date.now()
-        } else if (!connected && connection.isHealthy) {
-          connection.isHealthy = false
-          // Schedule reconnection
-          this.scheduleReconnection(connectionId)
-        }
+    connection.lastActivity = Date.now()
+
+    if (payload.event === 'heartbeat') {
+      const connected = payload.data?.connected ?? false
+      
+      if (connected && !connection.isHealthy) {
+        connection.isHealthy = true
+        connection.reconnectAttempts = 0
+      } else if (!connected && connection.isHealthy) {
+        connection.isHealthy = false
+        this.scheduleReconnection(connectionId)
       }
-    } catch (error) {
-      console.error(`RealtimeConnectionManager: Error handling broadcast`, {
-        connectionId,
-        error: error.message
-      })
     }
   }
 
@@ -357,22 +331,10 @@ export class RealtimeConnectionManager {
     
     if (!connection) return
 
-    try {
-      // Handle system events like errors, timeouts, etc.
-      if (payload.event === 'error') {
-        connection.isHealthy = false
-        callbacks.onError?.(connectionId, new Error(payload.error?.message || 'Unknown system error'))
-      }
-    } catch (error) {
-      console.error(`RealtimeConnectionManager: Error handling system event`, {
-        connectionId,
-        error: error.message
-      })
-    }
+    connection.lastActivity = Date.now()
+    callbacks.onEvent?.(connectionId, payload)
   }
 
-  }
-  
   /**
    * Handle subscription status changes
    */
@@ -388,7 +350,6 @@ export class RealtimeConnectionManager {
     try {
       if (status === 'SUBSCRIBED') {
         connection.isHealthy = true
-        connection.lastActivity = Date.now()
         connection.reconnectAttempts = 0
       } else if (status === 'CLOSED' || status === 'CHANNEL_ERROR') {
         connection.isHealthy = false
@@ -398,9 +359,88 @@ export class RealtimeConnectionManager {
       console.error(`RealtimeConnectionManager: Error handling subscription status`, {
         connectionId,
         status,
-        error: error.message
+        error: error instanceof Error ? error.message : 'Unknown error'
       })
     }
+  }
+
+  /**
+   * Generate unique connection ID
+   */
+  private generateConnectionId(config: ConnectionConfig): string {
+    return `${config.restaurantId}-${config.waiterId || 'anonymous'}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+  }
+
+  /**
+   * Start cleanup scheduler
+   */
+  private startCleanupScheduler(): void {
+    if (this.cleanupInterval) {
+      clearInterval(this.cleanupInterval)
+    }
+
+    this.cleanupInterval = setInterval(() => {
+      this.cleanupUnhealthyConnections()
+    }, this.options.cleanupIntervalMs || 60000) // 1 minute default
+  }
+
+  /**
+   * Start metrics updater
+   */
+  private startMetricsUpdater(): void {
+    if (this.metricsUpdateInterval) {
+      clearInterval(this.metricsUpdateInterval)
+    }
+
+    this.metricsUpdateInterval = setInterval(() => {
+      this.updateMetrics()
+    }, this.options.metricsUpdateIntervalMs || 30000) // 30 seconds default
+  }
+
+  /**
+   * Update connection metrics
+   */
+  private updateMetrics(): void {
+    const connections = Array.from(this.connections.values())
+    
+    this.metrics.totalConnections = connections.length
+    this.metrics.activeConnections = connections.filter(c => c.isHealthy).length
+    this.metrics.lastConnectionTime = connections.length > 0 
+      ? Math.max(...connections.map(c => c.createdAt))
+      : 0
+
+    if (connections.length > 0) {
+      const totalDuration = connections.reduce((sum, c) => sum + (Date.now() - c.createdAt), 0)
+      this.metrics.averageConnectionDuration = totalDuration / connections.length
+    } else {
+      this.metrics.averageConnectionDuration = 0
+    }
+  }
+
+  /**
+   * Cleanup a connection
+   */
+  private async cleanupConnection(connection: ManagedConnection, reason: string): Promise<void> {
+    try {
+      // Unsubscribe and close channel
+      if (connection.channel) {
+        await connection.channel.unsubscribe()
+      }
+    } catch (error) {
+      console.error(`RealtimeConnectionManager: Error during connection cleanup`, {
+        connectionId: connection.id,
+        reason,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      })
+    }
+  }
+
+  /**
+   * Check if connection is stale
+   */
+  private isConnectionStale(connection: ManagedConnection): boolean {
+    const staleThreshold = this.options.connectionTimeoutMs || 300000 // 5 minutes default
+    return Date.now() - connection.lastActivity > staleThreshold
   }
 
   /**
@@ -411,14 +451,16 @@ export class RealtimeConnectionManager {
     
     if (!connection) return
 
-    connection.heartbeatInterval = setInterval(() => {
-      // Send heartbeat via broadcast
-      connection.channel?.send({
+    const interval = setInterval(() => {
+      if (!this.connections.has(connectionId)) {
+        clearInterval(interval)
+        return
+      }
+
+      connection.channel.send({
+        type: 'broadcast',
         event: 'heartbeat',
-        payload: {
-          timestamp: Date.now(),
-          connectionId
-        }
+        payload: { timestamp: Date.now() }
       })
     }, intervalMs)
   }
@@ -431,28 +473,27 @@ export class RealtimeConnectionManager {
     
     if (!connection) return
 
-    const maxAttempts = connection.config.maxReconnectAttempts || 5
-    const baseDelay = connection.config.reconnectDelay || 1000
+    const maxAttempts = 5
+    const baseDelay = 1000 // 1 second
     
     if (connection.reconnectAttempts >= maxAttempts) {
-      console.error(`RealtimeConnectionManager: Max reconnection attempts reached`, {
+      console.warn(`RealtimeConnectionManager: Max reconnection attempts reached`, {
         connectionId,
-        attempts: connection.reconnectAttempts,
-        maxAttempts
+        attempts: connection.reconnectAttempts
       })
       
       this.removeConnection(connectionId, 'max_reconnect_attempts')
       return
     }
 
+    const delay = baseDelay * Math.pow(2, connection.reconnectAttempts)
     connection.reconnectAttempts++
-    const delay = baseDelay * Math.pow(2, connection.reconnectAttempts - 1)
-    
+
     console.log(`RealtimeConnectionManager: Scheduling reconnection`, {
       connectionId,
       attempt: connection.reconnectAttempts,
-      maxAttempts,
-      delay
+      delay,
+      maxAttempts
     })
 
     setTimeout(() => {
@@ -469,27 +510,23 @@ export class RealtimeConnectionManager {
     if (!connection) return
 
     try {
-      // Clean up old channel
-      if (connection.channel) {
-        supabase.removeChannel(connection.channel)
-      }
+      console.log(`RealtimeConnectionManager: Reconnecting`, { connectionId })
 
       // Create new channel
       connection.channel = await this.setupChannel(connection.config, connection.callbacks, connectionId)
       
       console.log(`RealtimeConnectionManager: Connection reconnected`, {
         connectionId,
-        attempts: connection.reconnectAttempts
+        restaurantId: connection.config.restaurantId
       })
 
     } catch (error) {
       console.error(`RealtimeConnectionManager: Reconnection failed`, {
         connectionId,
-        error: error.message
+        error: error instanceof Error ? error.message : 'Unknown error'
       })
-      
-      connection.isHealthy = false
-      connection.callbacks.onError?.(connectionId, error as Error)
+
+      connection.callbacks.onError?.(connectionId, error instanceof Error ? error : new Error('Unknown error'))
       
       // Schedule another reconnection attempt
       this.scheduleReconnection(connectionId)
@@ -497,162 +534,62 @@ export class RealtimeConnectionManager {
   }
 
   /**
-   * Check if connection is stale (no activity for too long)
+   * Get connection statistics
    */
-  private isConnectionStale(connection: ManagedConnection): boolean {
-    const staleThreshold = 5 * 60 * 1000 // 5 minutes
-    return Date.now() - connection.lastActivity > staleThreshold
-  }
+  getConnectionStats(): {
+    total: number
+    healthy: number
+    unhealthy: number
+    byRestaurant: Record<string, number>
+    byWaiter: Record<string, number>
+  } {
+    const connections = Array.from(this.connections.values())
+    const byRestaurant: Record<string, number> = {}
+    const byWaiter: Record<string, number> = {}
 
-  /**
-   * Clean up a specific connection
-   */
-  private async cleanupConnection(
-    connection: ManagedConnection,
-    reason: string
-  ): Promise<void> {
-    try {
-      // Clear heartbeat
-      if (connection.heartbeatInterval) {
-        clearInterval(connection.heartbeatInterval)
-        connection.heartbeatInterval = null
+    for (const connection of connections) {
+      byRestaurant[connection.config.restaurantId] = (byRestaurant[connection.config.restaurantId] || 0) + 1
+      
+      if (connection.config.waiterId) {
+        byWaiter[connection.config.waiterId] = (byWaiter[connection.config.waiterId] || 0) + 1
       }
+    }
 
-      // Remove channel
-      if (connection.channel) {
-        await supabase.removeChannel(connection.channel)
-        connection.channel = null
-      }
-
-      // Update metrics
-      const duration = Date.now() - connection.createdAt
-      this.metrics.averageConnectionDuration = 
-        (this.metrics.averageConnectionDuration * this.metrics.totalConnections + duration) / 
-        (this.metrics.totalConnections + 1)
-
-    } catch (error) {
-      console.error(`RealtimeConnectionManager: Error during cleanup`, {
-        connectionId: connection.id,
-        reason,
-        error: error.message
-      })
+    return {
+      total: connections.length,
+      healthy: connections.filter(c => c.isHealthy).length,
+      unhealthy: connections.filter(c => !c.isHealthy).length,
+      byRestaurant,
+      byWaiter
     }
   }
 
   /**
-   * Update connection metrics
-   */
-  private updateMetrics(): void {
-    this.metrics.totalConnections = this.connections.size
-    this.metrics.activeConnections = Array.from(this.connections.values())
-      .filter(conn => conn.isHealthy).length
-    this.metrics.lastConnectionTime = Date.now()
-    this.metrics.reconnectAttempts = Array.from(this.connections.values())
-      .reduce((sum, conn) => sum + conn.reconnectAttempts, 0)
-  }
-
-  /**
-   * Start periodic cleanup scheduler
-   */
-  private startCleanupScheduler(): void {
-    const interval = this.options.cleanupIntervalMs || 60000 // 1 minute
-    
-    this.cleanupInterval = setInterval(() => {
-      this.cleanupUnhealthyConnections().then((cleaned) => {
-        if (cleaned > 0) {
-          console.log(`RealtimeConnectionManager: Cleaned up ${cleaned} unhealthy connections`)
-        }
-      })
-    }, interval)
-  }
-
-  /**
-   * Start metrics updater
-   */
-  private startMetricsUpdater(): void {
-    const interval = this.options.metricsUpdateIntervalMs || 30000 // 30 seconds
-    
-    this.metricsUpdateInterval = setInterval(() => {
-      this.updateMetrics()
-      
-      // Notify about metrics update
-      for (const connection of this.connections.values()) {
-        connection.callbacks.onMetricsUpdate?.(this.metrics)
-      }
-    }, interval)
-  }
-
-  /**
-   * Generate unique connection ID
-   */
-  private generateConnectionId(config: ConnectionConfig): string {
-    const base = `${config.restaurantId}`
-    const suffix = config.waiterId ? `-${config.waiterId}` : ''
-    const timestamp = Date.now()
-    const random = Math.random().toString(36).substring(2, 8)
-    
-    return `${base}${suffix}-${timestamp}-${random}`
-  }
-
-  /**
-   * Cleanup all connections and stop schedulers
+   * Cleanup all connections and intervals
    */
   async cleanup(): Promise<void> {
-    console.log('RealtimeConnectionManager: Starting cleanup...')
-    
-    // Stop schedulers
+    console.log(`RealtimeConnectionManager: Starting cleanup`, {
+      totalConnections: this.connections.size
+    })
+
+    // Clear intervals
     if (this.cleanupInterval) {
       clearInterval(this.cleanupInterval)
       this.cleanupInterval = null
     }
-    
+
     if (this.metricsUpdateInterval) {
       clearInterval(this.metricsUpdateInterval)
       this.metricsUpdateInterval = null
     }
 
-    // Remove all connections
+    // Cleanup all connections
     const connectionIds = Array.from(this.connections.keys())
-    
     for (const connectionId of connectionIds) {
-      await this.removeConnection(connectionId, 'shutdown')
+      await this.removeConnection(connectionId, 'cleanup')
     }
 
-    console.log(`RealtimeConnectionManager: Cleanup complete. Removed ${connectionIds.length} connections`)
-  }
-
-  /**
-   * Get connection statistics
-   */
-  getConnectionStats(): {
-    const connections = Array.from(this.connections.values())
-    
-    return {
-      total: connections.length,
-      healthy: connections.filter(c => c.isHealthy).length,
-      unhealthy: connections.filter(c => !c.isHealthy).length,
-      byRestaurant: connections.reduce((acc, conn) => {
-        const restaurantId = conn.config.restaurantId
-        acc[restaurantId] = (acc[restaurantId] || 0) + 1
-        return acc
-      }, {} as Record<string, number>),
-      byWaiter: connections.reduce((acc, conn) => {
-        const waiterId = conn.config.waiterId
-        if (waiterId) {
-          acc[waiterId] = (acc[waiterId] || 0) + 1
-        }
-        return acc
-      }, {} as Record<string, number>),
-      averageAge: connections.length > 0 
-        ? connections.reduce((sum, conn) => sum + (Date.now() - conn.createdAt), 0) / connections.length 
-        : 0,
-      oldestConnection: connections.length > 0 
-        ? Math.min(...connections.map(c => c.createdAt))
-        : null,
-      newestConnection: connections.length > 0 
-        ? Math.max(...connections.map(c => c.createdAt))
-        : null
-    }
+    console.log(`RealtimeConnectionManager: Cleanup completed`)
   }
 }
 
