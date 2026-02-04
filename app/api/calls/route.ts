@@ -209,7 +209,7 @@ export async function POST(request: NextRequest) {
             tableId,
             waiterId: waiterTable?.waiterId || null,
             status: CallStatus.PENDING, // Use standardized status
-            // timeoutAt removed - database doesn't have this column yet
+            timeoutAt: new Date(Date.now() + 5 * 60 * 1000), // 5 minute timeout
             // Legacy field for backward compatibility
             responseTime: null,
           },
