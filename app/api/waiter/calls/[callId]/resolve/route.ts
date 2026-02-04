@@ -45,7 +45,7 @@ export async function POST(
         where: { id: callId },
         data: {
           status: CallStatus.COMPLETED,
-          // completedAt removed - database doesn't have this column yet
+          completedAt: new Date(),
           responseTime: serviceTimeMs, // Total service time
           // Update legacy fields for backward compatibility
           handledAt: new Date(),

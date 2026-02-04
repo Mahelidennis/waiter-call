@@ -108,15 +108,16 @@ export async function PATCH(
 
     // Calculate response time if marking as completed
     let responseTime = null
+    let completedAt = null
     let handledAt = null
     
     if (normalizedStatus === CallStatus.COMPLETED && call.status === CallStatus.PENDING) {
       const diff = Date.now() - call.requestedAt.getTime()
       responseTime = Math.floor(diff) // in milliseconds
-      // completedAt removed - database doesn't have this column yet
+      completedAt = new Date()
       handledAt = new Date() // For backward compatibility
     } else if (normalizedStatus === CallStatus.COMPLETED) {
-      // completedAt removed - database doesn't have this column yet
+      completedAt = new Date()
       handledAt = new Date() // For backward compatibility
     }
 
@@ -125,7 +126,7 @@ export async function PATCH(
       data: {
         status: normalizedStatus,
         waiterId: waiterId || call.waiterId,
-        // completedAt removed - database doesn't have this column yet
+        completedAt: completedAt || call.completedAt,
         handledAt: handledAt || call.handledAt,
         responseTime: responseTime || call.responseTime,
       },
