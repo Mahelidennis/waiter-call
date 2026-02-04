@@ -66,6 +66,16 @@ export default function WaiterDashboard() {
 
   useEffect(() => {
     fetchWaiter()
+    
+    // Fallback timeout to prevent infinite loading
+    const fallbackTimeout = setTimeout(() => {
+      if (loading) {
+        console.log('🔔 WAITER DASHBOARD: Fallback timeout - forcing loading to false')
+        setLoading(false)
+      }
+    }, 15000) // 15 seconds fallback
+    
+    return () => clearTimeout(fallbackTimeout)
   }, [waiterId])
 
   // Handle callId from URL parameter (for push notifications)
@@ -235,15 +245,33 @@ export default function WaiterDashboard() {
 
   async function fetchWaiter() {
     try {
-      const response = await fetch(`/api/waiters/${waiterId}`)
+      console.log('🔔 WAITER DASHBOARD: Fetching waiter data for', waiterId)
+      
+      // Add timeout to prevent infinite loading
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Fetch timeout after 10 seconds')), 10000)
+      })
+      
+      const fetchPromise = fetch(`/api/waiters/${waiterId}`)
+      
+      const response = await Promise.race([fetchPromise, timeoutPromise]) as Response
+      
       if (!response.ok) {
+        console.error('🔔 WAITER DASHBOARD: Failed to fetch waiter:', response.status, response.statusText)
         setLoading(false)
         return
       }
+      
       const data = await response.json()
+      console.log('🔔 WAITER DASHBOARD: Waiter data fetched successfully', {
+        waiterId: data.id,
+        name: data.name,
+        restaurantId: data.restaurantId
+      })
       setWaiter(data)
+      setLoading(false) // CRITICAL: Set loading to false on success
     } catch (error) {
-      console.error('Error fetching waiter:', error)
+      console.error('🔔 WAITER DASHBOARD: Error fetching waiter:', error)
       setLoading(false)
     }
   }
