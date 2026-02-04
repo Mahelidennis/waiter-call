@@ -132,6 +132,8 @@ async function sendToWaiter(
   waiterId: string,
   payload: string
 ): Promise<{ sent: number; failed: number; invalidSubscriptions: string[]; errors: any[] }> {
+  console.log('🔔 PUSH NOTIFICATION: Fetching subscriptions for waiter', waiterId)
+  
   // Get all active subscriptions for the waiter
   const subscriptions = await prisma.pushSubscription.findMany({
     where: {
@@ -145,7 +147,13 @@ async function sendToWaiter(
     }
   })
 
+  console.log('🔔 PUSH NOTIFICATION: Found subscriptions for waiter', waiterId, {
+    count: subscriptions.length,
+    endpoints: subscriptions.map(s => s.endpoint.substring(0, 50) + '...')
+  })
+
   if (subscriptions.length === 0) {
+    console.log('🔔 PUSH NOTIFICATION: No subscriptions found for waiter', waiterId)
     return { sent: 0, failed: 0, invalidSubscriptions: [], errors: [] }
   }
 
@@ -216,10 +224,20 @@ export async function sendCallNotification(
   restaurantId: string,
   assignedWaiterId?: string | null
 ): Promise<PushResult> {
+  console.log('🔔 PUSH NOTIFICATION: Starting sendCallNotification', {
+    callId,
+    tableNumber,
+    restaurantId,
+    assignedWaiterId,
+    PUSH_ENABLED,
+    VAPID_PUBLIC_KEY: !!VAPID_PUBLIC_KEY,
+    VAPID_PRIVATE_KEY: !!VAPID_PRIVATE_KEY
+  })
+
   // Check if push notifications are available
   if (!PUSH_AVAILABLE) {
     const reason = !PUSH_ENABLED ? 'disabled by feature flag' : 'VAPID keys not configured'
-    console.log(`Push notifications not available (${reason}), skipping notification`)
+    console.log(`🔔 PUSH NOTIFICATION: Not available (${reason}), skipping`)
     return {
       success: true,
       sent: 0,
@@ -232,7 +250,7 @@ export async function sendCallNotification(
   // Initialize web-push (should work now)
   const isInitialized = initializeWebPush()
   if (!isInitialized) {
-    console.log('Failed to initialize web-push, skipping notification')
+    console.log('🔔 PUSH NOTIFICATION: Failed to initialize web-push, skipping')
     return {
       success: true,
       sent: 0,
@@ -241,6 +259,8 @@ export async function sendCallNotification(
       errors: []
     }
   }
+
+  console.log('🔔 PUSH NOTIFICATION: Web-push initialized successfully')
 
   try {
 
@@ -261,6 +281,7 @@ export async function sendCallNotification(
     if (assignedWaiterId) {
       // Send to assigned waiter only
       targetWaiterIds = [assignedWaiterId]
+      console.log('🔔 PUSH NOTIFICATION: Targeting assigned waiter', assignedWaiterId)
     } else {
       // Send to all active waiters in the restaurant
       const waiters = await prisma.waiter.findMany({
@@ -274,10 +295,15 @@ export async function sendCallNotification(
       })
 
       targetWaiterIds = waiters.map(w => w.id)
+      console.log('🔔 PUSH NOTIFICATION: Targeting all active waiters', {
+        restaurantId,
+        waiterCount: targetWaiterIds.length,
+        waiterIds: targetWaiterIds
+      })
     }
 
     if (targetWaiterIds.length === 0) {
-      console.log('No target waiters found for push notification')
+      console.log('🔔 PUSH NOTIFICATION: No target waiters found')
       return {
         success: true,
         sent: 0,
@@ -294,7 +320,15 @@ export async function sendCallNotification(
     const allErrors: any[] = []
 
     for (const waiterId of targetWaiterIds) {
+      console.log('🔔 PUSH NOTIFICATION: Sending to waiter', waiterId)
       const result = await sendToWaiter(waiterId, payloadString)
+      
+      console.log('🔔 PUSH NOTIFICATION: Result for waiter', waiterId, {
+        sent: result.sent,
+        failed: result.failed,
+        invalidSubscriptions: result.invalidSubscriptions.length,
+        errors: result.errors.length
+      })
       
       totalSent += result.sent
       totalFailed += result.failed

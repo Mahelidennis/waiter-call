@@ -25,8 +25,11 @@ interface SubscribeRequest {
  * - Idempotent operations (upsert)
  */
 export async function POST(request: NextRequest) {
+  console.log('🔔 PUSH SUBSCRIPTION: Starting subscription request')
+  
   // Feature flag check
   if (!PUSH_ENABLED) {
+    console.log('🔔 PUSH SUBSCRIPTION: Push notifications disabled')
     return NextResponse.json(
       { error: 'Push notifications are not enabled' },
       { status: 503 }
@@ -36,9 +39,20 @@ export async function POST(request: NextRequest) {
   try {
     // Authenticate waiter
     const waiter = await requireWaiterSession()
+    console.log('🔔 PUSH SUBSCRIPTION: Authenticated waiter', {
+      waiterId: waiter.id,
+      waiterName: waiter.name,
+      restaurantId: waiter.restaurantId
+    })
 
     // Parse and validate request body
     const body: SubscribeRequest = await request.json()
+    console.log('🔔 PUSH SUBSCRIPTION: Subscription data received', {
+      endpoint: body.endpoint?.substring(0, 50) + '...',
+      hasP256dh: !!body.p256dh,
+      hasAuth: !!body.auth,
+      userAgent: body.userAgent
+    })
     
     // Validate required fields
     if (!body.endpoint || !body.p256dh || !body.auth) {
@@ -70,6 +84,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Store or update subscription (idempotent)
+    console.log('🔔 PUSH SUBSCRIPTION: Storing subscription for waiter', waiter.id)
     const subscription = await prisma.pushSubscription.upsert({
       where: {
         waiterId_endpoint: {
@@ -91,6 +106,12 @@ export async function POST(request: NextRequest) {
         auth: body.auth,
         userAgent: body.userAgent
       }
+    })
+
+    console.log('🔔 PUSH SUBSCRIPTION: Subscription stored successfully', {
+      subscriptionId: subscription.id,
+      waiterId: waiter.id,
+      endpoint: body.endpoint.substring(0, 50) + '...'
     })
 
     console.log('Push subscription registered', {

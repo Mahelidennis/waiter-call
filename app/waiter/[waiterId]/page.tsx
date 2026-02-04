@@ -93,13 +93,17 @@ export default function WaiterDashboard() {
   useEffect(() => {
     if (!waiter) return
 
+    console.log(' WAITER DASHBOARD: Setting up realtime for waiter', waiter.id, 'restaurant', waiter.restaurantId)
+
     // Set up real-time subscription
     const setupRealtime = () => {
+      console.log(' WAITER DASHBOARD: Subscribing to realtime')
       realtimeManager.subscribe({
         restaurantId: waiter.restaurantId,
         waiterId: waiter.id,
         onCallEvent: handleRealtimeEvent,
         onConnectionChange: (connected) => {
+          console.log(' WAITER DASHBOARD: Realtime connection changed:', connected)
           setIsRealtimeConnected(connected)
           setRealtimeError(null)
           
@@ -108,7 +112,7 @@ export default function WaiterDashboard() {
           }
         },
         onError: (error) => {
-          console.error('Realtime error:', error)
+          console.error(' WAITER DASHBOARD: Realtime error:', error)
           setRealtimeError(error.message)
         }
       })
@@ -116,6 +120,8 @@ export default function WaiterDashboard() {
 
     // Handle real-time events
     const handleRealtimeEvent = (event: CallRealtimeEvent) => {
+      console.log(' WAITER DASHBOARD: Realtime event received:', event.eventType, event.new?.id)
+      
       if (process.env.NODE_ENV === 'development') {
         console.log('Realtime event received:', event.eventType, event.new?.id)
       }
@@ -132,6 +138,7 @@ export default function WaiterDashboard() {
               // Show notification for new pending calls assigned to this waiter
               if (event.new.status === 'PENDING' && 
                   (event.new.waiterId === waiterId || !event.new.waiterId)) {
+                console.log(' WAITER DASHBOARD: NEW CALL NOTIFICATION for waiter', waiterId)
                 setNewCallNotification(event.new as Call)
                 
                 // Vibrate if supported
@@ -217,13 +224,14 @@ export default function WaiterDashboard() {
     startPolling()
 
     return () => {
-      // Cleanup
+      console.log('🔔 WAITER DASHBOARD: Cleanup - DO NOT destroy realtime manager (singleton)')
+      // Only clear polling, keep realtime manager alive for other components
       if (intervalId) {
         clearInterval(intervalId)
       }
-      realtimeManager.unsubscribe()
+      // NOTE: We DON'T call realtimeManager.unsubscribe() here to preserve the singleton
     }
-  }, [filter, waiter, isRealtimeConnected]) // Re-establish when filter or waiter changes
+  }, [waiterId]) // Only depend on waiterId, not filter or connection status
 
   async function fetchWaiter() {
     try {

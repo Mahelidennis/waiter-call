@@ -116,14 +116,16 @@ self.addEventListener('fetch', (event) => {
 
 // Push event - handle incoming push notifications
 self.addEventListener('push', (event) => {
+  console.log('🔔 SERVICE WORKER: Push event received')
+  
   if (!event.data) {
-    console.log('Service Worker: Push event received with no data')
+    console.log('🔔 SERVICE WORKER: Push event received with no data')
     return
   }
 
   try {
     const data = event.data.json()
-    console.log('Service Worker: Push notification received:', data)
+    console.log('🔔 SERVICE WORKER: Push notification data received:', data)
 
     const options = {
       body: data.body || 'New call received',
@@ -136,19 +138,34 @@ self.addEventListener('push', (event) => {
       silent: data.silent || false
     }
 
+    console.log('🔔 SERVICE WORKER: Showing notification with options:', options)
+
     event.waitUntil(
       self.registration.showNotification(data.title || 'Waiter Call', options)
+        .then(() => {
+          console.log('🔔 SERVICE WORKER: Notification shown successfully')
+        })
+        .catch((error) => {
+          console.error('🔔 SERVICE WORKER: Failed to show notification:', error)
+        })
     )
   } catch (error) {
-    console.error('Service Worker: Error processing push data:', error)
+    console.error('🔔 SERVICE WORKER: Error processing push data:', error)
     
     // Fallback notification
+    console.log('🔔 SERVICE WORKER: Using fallback notification')
     event.waitUntil(
       self.registration.showNotification('Waiter Call', {
         body: 'New call received',
         icon: '/icons/icon-192x192.svg',
         badge: '/icons/icon-72x72.svg'
       })
+        .then(() => {
+          console.log('🔔 SERVICE WORKER: Fallback notification shown successfully')
+        })
+        .catch((fallbackError) => {
+          console.error('🔔 SERVICE WORKER: Failed to show fallback notification:', fallbackError)
+        })
     )
   }
 })
