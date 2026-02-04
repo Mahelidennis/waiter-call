@@ -72,7 +72,7 @@ export async function GET(request: NextRequest) {
       
       if (filterStatus === CallStatus.PENDING) {
         whereClause.status = CallStatus.PENDING
-        whereClause.waiterId = null
+        whereClause.waiterId = waiter.id
       } else if (filterStatus === CallStatus.ACKNOWLEDGED) {
         whereClause.status = CallStatus.ACKNOWLEDGED
         whereClause.waiterId = waiter.id
