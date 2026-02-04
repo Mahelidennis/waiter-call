@@ -490,6 +490,11 @@ export default function WaiterDashboard() {
                 </div>
               </div>
               <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+                {/* Push Notification Toggle */}
+                <div className="hidden sm:block">
+                  <PushToggle className="text-xs" />
+                </div>
+                
                 {realtimeError && (
                   <div className="flex items-center gap-1 text-xs font-semibold text-red-600 hidden sm:flex">
                     <span className="material-symbols-outlined text-sm">error</span>
@@ -533,6 +538,12 @@ export default function WaiterDashboard() {
               <h2 className="text-gray-900 dark:text-white text-xl sm:text-2xl font-bold leading-tight tracking-tight px-2 sm:px-4 pb-3 pt-3 sm:pt-5">
                 Incoming Requests
               </h2>
+              
+              {/* Mobile Push Notification Toggle */}
+              <div className="sm:hidden px-2 sm:px-4 pb-3">
+                <PushToggle className="w-full justify-center" />
+              </div>
+              
               <div className="flex gap-2 sm:gap-3 p-2 sm:p-3 overflow-x-auto scrollbar-hide">
                 <button
                   onClick={() => setFilter('pending')}
