@@ -16,6 +16,9 @@ const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY
 const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY
 const VAPID_EMAIL = process.env.VAPID_EMAIL || 'admin@waitercall.app'
 
+// Auto-disable push if VAPID keys are missing
+const PUSH_AVAILABLE = PUSH_ENABLED && !!VAPID_PUBLIC_KEY && !!VAPID_PRIVATE_KEY
+
 export interface PushPayload {
   tableNumber: string
   callType: string
@@ -37,17 +40,25 @@ export interface PushResult {
 
 /**
  * Initialize web-push with VAPID credentials
+ * Returns true if initialization successful, false if disabled/missing keys
  */
-function initializeWebPush() {
+function initializeWebPush(): boolean {
   if (!VAPID_PUBLIC_KEY || !VAPID_PRIVATE_KEY) {
-    throw new Error('VAPID keys not configured')
+    console.log('VAPID keys not configured, push notifications disabled')
+    return false
   }
 
-  webpush.setVapidDetails(
-    `mailto:${VAPID_EMAIL}`,
-    VAPID_PUBLIC_KEY,
-    VAPID_PRIVATE_KEY
-  )
+  try {
+    webpush.setVapidDetails(
+      `mailto:${VAPID_EMAIL}`,
+      VAPID_PUBLIC_KEY,
+      VAPID_PRIVATE_KEY
+    )
+    return true
+  } catch (error) {
+    console.error('Failed to initialize web-push:', error)
+    return false
+  }
 }
 
 /**
@@ -205,9 +216,23 @@ export async function sendCallNotification(
   restaurantId: string,
   assignedWaiterId?: string | null
 ): Promise<PushResult> {
-  // Feature flag check
-  if (!PUSH_ENABLED) {
-    console.log('Push notifications disabled, skipping notification')
+  // Check if push notifications are available
+  if (!PUSH_AVAILABLE) {
+    const reason = !PUSH_ENABLED ? 'disabled by feature flag' : 'VAPID keys not configured'
+    console.log(`Push notifications not available (${reason}), skipping notification`)
+    return {
+      success: true,
+      sent: 0,
+      failed: 0,
+      invalidSubscriptions: [],
+      errors: []
+    }
+  }
+
+  // Initialize web-push (should work now)
+  const isInitialized = initializeWebPush()
+  if (!isInitialized) {
+    console.log('Failed to initialize web-push, skipping notification')
     return {
       success: true,
       sent: 0,
@@ -218,8 +243,6 @@ export async function sendCallNotification(
   }
 
   try {
-    // Initialize web-push
-    initializeWebPush()
 
     // Create payload
     const payload: PushPayload = {
