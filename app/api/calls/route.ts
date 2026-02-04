@@ -150,18 +150,50 @@ export async function POST(request: NextRequest) {
     })
 
     // Get assigned waiter for this table (if any)
-    const waiterTable = await prisma.waiterTable.findFirst({
+    let waiterTable = await prisma.waiterTable.findFirst({
       where: {
         tableId,
       },
       include: {
-        waiter: true,
-      },
+        waiter: true
+      }
     })
 
-    logInfo('Waiter assignment found', 'DATABASE', {
+    // If no specific waiter assigned to this table, assign to first available waiter
+    if (!waiterTable?.waiterId) {
+      logInfo('No specific waiter assigned to table, finding available waiter', 'DATABASE', {
+        tableId
+      })
+      
+      const availableWaiter = await prisma.waiter.findFirst({
+        where: {
+          restaurantId,
+          isActive: true
+        }
+      })
+      
+      if (availableWaiter) {
+        logInfo('Found available waiter for assignment', 'DATABASE', {
+          waiterId: availableWaiter.id,
+          waiterName: availableWaiter.name
+        })
+        
+        // Create temporary assignment for this call
+        waiterTable = {
+          waiterId: availableWaiter.id,
+          waiter: availableWaiter
+        } as any
+      } else {
+        logInfo('No available waiters found, call will be unassigned', 'DATABASE', {
+          restaurantId
+        })
+      }
+    }
+
+    logInfo('Waiter assignment determined', 'DATABASE', {
       waiterTable: waiterTable ? 'yes' : 'no',
-      waiterId: waiterTable?.waiterId || 'unassigned'
+      waiterId: waiterTable?.waiterId || 'unassigned',
+      waiterName: waiterTable?.waiter?.name || 'none'
     })
 
     // Calculate timeout timestamp for SLA (stored in memory, not DB until schema is updated)
@@ -228,36 +260,35 @@ export async function POST(request: NextRequest) {
           callRequestedAt: newCall.requestedAt
         })
 
-        // Send push notification to assigned waiter(s)
-        // This is now within the transaction context for better error handling
-        try {
-          const notificationResult = await sendCallNotification(
-            newCall.id,
-            table.number,
-            restaurantId,
-            waiterTable?.waiterId
-          )
-          
-          logInfo('Push notification result', 'NOTIFICATION', {
-            callId: newCall.id,
-            success: notificationResult.success,
-            sent: notificationResult.sent,
-            failed: notificationResult.failed,
-            invalidSubscriptions: notificationResult.invalidSubscriptions?.length || 0
-          })
-          
-          // If push notifications are completely disabled, that's acceptable
-          // If they're enabled but all failed, we still consider the call successful
-          // (the call exists in the system and can be seen via polling)
-          
-        } catch (notificationError) {
-          // Log notification error but don't fail the transaction
-          // The call is still created and can be seen via polling/realtime
-          logError('Push notification failed (non-critical)', 'NOTIFICATION', {
-            callId: newCall.id,
-            error: notificationError instanceof Error ? notificationError.message : 'Unknown error'
-          })
-        }
+        // Send push notification to assigned waiter(s) - NON-CRITICAL
+        // Move outside transaction to prevent notification failures from affecting call creation
+        
+        // Don't wait for notification - fire and forget
+        setTimeout(async () => {
+          try {
+            const notificationResult = await sendCallNotification(
+              newCall.id,
+              table.number,
+              restaurantId,
+              waiterTable?.waiterId
+            )
+            
+            logInfo('Push notification completed asynchronously', 'NOTIFICATION', {
+              callId: newCall.id,
+              success: notificationResult.success,
+              sent: notificationResult.sent,
+              failed: notificationResult.failed,
+              invalidSubscriptions: notificationResult.invalidSubscriptions?.length || 0
+            })
+            
+          } catch (notificationError) {
+            // Log notification error but don't affect the call creation
+            logError('Push notification failed (non-critical)', 'NOTIFICATION', {
+              callId: newCall.id,
+              error: notificationError instanceof Error ? notificationError.message : 'Unknown error'
+            })
+          }
+        }, 0) // Fire immediately, don't block
 
         return newCall
       } catch (createError) {
