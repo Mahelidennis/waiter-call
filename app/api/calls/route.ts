@@ -223,7 +223,9 @@ export async function POST(request: NextRequest) {
           callId: newCall.id,
           callStatus: newCall.status,
           callRestaurantId: newCall.restaurantId,
-          callTableId: newCall.tableId
+          callTableId: newCall.tableId,
+          callTimeoutAt: newCall.timeoutAt,
+          callRequestedAt: newCall.requestedAt
         })
 
         // Send push notification to assigned waiter(s)
@@ -402,9 +404,12 @@ export async function GET(request: NextRequest) {
       restaurantId 
     })
 
+    console.log('Fetching calls for restaurant:', restaurantId, 'status filter:', status)
+
     // First, check for any timed-out calls and mark them as missed
     // This ensures missed-call detection runs on both read and write operations
-    await checkAndUpdateMissedCalls(restaurantId)
+    // TODO: Re-enable after debugging
+    // await checkAndUpdateMissedCalls(restaurantId)
 
     const calls = await prisma.call.findMany({
       where: {
@@ -424,6 +429,9 @@ export async function GET(request: NextRequest) {
       ],
       take: 50,
     })
+
+    console.log('Found calls:', calls.length, 'for restaurant:', restaurantId)
+    console.log('Calls data:', calls.map(c => ({ id: c.id, status: c.status, tableId: c.tableId, requestedAt: c.requestedAt })))
 
     // Standardize the response
     const standardizedCalls = calls.map(call => ({
