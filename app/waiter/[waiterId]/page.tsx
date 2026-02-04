@@ -14,7 +14,7 @@ interface Call {
   acknowledgedAt: string | null
   completedAt: string | null
   missedAt: string | null
-  // timeoutAt removed - database doesn't have this column yet
+  timeoutAt: string | null // Restored - database now has this column
   // Legacy fields for backward compatibility
   handledAt: string | null
   responseTime: number | null
@@ -129,8 +129,9 @@ export default function WaiterDashboard() {
             if (event.new) {
               updatedCalls.unshift(event.new as Call)
               
-              // Show notification for new pending calls
-              if (event.new.status === 'PENDING' && !event.new.waiterId) {
+              // Show notification for new pending calls assigned to this waiter
+              if (event.new.status === 'PENDING' && 
+                  (event.new.waiterId === waiterId || !event.new.waiterId)) {
                 setNewCallNotification(event.new as Call)
                 
                 // Vibrate if supported
