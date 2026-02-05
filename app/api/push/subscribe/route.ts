@@ -84,7 +84,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Store or update subscription (idempotent)
-    console.log('🔔 PUSH SUBSCRIPTION: Storing subscription for waiter', waiter.id)
+    console.log('🔔 PUSH SUBSCRIBE: Storing subscription for waiter', waiter.id)
+    const userAgent = body.userAgent || request.headers.get('user-agent') || undefined
+    
     const subscription = await prisma.pushSubscription.upsert({
       where: {
         waiterId_endpoint: {
@@ -95,7 +97,7 @@ export async function POST(request: NextRequest) {
       update: {
         p256dh: body.p256dh,
         auth: body.auth,
-        userAgent: body.userAgent,
+        userAgent,
         lastUsedAt: new Date()
       },
       create: {
@@ -104,7 +106,9 @@ export async function POST(request: NextRequest) {
         endpoint: body.endpoint,
         p256dh: body.p256dh,
         auth: body.auth,
-        userAgent: body.userAgent
+        userAgent,
+        createdAt: new Date(),
+        lastUsedAt: new Date()
       }
     })
 

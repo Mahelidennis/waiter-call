@@ -437,6 +437,30 @@ export default function WaiterDashboard() {
       <div className="layout-container flex h-full grow flex-col">
         <div className="flex flex-1 justify-center py-3 sm:py-5 px-2 sm:px-4 md:px-8 lg:px-10">
           <div className="layout-content-container flex flex-col w-full max-w-2xl flex-1">
+            {/* Push Notification Prompt Banner */}
+            <div className="mx-2 sm:mx-4 mb-4 p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <span className="material-symbols-outlined text-blue-600 text-xl sm:text-2xl">
+                    notifications_active
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="font-semibold text-blue-800 text-sm sm:text-base">Enable notifications to receive table calls</p>
+                    <p className="text-sm text-blue-700">
+                      Get instant alerts when customers call for service
+                    </p>
+                  </div>
+                </div>
+                <div className="hidden sm:block">
+                  <PushToggle className="text-xs" />
+                </div>
+              </div>
+              {/* Mobile version */}
+              <div className="sm:hidden mt-3">
+                <PushToggle className="w-full justify-center" />
+              </div>
+            </div>
+
             {/* Real-time notification banner */}
             {newCallNotification && (
               <div className="mx-2 sm:mx-4 mb-4 p-3 sm:p-4 bg-green-50 border border-green-200 rounded-lg animate-pulse">

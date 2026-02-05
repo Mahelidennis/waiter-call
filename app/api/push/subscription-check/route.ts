@@ -14,7 +14,7 @@ export async function GET() {
       where: { isActive: true },
       include: {
         restaurant: true,
-        pushSubscriptions: true
+        pushSubscriptions: true // Use existing relation
       }
     })
 

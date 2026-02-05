@@ -203,6 +203,6 @@ model PushSubscription {
   @@index([restaurantId])
   @@index([createdAt])
   @@index([lastUsedAt])
-  // Unique constraint to prevent duplicate subscriptions for same waiter+endpoint
-  @@unique([waiterId, endpoint])
+  // Enforce one active subscription per waiter
+  @@unique([waiterId])
 }
