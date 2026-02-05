@@ -60,8 +60,8 @@ export async function GET() {
       )
       webPushTest = '✅ Initialized successfully'
     } catch (error) {
-      webPushTest = `❌ Failed: ${error.message}`
-      issues.push(`Web-push initialization failed: ${error.message}`)
+      webPushTest = `❌ Failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      issues.push(`Web-push initialization failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
   }
 
