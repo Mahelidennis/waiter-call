@@ -83,24 +83,18 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Store or update subscription (idempotent)
+    // Store or update subscription (enforces one per waiter)
     console.log('🔔 PUSH SUBSCRIBE: Storing subscription for waiter', waiter.id)
     const userAgent = body.userAgent || request.headers.get('user-agent') || undefined
     
-    const subscription = await prisma.pushSubscription.upsert({
-      where: {
-        waiterId_endpoint: {
-          waiterId: waiter.id,
-          endpoint: body.endpoint
-        }
-      },
-      update: {
-        p256dh: body.p256dh,
-        auth: body.auth,
-        userAgent,
-        lastUsedAt: new Date()
-      },
-      create: {
+    // First try to delete any existing subscription for this waiter
+    await prisma.pushSubscription.deleteMany({
+      where: { waiterId: waiter.id }
+    })
+    
+    // Then create the new subscription
+    const subscription = await prisma.pushSubscription.create({
+      data: {
         waiterId: waiter.id,
         restaurantId: waiter.restaurantId,
         endpoint: body.endpoint,
